@@ -403,11 +403,34 @@ async function renderLayout({
   return { outputPath, segments };
 }
 
+function marksToEvents(marks, videoW, videoH) {
+  return marks
+    .map((mark) => {
+      const t = Number(mark.t || 0) * 1000;
+      const hold = Number(mark.duration ?? 0.6);
+      const x = Number(mark.x ?? 0.5);
+      const y = Number(mark.y ?? 0.5);
+
+      return {
+        t,
+        tEnd: t + hold * 1000,
+        action: "mark",
+        x: x <= 1 ? x * videoW : x,
+        y: y <= 1 ? y * videoH : y,
+        caption: mark.caption || "",
+        zoom: mark.zoom !== false,
+        label: mark.label || "",
+      };
+    })
+    .sort((a, b) => a.t - b.t);
+}
+
 export async function render(argv) {
   const { values } = parseArgs({
     args: argv,
     options: {
       config: { type: "string" },
+      video: { type: "string" },
       out: { type: "string" },
       "no-gif": { type: "boolean", default: false },
       "no-captions": { type: "boolean", default: false },
@@ -420,21 +443,54 @@ export async function render(argv) {
 
   const configPath = path.resolve(values.config);
   const raw = JSON.parse(await readFile(configPath, "utf8"));
+  const videoOverride = values.video ? path.resolve(values.video) : null;
+  const isMarkConfig = Array.isArray(raw.marks) && (videoOverride || raw.video);
 
-  let record = raw;
-  let outDir = values.out ? path.resolve(values.out) : path.dirname(configPath);
-  let recordDir = path.dirname(configPath);
+  let record;
+  let outDir;
+  let videoPath;
+  let probed = null;
 
-  if (!raw.video) {
-    outDir = values.out ? path.resolve(values.out) : path.resolve("demo");
-    const recordPath = path.join(outDir, "record.json");
-    record = JSON.parse(await readFile(recordPath, "utf8"));
-    recordDir = outDir;
+  if (isMarkConfig) {
+    videoPath = videoOverride || path.resolve(path.dirname(configPath), raw.video);
+    outDir = values.out ? path.resolve(values.out) : path.resolve(raw.out || "demo");
+    probed = await probe(videoPath);
+
+    const stream = (probed.streams || []).find((s) => s.codec_type === "video");
+    const videoW = Number(stream?.width || 0);
+    const videoH = Number(stream?.height || 0);
+    const videoDurationSec = Number(probed.format?.duration || 0);
+
+    if (!videoW || !videoH || !videoDurationSec) {
+      throw new Error(`Could not read video metadata: ${videoPath}`);
+    }
+
+    record = {
+      config: raw,
+      url: raw.url || raw.displayUrl || "screen-recording",
+      viewport: raw.viewport || { width: videoW, height: videoH },
+      scale: 1,
+      video: videoPath,
+      videoOffset: 0,
+      duration: Number(raw.duration || videoDurationSec),
+      events: marksToEvents(raw.marks, videoW, videoH),
+    };
+  } else {
+    record = raw;
+    outDir = values.out ? path.resolve(values.out) : path.dirname(configPath);
+    let recordDir = path.dirname(configPath);
+
+    if (!raw.video) {
+      outDir = values.out ? path.resolve(values.out) : path.resolve("demo");
+      const recordPath = path.join(outDir, "record.json");
+      record = JSON.parse(await readFile(recordPath, "utf8"));
+      recordDir = outDir;
+    }
+
+    videoPath = path.isAbsolute(record.video)
+      ? record.video
+      : path.resolve(recordDir, record.video);
   }
-
-  const videoPath = path.isAbsolute(record.video)
-    ? record.video
-    : path.resolve(recordDir, record.video);
 
   const hostname =
     record.config?.displayUrl ||
@@ -446,7 +502,7 @@ export async function render(argv) {
       }
     })();
 
-  const info = await probe(videoPath);
+  const info = probed || (await probe(videoPath));
   const videoStream = (info.streams || []).find((s) => s.codec_type === "video");
   const videoW = Number(videoStream?.width || 0);
   const videoH = Number(videoStream?.height || 0);

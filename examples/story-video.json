@@ -1,0 +1,32 @@
+{
+  "displayUrl": "northstar.app",
+  "video": "recording.mp4",
+  "marks": [
+    {
+      "t": 2.07,
+      "x": 0.946,
+      "y": 0.048,
+      "caption": "Start a new project",
+      "zoom": false
+    },
+    {
+      "t": 4.13,
+      "x": 0.5,
+      "y": 0.468,
+      "caption": "Give it a name"
+    },
+    {
+      "t": 6.3,
+      "x": 0.592,
+      "y": 0.563,
+      "caption": "Pick a template"
+    },
+    {
+      "t": 8.01,
+      "x": 0.594,
+      "y": 0.635,
+      "caption": "Done — ready for the team",
+      "zoom": false
+    }
+  ]
+}

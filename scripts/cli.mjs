@@ -5,7 +5,7 @@ Usage:
   demo-reel doctor
   demo-reel plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
   demo-reel record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
-  demo-reel render  --config demo.json [--out demo] [--vertical] [--no-gif]
+  demo-reel render  --config demo.json [--out demo] [--video recording.mp4] [--vertical] [--no-gif]
   demo-reel serve   [--port 4173] [--dir examples/site]
   demo-reel demo    [--out demo]
 
@@ -23,6 +23,7 @@ Options:
   --viewport          Viewport, e.g. 1440x810 (default from config)
   --headed            Watch the recording happen (default false)
   --vertical          Also render a 9:16 vertical video + GIF.
+  --video             Use an existing screen recording; the config needs "marks".
   --no-gif            Skip GIF export.
 `;
 

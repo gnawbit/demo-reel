@@ -176,6 +176,7 @@ Useful flags:
 --viewport 1440x810
 --headed                # watch the recording happen
 --vertical              # also render 9:16 + vertical GIF
+--video recording.mp4   # render an existing recording + marks
 --no-gif
 --no-captions
 --zoom 1.28
@@ -210,11 +211,48 @@ SPAs and authenticated pages.
 |---|---|---|
 | Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
 
-## When a site cannot be recorded
+## Use an existing screen recording
 
-Some sites use captchas, aggressive anti-bot checks, or canvas-only UI. In that
-case, record the flow manually and use the recording as the source. (Direct
-video input is on the roadmap.)
+If a site blocks automation, or you are demoing a desktop or mobile app, record
+the flow with OBS, Screen Studio, QuickTime or the OS recorder, then describe
+where to zoom in `marks`:
+
+```json
+{
+  "displayUrl": "your-app.com",
+  "video": "recording.mp4",
+  "marks": [
+    {
+      "t": 2.1,
+      "x": 0.946,
+      "y": 0.048,
+      "caption": "Start a new project",
+      "zoom": false
+    },
+    {
+      "t": 4.1,
+      "x": 0.5,
+      "y": 0.468,
+      "caption": "Give it a name"
+    }
+  ]
+}
+```
+
+- `t` is seconds into the recording.
+- `x` and `y` are normalized `0..1`; use `zoom: false` to keep the full frame.
+- `duration` is the caption hold in seconds (default `0.6`).
+
+```bash
+node bin/demo-reel.mjs render \
+  --config story-video.json \
+  --video recording.mp4 \
+  --vertical
+```
+
+It produces the same 16:9 and 9:16 videos, GIFs and posters as a URL recording.
+
+A minimal example lives at [examples/story-video.json](examples/story-video.json).
 
 ## Why not Screen Studio?
 
@@ -254,7 +292,7 @@ are yours or licensed.
 ## Roadmap
 
 - [x] 9:16 vertical export
-- [ ] Screen-recording input (auto-zoom + captions on existing footage)
+- [x] Screen-recording input (`--video` + `marks`)
 - [ ] Voiceover (TTS)
 - [ ] Device frames (iPhone, Android, macOS)
 - [ ] Brand presets

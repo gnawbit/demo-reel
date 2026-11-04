@@ -12,6 +12,8 @@ First public version.
   and a generated background
 - 9:16 vertical export (`--vertical`) with a card frame, top label and larger
   bottom captions
+- Screen-recording input (`--video` + normalized `marks`) for sites that block
+  automation and for desktop/mobile apps
 - `demo` — one-command end-to-end demo on the bundled app
 - `doctor` — Node, Chromium, ffmpeg, ffprobe and font checks
 - Login flow via `--login` and reusable `auth.json`
@@ -22,5 +24,5 @@ First public version.
 
 ### Known limitations
 
-- URL input only; existing screen recordings are on the roadmap
+- Screen-recording marks are manual; automatic click detection is not included
 - No voiceover or music

@@ -171,6 +171,7 @@ demo/
 --viewport 1440x810
 --headed                # 看着它录
 --vertical              # 同时输出 9:16 和竖屏 GIF
+--video recording.mp4   # 渲染已有录屏 + marks
 --no-gif
 --no-captions
 --zoom 1.28
@@ -202,10 +203,47 @@ demo-reel 不会向你要密码，也不会上传 cookie。
 |---|---|---|
 | Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
 
-## 录不了的站点
+## 用已有录屏
 
-有些站点有验证码、强反爬、或纯 Canvas 界面。这种情况下，先手动录屏，
-再把录屏作为输入（直接视频输入在路线图上）。不要尝试绕过验证码或反爬。
+如果站点有验证码、强反爬，或者你要演示的是桌面 App / 手机 App，先用 OBS、
+Screen Studio、QuickTime 或系统录屏录下来，再用 `marks` 描述哪里该放大：
+
+```json
+{
+  "displayUrl": "your-app.com",
+  "video": "recording.mp4",
+  "marks": [
+    {
+      "t": 2.1,
+      "x": 0.946,
+      "y": 0.048,
+      "caption": "一键开始",
+      "zoom": false
+    },
+    {
+      "t": 4.1,
+      "x": 0.5,
+      "y": 0.468,
+      "caption": "起个名字"
+    }
+  ]
+}
+```
+
+- `t`：录屏里的秒数
+- `x` / `y`：归一化 `0..1`；`zoom: false` 表示这一步保持全景
+- `duration`：字幕停留秒数，默认 `0.6`
+
+```bash
+node bin/demo-reel.mjs render \
+  --config story-video.json \
+  --video recording.mp4 \
+  --vertical
+```
+
+输出和网址录制完全一样：16:9 / 9:16 视频、GIF、封面。
+
+最小示例见 [examples/story-video.json](examples/story-video.json)。
 
 ## 和 Screen Studio 的区别
 
@@ -238,7 +276,7 @@ demo-reel 不会向你要密码，也不会上传 cookie。
 ## 路线图
 
 - [x] 9:16 竖屏导出
-- [ ] 已有录屏输入（自动缩放 + 字幕）
+- [x] 已有录屏输入（`--video` + `marks`）
 - [ ] 配音（TTS）
 - [ ] 设备边框（iPhone、Android、macOS）
 - [ ] 多套品牌预设

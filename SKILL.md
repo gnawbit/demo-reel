@@ -182,6 +182,7 @@ Options:
 
 ```bash
 --vertical            # also render 9:16 + vertical GIF
+--video recording.mp4 # render an existing recording; the config needs "marks"
 --no-gif
 --no-captions
 --zoom 1.28
@@ -220,12 +221,47 @@ node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
 
 ## When the URL cannot be recorded
 
-Some sites block automation, require a captcha, or use a canvas-only UI.
-Fall back to a screen recording:
+Some sites block automation, require a captcha, or use a canvas-only UI. Fall
+back to a screen recording instead of trying to bypass the block.
 
-1. Ask the user to record the flow with OBS, Screen Studio, or the OS recorder.
-2. Use the recording as the source. (Video input support is on the roadmap;
-   until then, use the recording directly and add captions in the README.)
+1. Ask the user to record the flow with OBS, Screen Studio, QuickTime or the OS
+   recorder.
+2. Ask for the moments where the demo should zoom in. Build a `marks` config:
+
+```json
+{
+  "displayUrl": "your-app.com",
+  "video": "recording.mp4",
+  "marks": [
+    {
+      "t": 2.1,
+      "x": 0.946,
+      "y": 0.048,
+      "caption": "Start in one click",
+      "zoom": false
+    },
+    {
+      "t": 4.1,
+      "x": 0.5,
+      "y": 0.468,
+      "caption": "Give it a name"
+    }
+  ]
+}
+```
+
+3. Render with the recording:
+
+```bash
+node bin/demo-reel.mjs render --config story-video.json --video recording.mp4 --vertical
+```
+
+`t` is seconds into the recording. `x` and `y` are normalized `0..1`. Set
+`"zoom": false` when the interesting result is elsewhere on screen. `duration`
+controls how long the caption holds (default `0.6`).
+
+If the user cannot provide timestamps, offer to watch the recording with them
+and write the marks together. Do not guess silently.
 
 Do not try to bypass captchas or anti-bot systems.
 
