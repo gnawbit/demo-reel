@@ -164,6 +164,27 @@ export async function clickAndType(page, locator, text, pause = 500) {
   return { x, y };
 }
 
+export async function dragBy(page, locator, dx, dy = 0, steps = 24, pause = 600) {
+  const box = await locator.boundingBox();
+  if (!box) throw new Error("Element has no bounding box");
+
+  const x = box.x + box.width / 2;
+  const y = box.y + box.height / 2;
+  const endX = x + Number(dx || 0);
+  const endY = y + Number(dy || 0);
+
+  await page.mouse.move(x, y, { steps: 12 });
+  await page.waitForTimeout(100);
+  await page.mouse.down();
+  await page.waitForTimeout(80);
+  await page.mouse.move(endX, endY, { steps: Number(steps || 24) });
+  await page.waitForTimeout(120);
+  await page.mouse.up();
+  await page.waitForTimeout(pause);
+
+  return { x: endX, y: endY };
+}
+
 export async function hover(page, locator, pause = 500) {
   const box = await locator.boundingBox();
   if (!box) throw new Error("Element has no bounding box");

@@ -3,6 +3,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import {
   clickAndType,
+  dragBy,
   hover,
   installCursor,
   launchBrowser,
@@ -90,13 +91,14 @@ export async function record(argv) {
 
     await installCursor(page);
 
-    const startedAt = Date.now();
-    videoOffset = Math.max(0, (startedAt - videoStartedAt) / 1000);
     events = [];
 
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
-    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
+    await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => {});
     await page.waitForTimeout(Number(config.initialWait ?? 700));
+
+    const startedAt = Date.now();
+    videoOffset = Math.max(0, (startedAt - videoStartedAt) / 1000);
 
     for (const step of steps) {
       const t = Date.now() - startedAt;
@@ -162,6 +164,29 @@ export async function record(argv) {
             y: point.y,
             caption: step.caption || "",
             label: step.text || step.selector || "",
+          });
+          break;
+        }
+
+        case "drag": {
+          const locator = await resolveLocator(page, step);
+          const point = await dragBy(
+            page,
+            locator,
+            Number(step.dx || 0),
+            Number(step.dy || 0),
+            Number(step.steps || 24),
+            Number(step.pause ?? 600),
+          );
+          events.push({
+            t,
+            tEnd: Date.now() - startedAt,
+            zoom: step.zoom !== false,
+            action: "drag",
+            x: point.x,
+            y: point.y,
+            caption: step.caption || "",
+            label: step.selector || "",
           });
           break;
         }

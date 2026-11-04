@@ -14,6 +14,9 @@ First public version.
   bottom captions
 - Screen-recording input (`--video` + normalized `marks`) for sites that block
   automation and for desktop/mobile apps
+- `drag` steps for sliders, carousels and comparison handles
+- Automatic CJK font selection for Chinese captions
+- Page-load pre-roll is trimmed from the final video
 - `demo` — one-command end-to-end demo on the bundled app
 - `doctor` — Node, Chromium, ffmpeg, ffprobe and font checks
 - Login flow via `--login` and reusable `auth.json`

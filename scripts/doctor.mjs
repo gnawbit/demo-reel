@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { chromium } from "playwright";
 import sharp from "sharp";
 import { FFMPEG, FFPROBE, run } from "./lib/ffmpeg.mjs";
-import { findFont } from "./lib/fonts.mjs";
+import { findCjkFont, findFont } from "./lib/fonts.mjs";
 
 export async function doctor() {
   const checks = [];
@@ -64,6 +64,14 @@ export async function doctor() {
     label: "System font for captions",
     detail: font || "not found",
     hint: "Install Arial/Segoe UI, or captions will be skipped.",
+  });
+
+  const cjkFont = findCjkFont();
+  checks.push({
+    ok: Boolean(cjkFont),
+    label: "CJK font for Chinese captions",
+    detail: cjkFont || "not found",
+    hint: "Install Microsoft YaHei, PingFang or Noto Sans CJK.",
   });
 
   console.log("\ndemo-reel doctor\n");

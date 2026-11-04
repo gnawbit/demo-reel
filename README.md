@@ -140,8 +140,8 @@ demo/
 }
 ```
 
-Actions: `wait`, `goto`, `click`, `type`, `hover`, `scroll`, `press`, `waitFor`,
-`screenshot`.
+Actions: `wait`, `goto`, `click`, `type`, `hover`, `drag`, `scroll`, `press`,
+`waitFor`, `screenshot`.
 
 Locators, in order of preference:
 
@@ -284,6 +284,11 @@ the page, write the story and run the commands for you.
 **Can I record a site I don't own?**
 Only with permission. Do not use it to scrape, bypass paywalls or evade
 anti-bot systems.
+
+**Do Chinese captions work?**
+Yes. demo-reel picks a CJK font automatically: Microsoft YaHei on Windows,
+PingFang on macOS, Noto Sans CJK on Linux. `doctor` checks it. If no CJK font is
+installed, run `doctor` to see what is missing.
 
 **Can I use the output commercially?**
 Yes. The code is MIT. Make sure the page you record and the fonts/assets in it

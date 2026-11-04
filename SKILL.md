@@ -112,6 +112,7 @@ Create a config with 3–5 steps. Keep the whole demo between 12 and 25 seconds.
 | `click` | `selector` or `text`/`role`/`name`, `pause`, `caption` | Move the cursor, click |
 | `type` | locator + `value`, `pause`, `caption` | Click, clear, type |
 | `hover` | locator, `pause`, `caption` | Move the cursor and hover |
+| `drag` | locator + `dx`/`dy`, `pause`, `caption` | Drag from the element's center |
 | `scroll` | `y`, `pause`, `caption` | Smooth scroll |
 | `press` | `key`, `pause`, `caption` | Press a key |
 | `waitFor` | `selector`/`text`/`url`, `timeout` | Wait for a state |
@@ -274,6 +275,7 @@ Do not try to bypass captchas or anti-bot systems.
 | Click happens too early | Add `waitFor` before the click |
 | Video looks blurry | Use a larger viewport (e.g. 1920x1080); the renderer downscales to 1600x900 |
 | Captions are missing | Run `doctor`; check the system font |
+| Chinese captions show boxes | Run `doctor`; install a CJK font (Microsoft YaHei, PingFang or Noto Sans CJK) |
 | ffmpeg error | Run `doctor`; reinstall dependencies |
 | Login state expired | Re-run with `--login` |
 | Element is inside an iframe | Use a selector inside the frame; if it fails, fall back to a recording |

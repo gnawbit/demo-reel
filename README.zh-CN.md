@@ -136,7 +136,7 @@ demo/
 }
 ```
 
-动作：`wait`、`goto`、`click`、`type`、`hover`、`scroll`、`press`、`waitFor`、`screenshot`。
+动作：`wait`、`goto`、`click`、`type`、`hover`、`drag`、`scroll`、`press`、`waitFor`、`screenshot`。
 
 定位元素优先级：
 
@@ -269,6 +269,10 @@ node bin/demo-reel.mjs render \
 
 **能录别人的网站吗？**
 只在获得授权时。不要用它抓取、绕过付费墙或规避反爬。
+
+**中文字幕能正常显示吗？**
+能。demo-reel 会自动选 CJK 字体：Windows 用微软雅黑，macOS 用苹方，
+Linux 用 Noto Sans CJK。`doctor` 会检查。
 
 **输出可以商用吗？**
 可以。代码是 MIT。确保你录的页面、字体和素材是你自己的或已授权。

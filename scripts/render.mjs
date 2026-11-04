@@ -3,7 +3,7 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import sharp from "sharp";
 import { ffmpeg, probe } from "./lib/ffmpeg.mjs";
-import { findFont } from "./lib/fonts.mjs";
+import { findCjkFont, findFont, hasCjk } from "./lib/fonts.mjs";
 
 const LAYOUTS = {
   landscape: {
@@ -252,7 +252,7 @@ function buildVideoFilter({
   return `${split}${segmentFilters.join(";")};${concat}`;
 }
 
-function buildCaptionFilters(events, durationSec, font, layout) {
+function buildCaptionFilters(events, durationSec, font, cjkFont, layout) {
   if (!font) return "";
 
   const withCaptions = events
@@ -262,7 +262,6 @@ function buildCaptionFilters(events, durationSec, font, layout) {
   if (withCaptions.length === 0) return "";
 
   const { y, size, box } = layout.caption;
-  const fontPath = fontPathForFilter(font);
   const filters = [];
 
   for (let i = 0; i < withCaptions.length; i += 1) {
@@ -272,6 +271,8 @@ function buildCaptionFilters(events, durationSec, font, layout) {
     if (end - start < 0.7) end = Math.min(start + 1.4, durationSec);
     if (end <= start) continue;
 
+    const captionFont = hasCjk(withCaptions[i].caption) ? cjkFont || font : font;
+    const fontPath = fontPathForFilter(captionFont);
     const text = escapeDrawtext(withCaptions[i].caption);
 
     filters.push(
@@ -317,6 +318,7 @@ async function renderLayout({
   videoOffset,
   zoom,
   font,
+  cjkFont,
   hostname,
   noGif,
 }) {
@@ -345,7 +347,13 @@ async function renderLayout({
     contentH: layout.content.h,
   });
 
-  const captionFilter = buildCaptionFilters(record.events || [], durationSec, font, layout);
+  const captionFilter = buildCaptionFilters(
+    record.events || [],
+    durationSec,
+    font,
+    cjkFont,
+    layout,
+  );
   const chromeFilter = buildVerticalChrome(font, hostname, layout);
   const overlayFilters = [captionFilter, chromeFilter].filter(Boolean).join(",");
 
@@ -521,8 +529,12 @@ export async function render(argv) {
 
   const zoom = Math.max(1, Number(values.zoom || 1.28));
   const font = values["no-captions"] ? null : findFont();
+  const cjkFont = values["no-captions"] ? null : findCjkFont();
   if (!values["no-captions"] && !font) {
     console.warn("No system font found; captions will be skipped.");
+  }
+  if (!values["no-captions"] && !cjkFont) {
+    console.warn("No CJK font found; Chinese captions may render as boxes.");
   }
 
   const layouts = [LAYOUTS.landscape];
@@ -541,6 +553,7 @@ export async function render(argv) {
       videoOffset,
       zoom,
       font,
+      cjkFont,
       hostname,
       noGif: values["no-gif"],
     });
