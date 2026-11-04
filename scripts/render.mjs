@@ -266,7 +266,9 @@ function buildCaptionFilters(events, durationSec, font, cjkFont, layout) {
 
   for (let i = 0; i < withCaptions.length; i += 1) {
     const start = (withCaptions[i].tEnd ?? withCaptions[i].t) / 1000;
-    const next = withCaptions[i + 1] ? withCaptions[i + 1].t / 1000 : null;
+    const next = withCaptions[i + 1]
+      ? (withCaptions[i + 1].tEnd ?? withCaptions[i + 1].t) / 1000
+      : null;
     let end = Math.min(next || start + 2.8, start + 2.8, durationSec);
     if (end - start < 0.7) end = Math.min(start + 1.4, durationSec);
     if (end <= start) continue;
@@ -285,21 +287,66 @@ function buildCaptionFilters(events, durationSec, font, cjkFont, layout) {
   return filters.join(",");
 }
 
-function buildVerticalChrome(font, hostname, layout) {
+function buildVerticalChrome(font, cjkFont, hostname, layout, vertical = {}, accent) {
   if (!font || !layout.title) return "";
 
-  const fontPath = fontPathForFilter(font);
-  const domain = escapeDrawtext(hostname || "your-app.com");
-  const filters = [
-    `drawtext=fontfile='${fontPath}':text='PRODUCT DEMO':fontsize=18:fontcolor=0xC9C2FF:` +
-      `box=1:boxcolor=0x6C5CE7@0.20:boxborderw=12:x=(w-text_w)/2:y=${layout.title.pillY}`,
-    `drawtext=fontfile='${fontPath}':text='${domain}':fontsize=${layout.title.size}:fontcolor=0xE9EDF5:` +
-      `x=(w-text_w)/2:y=${layout.title.domainY}`,
-  ];
+  const pickFont = (text) => (hasCjk(text) ? cjkFont || font : font);
+  const accentHex = String(accent || "#6C5CE7").replace("#", "0x");
+  const filters = [];
 
-  if (layout.watermark) {
+  const badge = vertical.badge || "PRODUCT DEMO";
+  const badgeFont = pickFont(badge);
+  filters.push(
+    `drawtext=fontfile='${fontPathForFilter(badgeFont)}':text='${escapeDrawtext(badge)}':` +
+      `fontsize=20:fontcolor=0xE9EDF5:box=1:boxcolor=${accentHex}@0.22:boxborderw=12:` +
+      `x=(w-text_w)/2:y=${layout.title.pillY}`,
+  );
+
+  const titleLines =
+    Array.isArray(vertical.titleLines) && vertical.titleLines.length
+      ? vertical.titleLines.slice(0, 2)
+      : [hostname || "your-app.com"];
+  const titleSize = Number(
+    vertical.titleSize || (Array.isArray(vertical.titleLines) ? 52 : 30),
+  );
+  const startY = Number(
+    vertical.titleY ?? layout.title.pillY + (Array.isArray(vertical.titleLines) ? 70 : 50),
+  );
+
+  titleLines.forEach((line, index) => {
+    const lineFont = pickFont(line);
     filters.push(
-      `drawtext=fontfile='${fontPath}':text='demo-reel':fontsize=${layout.watermark.size}:fontcolor=0x5D6678:` +
+      `drawtext=fontfile='${fontPathForFilter(lineFont)}':text='${escapeDrawtext(line)}':` +
+        `fontsize=${titleSize}:fontcolor=0xE9EDF5:x=(w-text_w)/2:` +
+        `y=${startY + index * (titleSize + 18)}`,
+    );
+  });
+
+  if (vertical.subtitle) {
+    const subtitleFont = pickFont(vertical.subtitle);
+    const subtitleY =
+      startY + titleLines.length * (titleSize + 18) + Number(vertical.subtitleGap ?? 8);
+    filters.push(
+      `drawtext=fontfile='${fontPathForFilter(subtitleFont)}':text='${escapeDrawtext(vertical.subtitle)}':` +
+        `fontsize=${Number(vertical.subtitleSize || 26)}:fontcolor=0x8A93A6:` +
+        `x=(w-text_w)/2:y=${subtitleY}`,
+    );
+  }
+
+  if (vertical.cta) {
+    const ctaFont = pickFont(vertical.cta);
+    filters.push(
+      `drawtext=fontfile='${fontPathForFilter(ctaFont)}':text='${escapeDrawtext(vertical.cta)}':` +
+        `fontsize=${Number(vertical.ctaSize || 28)}:fontcolor=0xFFFFFF:` +
+        `box=1:boxcolor=${accentHex}@0.92:boxborderw=18:` +
+        `x=(w-text_w)/2:y=${Number(vertical.ctaY ?? 1740)}`,
+    );
+  }
+
+  if (vertical.watermark !== false && layout.watermark) {
+    filters.push(
+      `drawtext=fontfile='${fontPathForFilter(font)}':text='demo-reel':` +
+        `fontsize=${layout.watermark.size}:fontcolor=0x5D6678:` +
         `x=(w-text_w)/2:y=${layout.watermark.y}`,
     );
   }
@@ -354,7 +401,14 @@ async function renderLayout({
     cjkFont,
     layout,
   );
-  const chromeFilter = buildVerticalChrome(font, hostname, layout);
+  const chromeFilter = buildVerticalChrome(
+    font,
+    cjkFont,
+    hostname,
+    layout,
+    record.config?.vertical || {},
+    record.config?.brand?.accent,
+  );
   const overlayFilters = [captionFilter, chromeFilter].filter(Boolean).join(",");
 
   const graph = [

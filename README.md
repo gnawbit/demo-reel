@@ -156,6 +156,23 @@ Tips:
 - Use `"zoom": false` when the interesting result is elsewhere on screen.
 - Captions state the benefit, not the UI label.
 
+### Vertical branding
+
+The 9:16 output can carry a custom hook and CTA:
+
+```json
+"vertical": {
+  "badge": "Your product",
+  "titleLines": ["Ship faster", "without the busywork"],
+  "subtitle": "Native · Local · Private",
+  "cta": "your-app.com",
+  "watermark": false
+}
+```
+
+`titleLines` is capped at two lines. `watermark: false` removes the small
+demo-reel mark. Chinese text automatically uses a CJK font.
+
 ## Commands
 
 | Command | What it does |

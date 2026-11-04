@@ -151,6 +151,23 @@ demo/
 - 如果结果在屏幕别处，用 `"zoom": false` 拉回全景。
 - 字幕讲收益，不讲“点击按钮”。
 
+### 竖屏品牌配置
+
+9:16 可以带自定义钩子和 CTA：
+
+```json
+"vertical": {
+  "badge": "你的产品",
+  "titleLines": ["一句话钩子", "第二行补充"],
+  "subtitle": "Windows 原生 · 本地处理",
+  "cta": "your-app.com",
+  "watermark": false
+}
+```
+
+`titleLines` 最多两行；`watermark: false` 会去掉底部的小 demo-reel 水印。
+中文会自动用 CJK 字体。
+
 ## 命令
 
 | 命令 | 作用 |

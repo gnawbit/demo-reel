@@ -189,9 +189,26 @@ Options:
 --zoom 1.28
 ```
 
-The vertical layout shows a `PRODUCT DEMO` pill and the domain at the top, the
-recording in a rounded card in the middle, and larger captions near the bottom.
-Keep vertical captions under ~40 characters so they do not clip.
+The vertical layout shows a badge and title at the top, the recording in a
+rounded card in the middle, and larger captions near the bottom. Keep vertical
+captions under ~40 characters so they do not clip.
+
+### Vertical branding
+
+Add a `vertical` block to the config:
+
+```json
+"vertical": {
+  "badge": "Your product",
+  "titleLines": ["Ship faster", "without the busywork"],
+  "subtitle": "Native · Local · Private",
+  "cta": "your-app.com",
+  "watermark": false
+}
+```
+
+`titleLines` is capped at two lines. `watermark: false` removes the small
+demo-reel mark. Chinese text automatically uses a CJK font.
 
 ### 5. Inspect and iterate
 

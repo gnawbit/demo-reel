@@ -12,6 +12,8 @@ First public version.
   and a generated background
 - 9:16 vertical export (`--vertical`) with a card frame, top label and larger
   bottom captions
+- Configurable vertical badge, title lines, subtitle and CTA
+- Captions stay on screen until the next caption for easier reading
 - Screen-recording input (`--video` + normalized `marks`) for sites that block
   automation and for desktop/mobile apps
 - `drag` steps for sliders, carousels and comparison handles
