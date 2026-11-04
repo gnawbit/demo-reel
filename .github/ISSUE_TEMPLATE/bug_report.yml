@@ -1,0 +1,46 @@
+name: Bug report
+description: Something didn't record or render correctly.
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please redact cookies, tokens and customer data
+        from any config or log you paste.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what did you get?
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: demo.json
+      description: Redact the URL if it is private.
+      render: json
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output and errors
+      description: Run with the failing command and paste the last ~40 lines.
+      render: shell
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: Windows 11 / macOS 15 / Ubuntu 24.04
+  - type: input
+    id: node
+    attributes:
+      label: Node version
+      placeholder: v20.11.0
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I ran `node bin/demo-reel.mjs doctor`
+        - label: This is a page I own or have permission to record

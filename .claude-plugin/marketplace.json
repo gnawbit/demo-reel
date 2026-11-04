@@ -1,0 +1,17 @@
+{
+  "name": "demo-reel",
+  "description": "demo-reel by yanjiangfan: turn any URL into a polished demo video and GIF.",
+  "owner": {
+    "name": "yanjiangfan",
+    "url": "https://github.com/yanjiangfan"
+  },
+  "plugins": [
+    {
+      "name": "demo-reel",
+      "source": "./",
+      "description": "A skill that records a product in a real browser, zooms into clicks, adds captions and a browser frame, and renders MP4 + GIF.",
+      "category": "developer-tools",
+      "tags": ["demo", "video", "gif", "playwright", "launch"]
+    }
+  ]
+}

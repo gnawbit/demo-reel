@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#6C5CE7"/>
+    </marker>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6C5CE7"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+    <linearGradient id="box" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#151C2A"/>
+      <stop offset="1" stop-color="#0F1520"/>
+    </linearGradient>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#FFFFFF" fill-opacity="0.035"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="420" rx="24" fill="#0B0F17"/>
+  <rect width="1200" height="420" rx="24" fill="url(#dots)"/>
+
+  <text x="40" y="54" fill="#E9EDF5" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">demo-reel pipeline</text>
+  <text x="40" y="78" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13">story in, launch video out — all on your machine</text>
+
+  <!-- demo.json -->
+  <rect x="40" y="150" width="190" height="112" rx="14" fill="url(#box)" stroke="#2A3242"/>
+  <rect x="40" y="150" width="4" height="112" rx="2" fill="url(#accent)"/>
+  <text x="62" y="184" fill="#E9EDF5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15" font-weight="600">demo.json</text>
+  <text x="62" y="208" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">3–5 steps</text>
+  <text x="62" y="228" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">captions + brand</text>
+
+  <!-- plan -->
+  <rect x="286" y="58" width="190" height="86" rx="14" fill="url(#box)" stroke="#2A3242" stroke-dasharray="5 5"/>
+  <text x="308" y="90" fill="#E9EDF5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15" font-weight="600">plan</text>
+  <text x="308" y="112" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">optional: list buttons</text>
+
+  <!-- record -->
+  <rect x="286" y="150" width="190" height="112" rx="14" fill="url(#box)" stroke="#2A3242"/>
+  <rect x="286" y="150" width="4" height="112" rx="2" fill="url(#accent)"/>
+  <text x="308" y="184" fill="#E9EDF5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15" font-weight="600">record</text>
+  <text x="308" y="208" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">Chromium + Playwright</text>
+  <text x="308" y="228" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">cursor + click events</text>
+
+  <!-- record.json -->
+  <rect x="532" y="150" width="190" height="112" rx="14" fill="url(#box)" stroke="#2A3242"/>
+  <rect x="532" y="150" width="4" height="112" rx="2" fill="url(#accent)"/>
+  <text x="554" y="184" fill="#E9EDF5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15" font-weight="600">record.json</text>
+  <text x="554" y="208" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">timeline + clicks</text>
+  <text x="554" y="228" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">recording.webm</text>
+
+  <!-- render -->
+  <rect x="778" y="150" width="190" height="112" rx="14" fill="url(#box)" stroke="#2A3242"/>
+  <rect x="778" y="150" width="4" height="112" rx="2" fill="url(#accent)"/>
+  <text x="800" y="184" fill="#E9EDF5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="15" font-weight="600">render</text>
+  <text x="800" y="208" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">sharp + ffmpeg</text>
+  <text x="800" y="228" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">zoom + captions + frame</text>
+
+  <!-- outputs -->
+  <rect x="1024" y="116" width="136" height="52" rx="12" fill="url(#box)" stroke="#2A3242"/>
+  <text x="1046" y="148" fill="#E9EDF5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="14" font-weight="600">demo.mp4</text>
+
+  <rect x="1024" y="180" width="136" height="52" rx="12" fill="url(#box)" stroke="#2A3242"/>
+  <text x="1046" y="212" fill="#E9EDF5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="14" font-weight="600">demo.gif</text>
+
+  <rect x="1024" y="244" width="136" height="52" rx="12" fill="url(#box)" stroke="#2A3242"/>
+  <text x="1046" y="276" fill="#E9EDF5" font-family="ui-monospace, SFMono-Regular, Consolas, monospace" font-size="14" font-weight="600">poster.png</text>
+
+  <!-- arrows -->
+  <path d="M230 206 H286" stroke="#6C5CE7" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M381 144 V150" stroke="#6C5CE7" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M476 206 H532" stroke="#6C5CE7" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M722 206 H778" stroke="#6C5CE7" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M968 190 H1000 V142 H1024" stroke="#6C5CE7" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <path d="M968 206 H1024" stroke="#6C5CE7" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M968 222 H1000 V270 H1024" stroke="#6C5CE7" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- footer -->
+  <text x="40" y="356" fill="#5D6678" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">local-first · no upload · MIT</text>
+  <text x="40" y="378" fill="#5D6678" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12">re-run the same story when the UI changes</text>
+</svg>

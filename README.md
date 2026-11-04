@@ -1,8 +1,16 @@
 # demo-reel
 
-![demo-reel demo](docs/hero.gif)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
+[![Version](https://img.shields.io/badge/version-0.1.0-6c5ce7)](package.json)
+[![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
+[![GitHub stars](https://img.shields.io/github/stars/yanjiangfan/demo-reel?style=social)](https://github.com/yanjiangfan/demo-reel/stargazers)
 
 **Give it a URL. Get a polished demo video and GIF.**
+
+<img src="docs/hero.gif" alt="demo-reel recording a SaaS dashboard, zooming into clicks and adding captions" width="100%">
+
+[Watch the 12s MP4](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
 
 demo-reel is an agent skill that records your product in a real browser, zooms
 into every click, adds a cursor, captions, a browser frame and a background,
@@ -10,12 +18,8 @@ then renders a launch-ready MP4 + GIF.
 
 No timeline editing. No screen-studio subscription. One command.
 
-```
-/demo-reel https://your-app.com
-```
-
-> Status: v0.1. URL input, 16:9 MP4 + GIF. Vertical export and screen-recording
-> input are next.
+> Works with Claude Code, Codex, Cursor and any agent that supports
+> [Agent Skills](https://agentskills.io).
 
 ---
 
@@ -31,6 +35,16 @@ Every launch needs a demo:
 Recording one by hand takes 1–3 hours and still looks like a screen recording.
 demo-reel turns it into a repeatable command. Change the UI, re-run it, get a
 fresh demo.
+
+**What you get**
+
+- 1080p MP4 + GIF + poster
+- automatic zoom into each click
+- a visible cursor and click ripple
+- benefit-driven captions
+- a browser frame and a generated background
+- a `record.json` timeline you can re-render without recording again
+- everything runs locally — no upload, no cloud
 
 ## Install
 
@@ -50,8 +64,8 @@ npx playwright install chromium
 node bin/demo-reel.mjs doctor
 ```
 
-Requirements: Node 20+, Chromium (installed by Playwright). ffmpeg and ffprobe
-come from npm packages; no system install needed.
+Requirements: Node 20+. ffmpeg and ffprobe come from npm packages; no system
+install needed.
 
 ## Quickstart
 
@@ -78,23 +92,12 @@ demo/
   record.json
 ```
 
-## What it does
-
-1. Opens the URL in a real Chromium browser (Playwright).
-2. Moves the cursor like a person, clicks the elements in your story.
-3. Records the session in the browser.
-4. Zooms into each click, adds a cursor trail, captions, a browser frame and a
-   background.
-5. Renders 1080p MP4 + GIF with ffmpeg.
-
-Because it drives a real browser, it works with React, Vue, Svelte, plain HTML,
-SPAs and authenticated pages.
-
 ## The story file
 
 ```json
 {
   "url": "https://your-app.com",
+  "displayUrl": "your-app.com",
   "viewport": { "width": 1440, "height": 810 },
   "brand": { "background": "#070a12", "accent": "#6c5ce7" },
   "steps": [
@@ -102,20 +105,24 @@ SPAs and authenticated pages.
     {
       "action": "click",
       "text": "New project",
-      "pause": 800,
+      "pause": 600,
+      "zoom": false,
       "caption": "Start in one click"
     },
+    { "action": "wait", "ms": 900 },
     {
       "action": "type",
       "selector": "input[name=project-name]",
       "value": "Q4 Launch",
-      "pause": 500,
+      "pause": 350,
       "caption": "Give it a name"
     },
+    { "action": "wait", "ms": 900 },
     {
       "action": "click",
       "text": "Create project",
-      "pause": 1400,
+      "pause": 900,
+      "zoom": false,
       "caption": "Your workspace is ready"
     }
   ]
@@ -130,6 +137,13 @@ Locators, in order of preference:
 1. `text` — visible label
 2. `role` + `name` — accessible role
 3. `selector` — CSS, only when needed
+
+Tips:
+
+- 3–5 steps, 12–25 seconds.
+- Add a short `wait` after an action so the result and caption can land.
+- Use `"zoom": false` when the interesting result is elsewhere on screen.
+- Captions state the benefit, not the UI label.
 
 ## Commands
 
@@ -165,25 +179,44 @@ A visible browser opens. Log in manually. The session is saved to `auth.json`
 locally and reused. demo-reel never asks for your password and never uploads
 cookies.
 
+## How it works
+
+<img src="docs/architecture.svg" alt="Story JSON goes into Playwright recording, then a timestamped event timeline and webm go into sharp + ffmpeg, producing MP4, GIF and poster" width="100%">
+
+1. `plan` opens the page and inventories buttons, links and inputs.
+2. `record` drives Chromium, moves the cursor, clicks, types and records.
+3. Click timestamps become zoom keyframes.
+4. `render` crops around each click, adds captions, a browser frame and a
+   background, then encodes MP4 + GIF with ffmpeg.
+
+Because it drives a real browser, it works with React, Vue, Svelte, plain HTML,
+SPAs and authenticated pages.
+
+## Examples
+
+| Example | Story | Output |
+|---|---|---|
+| Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [MP4](docs/hero.mp4) · [GIF](docs/hero.gif) |
+
 ## When a site cannot be recorded
 
 Some sites use captchas, aggressive anti-bot checks, or canvas-only UI. In that
 case, record the flow manually and use the recording as the source. (Direct
 video input is on the roadmap.)
 
-## How it works
+## Why not Screen Studio?
 
-```
-SKILL.md                 agent workflow
-scripts/plan.mjs         Playwright: screenshot + element inventory
-scripts/record.mjs       Playwright: cursor, clicks, video, event timeline
-scripts/render.mjs       sharp + ffmpeg: background, frame, zoom, captions
-examples/site/           a small demo app used by `demo-reel demo`
-```
+Different tools:
 
-The renderer crops around each click at 1.28×, concatenates the segments, then
-overlays the recording on a generated background and browser frame. Captions are
-burned in with ffmpeg `drawtext`.
+| | Screen Studio | demo-reel |
+|---|---|---|
+| Workflow | manual editing | a story file + one command |
+| Repeatable | no | yes |
+| Runs in CI | no | yes |
+| Price | paid | free, MIT |
+
+Use Screen Studio when you want frame-by-frame control. Use demo-reel when you
+want a repeatable launch asset and a timeline you can commit.
 
 ## FAQ
 
@@ -202,9 +235,9 @@ the page, write the story and run the commands for you.
 Only with permission. Do not use it to scrape, bypass paywalls or evade
 anti-bot systems.
 
-**Why not Screen Studio?**
-Screen Studio is a manual editor. demo-reel is a deterministic, free, MIT
-pipeline you can commit, rerun and automate.
+**Can I use the output commercially?**
+Yes. The code is MIT. Make sure the page you record and the fonts/assets in it
+are yours or licensed.
 
 ## Roadmap
 
@@ -212,9 +245,19 @@ pipeline you can commit, rerun and automate.
 - [ ] Screen-recording input (auto-zoom + captions on existing footage)
 - [ ] Voiceover (TTS)
 - [ ] Device frames (iPhone, Android, macOS)
-- [ ] Multiple brand presets
+- [ ] Brand presets
 - [ ] Cloud rendering
+
+## Contributing
+
+Issues and PRs are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md).
+Please do not commit `auth.json`, customer recordings or anything that contains
+personal data.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
+
+---
+
+If this saved you an afternoon, a star helps more people find it.

@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Syntax check
+        run: |
+          set -e
+          for f in bin/*.mjs scripts/*.mjs scripts/lib/*.mjs; do
+            node --check "$f"
+          done
+
+      - name: CLI help
+        run: node bin/demo-reel.mjs help

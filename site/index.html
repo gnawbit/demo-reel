@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>demo-reel — URL in, launch video out</title>
+    <meta
+      name="description"
+      content="An agent skill that turns any URL into a polished demo video and GIF."
+    />
+    <style>
+      :root {
+        --bg: #070a12;
+        --panel: #0d121b;
+        --line: #1d2534;
+        --text: #e9edf5;
+        --muted: #8a93a6;
+        --accent: #6c5ce7;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; }
+      body {
+        background:
+          radial-gradient(900px 500px at 50% -10%, rgba(108, 92, 231, 0.25), transparent 60%),
+          var(--bg);
+        color: var(--text);
+        font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
+      }
+      a { color: inherit; }
+      .wrap { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+      header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 28px 0;
+      }
+      .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+      .mark {
+        width: 32px; height: 32px; border-radius: 9px; display: grid;
+        place-items: center; background: linear-gradient(135deg, #6c5ce7, #a78bfa);
+        font-size: 14px;
+      }
+      nav { display: flex; gap: 18px; font-size: 13px; color: var(--muted); }
+      nav a { text-decoration: none; }
+      nav a:hover { color: var(--text); }
+      .hero { padding: 56px 0 24px; text-align: center; }
+      .eyebrow {
+        display: inline-block; padding: 5px 11px; border-radius: 999px;
+        border: 1px solid rgba(108, 92, 231, 0.35);
+        background: rgba(108, 92, 231, 0.1);
+        color: #c9c2ff; font-size: 12px; margin-bottom: 18px;
+      }
+      h1 {
+        margin: 0; font-size: clamp(38px, 6vw, 64px); line-height: 1.05;
+        letter-spacing: -2px;
+      }
+      h1 span {
+        background: linear-gradient(90deg, #a78bfa, #6c5ce7);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .sub {
+        max-width: 620px; margin: 20px auto 0; color: var(--muted);
+        font-size: 16px;
+      }
+      .install {
+        display: inline-flex; align-items: center; gap: 12px;
+        margin-top: 26px; padding: 12px 18px; border-radius: 12px;
+        background: #0d121b; border: 1px solid var(--line);
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 13.5px;
+      }
+      .install code { color: #c9c2ff; }
+      .install button {
+        border: 0; background: rgba(255,255,255,.06); color: var(--muted);
+        border-radius: 7px; padding: 5px 9px; cursor: pointer; font: inherit;
+      }
+      .install button:hover { color: var(--text); }
+      .shot {
+        margin: 44px auto 0; border-radius: 20px; overflow: hidden;
+        border: 1px solid var(--line);
+        box-shadow: 0 40px 100px rgba(0,0,0,.5);
+        background: #0b0f17;
+      }
+      .shot img { display: block; width: 100%; height: auto; }
+      .features {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+        margin: 56px 0 80px;
+      }
+      .card {
+        padding: 20px; border-radius: 16px; border: 1px solid var(--line);
+        background: linear-gradient(160deg, rgba(21,28,42,.9), rgba(11,15,24,.95));
+      }
+      .card b { display: block; margin-bottom: 6px; font-size: 14px; }
+      .card p { margin: 0; color: var(--muted); font-size: 13px; }
+      footer {
+        border-top: 1px solid var(--line); padding: 24px 0 40px;
+        color: var(--muted); font-size: 12.5px;
+        display: flex; justify-content: space-between; gap: 20px;
+      }
+      @media (max-width: 760px) {
+        .features { grid-template-columns: 1fr; }
+        nav { display: none; }
+        footer { flex-direction: column; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="brand"><div class="mark">N</div> demo-reel</div>
+        <nav>
+          <a href="https://github.com/yanjiangfan/demo-reel">GitHub</a>
+          <a href="https://github.com/yanjiangfan/demo-reel#install">Install</a>
+          <a href="https://github.com/yanjiangfan/demo-reel/blob/main/SKILL.md">Skill</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow">Agent skill for Claude Code · Codex · Cursor</div>
+        <h1>URL in.<br /><span>Launch video out.</span></h1>
+        <p class="sub">
+          demo-reel opens your product in a real browser, zooms into every click,
+          adds a cursor, captions and a browser frame, then renders a launch-ready
+          MP4 + GIF.
+        </p>
+        <div class="install">
+          <code>npx skills add yanjiangfan/demo-reel</code>
+          <button onclick="navigator.clipboard.writeText('npx skills add yanjiangfan/demo-reel'); this.textContent='Copied'">Copy</button>
+        </div>
+        <div class="shot">
+          <img
+            src="https://raw.githubusercontent.com/yanjiangfan/demo-reel/main/docs/hero.gif"
+            alt="demo-reel turning a SaaS dashboard into a captioned demo video"
+          />
+        </div>
+      </section>
+
+      <section class="features">
+        <div class="card">
+          <b>Automatic zoom</b>
+          <p>Every click becomes a smooth punch-in. No timeline editing.</p>
+        </div>
+        <div class="card">
+          <b>Repeatable</b>
+          <p>A story file you can commit. Re-run it when the UI changes.</p>
+        </div>
+        <div class="card">
+          <b>Local-first</b>
+          <p>Playwright and ffmpeg on your machine. No upload, no cloud render.</p>
+        </div>
+      </section>
+
+      <footer>
+        <span>MIT · built by yanjiangfan</span>
+        <span>If this saved you an afternoon, a star helps.</span>
+      </footer>
+    </div>
+  </body>
+</html>
