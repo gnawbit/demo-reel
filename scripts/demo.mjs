@@ -26,7 +26,7 @@ export async function demo(argv) {
       "--out",
       values.out,
     ]);
-    await render(["--config", path.join(values.out, "record.json")]);
+    await render(["--config", path.join(values.out, "record.json"), "--vertical"]);
   } finally {
     await server.close();
   }

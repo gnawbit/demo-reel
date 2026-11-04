@@ -172,16 +172,24 @@ node bin/demo-reel.mjs render --config demo/record.json
 Outputs:
 
 - `demo/demo-16x9.mp4`
+- `demo/demo-9x16.mp4` (with `--vertical`)
 - `demo/demo.gif`
+- `demo/demo-9x16.gif` (with `--vertical`)
 - `demo/poster.png`
+- `demo/poster-9x16.png` (with `--vertical`)
 
 Options:
 
 ```bash
+--vertical            # also render 9:16 + vertical GIF
 --no-gif
 --no-captions
 --zoom 1.28
 ```
+
+The vertical layout shows a `PRODUCT DEMO` pill and the domain at the top, the
+recording in a rounded card in the middle, and larger captions near the bottom.
+Keep vertical captions under ~40 characters so they do not clip.
 
 ### 5. Inspect and iterate
 

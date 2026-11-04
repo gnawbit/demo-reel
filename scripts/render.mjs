@@ -5,18 +5,45 @@ import sharp from "sharp";
 import { ffmpeg, probe } from "./lib/ffmpeg.mjs";
 import { findFont } from "./lib/fonts.mjs";
 
-const OUT_W = 1920;
-const OUT_H = 1080;
-const CONTENT_X = 160;
-const CONTENT_Y = 122;
-const CONTENT_W = 1600;
-const CONTENT_H = 900;
+const LAYOUTS = {
+  landscape: {
+    key: "landscape",
+    width: 1920,
+    height: 1080,
+    content: { x: 160, y: 122, w: 1600, h: 900 },
+    frame: { type: "browser", x: 144, y: 70, w: 1632, h: 952 },
+    caption: { y: 930, size: 36, box: 16 },
+    title: null,
+    watermark: null,
+    video: "demo-16x9.mp4",
+    gif: "demo.gif",
+    poster: "poster.png",
+    gifWidth: 960,
+    gifFps: 15,
+  },
+  vertical: {
+    key: "vertical",
+    width: 1080,
+    height: 1920,
+    content: { x: 40, y: 620, w: 1000, h: 562 },
+    frame: { type: "card", x: 24, y: 604, w: 1032, h: 594 },
+    caption: { y: 1460, size: 42, box: 20 },
+    title: { pillY: 180, domainY: 230, size: 30 },
+    watermark: { y: 1800, size: 18 },
+    video: "demo-9x16.mp4",
+    gif: "demo-9x16.gif",
+    poster: "poster-9x16.png",
+    gifWidth: 540,
+    gifFps: 12,
+  },
+};
 
 const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
 
 function hexToRgb(hex) {
   const clean = String(hex || "#070A12").replace("#", "");
-  const full = clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
+  const full =
+    clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
   const n = parseInt(full, 16);
   return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
 }
@@ -25,7 +52,9 @@ function mix(hex, target, amount) {
   const a = hexToRgb(hex);
   const b = hexToRgb(target);
   const c = (k) => Math.round(a[k] + (b[k] - a[k]) * amount);
-  return `#${[c("r"), c("g"), c("b")].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+  return `#${[c("r"), c("g"), c("b")]
+    .map((v) => v.toString(16).padStart(2, "0"))
+    .join("")}`;
 }
 
 function escapeXml(s) {
@@ -50,14 +79,19 @@ function escapeDrawtext(s) {
     .replace(/\n/g, "\\n");
 }
 
-async function makeBackground(file, brand = {}) {
+function fontPathForFilter(font) {
+  return font.replace(/\\/g, "/").replace(/:/g, "\\:");
+}
+
+async function makeBackground(file, brand = {}, layout) {
   const base = brand.background || "#070A12";
   const accent = brand.accent || "#6C5CE7";
   const dark = mix(base, "#000000", 0.35);
   const lighter = mix(base, "#FFFFFF", 0.08);
+  const grid = layout.key === "vertical" ? 40 : 44;
 
   const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="${OUT_W}" height="${OUT_H}">
+<svg xmlns="http://www.w3.org/2000/svg" width="${layout.width}" height="${layout.height}">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="${lighter}"/>
@@ -65,41 +99,72 @@ async function makeBackground(file, brand = {}) {
       <stop offset="1" stop-color="${dark}"/>
     </linearGradient>
     <radialGradient id="glow" cx="50%" cy="0%" r="75%">
-      <stop offset="0" stop-color="${accent}" stop-opacity="0.28"/>
-      <stop offset="0.55" stop-color="${accent}" stop-opacity="0.06"/>
+      <stop offset="0" stop-color="${accent}" stop-opacity="0.3"/>
+      <stop offset="0.55" stop-color="${accent}" stop-opacity="0.07"/>
       <stop offset="1" stop-color="${accent}" stop-opacity="0"/>
     </radialGradient>
-    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
-      <path d="M44 0H0V44" fill="none" stroke="#ffffff" stroke-opacity="0.035" stroke-width="1"/>
+    <radialGradient id="glow2" cx="50%" cy="100%" r="60%">
+      <stop offset="0" stop-color="${accent}" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="${accent}" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="${grid}" height="${grid}" patternUnits="userSpaceOnUse">
+      <path d="M${grid} 0H0V${grid}" fill="none" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
     </pattern>
   </defs>
   <rect width="100%" height="100%" fill="url(#bg)"/>
   <rect width="100%" height="100%" fill="url(#glow)"/>
+  <rect width="100%" height="100%" fill="url(#glow2)"/>
   <rect width="100%" height="100%" fill="url(#grid)"/>
 </svg>`;
 
   await sharp(Buffer.from(svg)).png().toFile(file);
 }
 
-async function makeFrame(file, hostname) {
+async function makeBrowserFrame(file, hostname, layout) {
   const url = escapeXml(hostname || "your-app.com");
+  const { x, y, w, h } = layout.frame;
+  const bar = layout.content.y - y;
+
   const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="${OUT_W}" height="${OUT_H}">
+<svg xmlns="http://www.w3.org/2000/svg" width="${layout.width}" height="${layout.height}">
   <defs>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="22" stdDeviation="28" flood-color="#000000" flood-opacity="0.45"/>
     </filter>
   </defs>
-  <rect x="144" y="70" width="1632" height="952" rx="18" fill="#0D1117" filter="url(#shadow)" opacity="0.25"/>
-  <path d="M144 88a18 18 0 0 1 18-18h1596a18 18 0 0 1 18 18v34H144z" fill="#0D1117"/>
-  <rect x="144" y="70" width="1632" height="952" rx="18" fill="none" stroke="#2A3140" stroke-width="1.5"/>
-  <path d="M144 122H1776" stroke="#202634" stroke-width="1"/>
-  <circle cx="176" cy="96" r="5.5" fill="#FF5F57"/>
-  <circle cx="198" cy="96" r="5.5" fill="#FEBC2E"/>
-  <circle cx="220" cy="96" r="5.5" fill="#28C840"/>
-  <rect x="248" y="83" width="560" height="26" rx="13" fill="#161B23" stroke="#262D3A"/>
-  <text x="266" y="100" font-family="Arial, Segoe UI, sans-serif" font-size="12.5" fill="#8A93A6">${url}</text>
-  <rect x="145" y="71" width="1630" height="950" rx="17" fill="none" stroke="#ffffff" stroke-opacity="0.04"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="#0D1117" filter="url(#shadow)" opacity="0.25"/>
+  <path d="M${x} ${y + 18}a18 18 0 0 1 18-18h${w - 36}a18 18 0 0 1 18 18v${bar - 18}H${x}z" fill="#0D1117"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="none" stroke="#2A3140" stroke-width="1.5"/>
+  <path d="M${x} ${y + bar}H${x + w}" stroke="#202634" stroke-width="1"/>
+  <circle cx="${x + 32}" cy="${y + bar / 2}" r="5.5" fill="#FF5F57"/>
+  <circle cx="${x + 54}" cy="${y + bar / 2}" r="5.5" fill="#FEBC2E"/>
+  <circle cx="${x + 76}" cy="${y + bar / 2}" r="5.5" fill="#28C840"/>
+  <rect x="${x + 104}" y="${y + 13}" width="560" height="26" rx="13" fill="#161B23" stroke="#262D3A"/>
+  <text x="${x + 122}" y="${y + 30}" font-family="Arial, Segoe UI, sans-serif" font-size="12.5" fill="#8A93A6">${url}</text>
+  <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="17" fill="none" stroke="#ffffff" stroke-opacity="0.04"/>
+</svg>`;
+
+  await sharp(Buffer.from(svg)).png().toFile(file);
+}
+
+async function makeCardFrame(file, layout) {
+  const { x, y, w, h } = layout.frame;
+
+  const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${layout.width}" height="${layout.height}">
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="26" stdDeviation="34" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="22" fill="#0D1117" filter="url(#shadow)" opacity="0.3"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="22" fill="none" stroke="#2A3140" stroke-width="1.5"/>
+  <rect x="${x + 1.5}" y="${y + 1.5}" width="${w - 3}" height="${h - 3}" rx="20.5" fill="none" stroke="url(#edge)" stroke-width="1"/>
+  <path d="M${x + 24} ${y + 1.5}H${x + w - 24}" stroke="#ffffff" stroke-opacity="0.10" stroke-width="1"/>
 </svg>`;
 
   await sharp(Buffer.from(svg)).png().toFile(file);
@@ -142,9 +207,19 @@ function buildSegments(events, durationSec) {
   return segments.length ? segments : [{ start: 0, end: durationSec, focus: null }];
 }
 
-function buildVideoFilter({ segments, videoW, videoH, scale, zoom, videoOffset = 0 }) {
+function buildVideoFilter({
+  segments,
+  videoW,
+  videoH,
+  scale,
+  zoom,
+  videoOffset = 0,
+  contentW,
+  contentH,
+}) {
   const N = segments.length;
-  const split = N > 1 ? `[1:v]split=${N}${segments.map((_, i) => `[v${i}]`).join("")};` : "";
+  const split =
+    N > 1 ? `[1:v]split=${N}${segments.map((_, i) => `[v${i}]`).join("")};` : "";
   const segmentFilters = [];
 
   segments.forEach((seg, i) => {
@@ -161,9 +236,9 @@ function buildVideoFilter({ segments, videoW, videoH, scale, zoom, videoOffset =
       const fy = seg.focus.y * scale;
       const cx = Math.round(clamp(fx - cw / 2, 0, videoW - cw) / 2) * 2;
       const cy = Math.round(clamp(fy - ch / 2, 0, videoH - ch) / 2) * 2;
-      crop = `,crop=${cw}:${ch}:${cx}:${cy},scale=${CONTENT_W}:${CONTENT_H}:flags=lanczos,setsar=1`;
+      crop = `,crop=${cw}:${ch}:${cx}:${cy},scale=${contentW}:${contentH}:flags=lanczos,setsar=1`;
     } else {
-      crop = `,scale=${CONTENT_W}:${CONTENT_H}:force_original_aspect_ratio=increase,crop=${CONTENT_W}:${CONTENT_H},setsar=1`;
+      crop = `,scale=${contentW}:${contentH}:force_original_aspect_ratio=increase,crop=${contentW}:${contentH},setsar=1`;
     }
 
     segmentFilters.push(`${input}${trim}${crop}[s${i}]`);
@@ -177,7 +252,7 @@ function buildVideoFilter({ segments, videoW, videoH, scale, zoom, videoOffset =
   return `${split}${segmentFilters.join(";")};${concat}`;
 }
 
-function buildCaptionFilters(events, durationSec, font) {
+function buildCaptionFilters(events, durationSec, font, layout) {
   if (!font) return "";
 
   const withCaptions = events
@@ -186,6 +261,8 @@ function buildCaptionFilters(events, durationSec, font) {
 
   if (withCaptions.length === 0) return "";
 
+  const { y, size, box } = layout.caption;
+  const fontPath = fontPathForFilter(font);
   const filters = [];
 
   for (let i = 0; i < withCaptions.length; i += 1) {
@@ -195,17 +272,135 @@ function buildCaptionFilters(events, durationSec, font) {
     if (end - start < 0.7) end = Math.min(start + 1.4, durationSec);
     if (end <= start) continue;
 
-    const fontPath = font.replace(/\\/g, "/").replace(/:/g, "\\:");
     const text = escapeDrawtext(withCaptions[i].caption);
 
     filters.push(
-      `drawtext=fontfile='${fontPath}':text='${text}':fontcolor=white:fontsize=36:` +
-        `box=1:boxcolor=0x0B0F19@0.74:boxborderw=16:` +
-        `x=(w-text_w)/2:y=930:enable='between(t,${start.toFixed(3)},${end.toFixed(3)})'`,
+      `drawtext=fontfile='${fontPath}':text='${text}':fontcolor=white:fontsize=${size}:` +
+        `box=1:boxcolor=0x0B0F19@0.74:boxborderw=${box}:` +
+        `x=(w-text_w)/2:y=${y}:enable='between(t,${start.toFixed(3)},${end.toFixed(3)})'`,
     );
   }
 
   return filters.join(",");
+}
+
+function buildVerticalChrome(font, hostname, layout) {
+  if (!font || !layout.title) return "";
+
+  const fontPath = fontPathForFilter(font);
+  const domain = escapeDrawtext(hostname || "your-app.com");
+  const filters = [
+    `drawtext=fontfile='${fontPath}':text='PRODUCT DEMO':fontsize=18:fontcolor=0xC9C2FF:` +
+      `box=1:boxcolor=0x6C5CE7@0.20:boxborderw=12:x=(w-text_w)/2:y=${layout.title.pillY}`,
+    `drawtext=fontfile='${fontPath}':text='${domain}':fontsize=${layout.title.size}:fontcolor=0xE9EDF5:` +
+      `x=(w-text_w)/2:y=${layout.title.domainY}`,
+  ];
+
+  if (layout.watermark) {
+    filters.push(
+      `drawtext=fontfile='${fontPath}':text='demo-reel':fontsize=${layout.watermark.size}:fontcolor=0x5D6678:` +
+        `x=(w-text_w)/2:y=${layout.watermark.y}`,
+    );
+  }
+
+  return filters.join(",");
+}
+
+async function renderLayout({
+  layout,
+  record,
+  videoPath,
+  outDir,
+  videoW,
+  videoH,
+  durationSec,
+  videoOffset,
+  zoom,
+  font,
+  hostname,
+  noGif,
+}) {
+  const assetsDir = path.join(outDir, "assets");
+  await mkdir(assetsDir, { recursive: true });
+
+  const bgPath = path.join(assetsDir, `background-${layout.key}.png`);
+  const framePath = path.join(assetsDir, `frame-${layout.key}.png`);
+
+  await makeBackground(bgPath, record.config?.brand || {}, layout);
+  if (layout.frame.type === "browser") {
+    await makeBrowserFrame(framePath, hostname, layout);
+  } else {
+    await makeCardFrame(framePath, layout);
+  }
+
+  const segments = buildSegments(record.events || [], durationSec);
+  const videoFilter = buildVideoFilter({
+    segments,
+    videoW,
+    videoH,
+    scale: Number(record.scale || 1),
+    zoom,
+    videoOffset,
+    contentW: layout.content.w,
+    contentH: layout.content.h,
+  });
+
+  const captionFilter = buildCaptionFilters(record.events || [], durationSec, font, layout);
+  const chromeFilter = buildVerticalChrome(font, hostname, layout);
+  const overlayFilters = [captionFilter, chromeFilter].filter(Boolean).join(",");
+
+  const graph = [
+    `[0:v]scale=${layout.width}:${layout.height}[bg]`,
+    videoFilter,
+    `[bg][base]overlay=${layout.content.x}:${layout.content.y}:format=auto[comp]`,
+    `[comp][2:v]overlay=0:0[out]`,
+    overlayFilters ? `[out]${overlayFilters}[v]` : `[out]null[v]`,
+  ];
+
+  const outputPath = path.join(outDir, layout.video);
+  await ffmpeg([
+    "-loop", "1", "-i", bgPath,
+    "-i", videoPath,
+    "-loop", "1", "-i", framePath,
+    "-filter_complex", graph.join(";"),
+    "-map", "[v]",
+    "-an",
+    "-r", "30",
+    "-c:v", "libx264",
+    "-preset", "medium",
+    "-crf", "18",
+    "-pix_fmt", "yuv420p",
+    "-movflags", "+faststart",
+    "-t", durationSec.toFixed(3),
+    outputPath,
+  ]);
+
+  console.log(`Video: ${outputPath}`);
+
+  if (!noGif) {
+    const gifPath = path.join(outDir, layout.gif);
+    await ffmpeg([
+      "-i", outputPath,
+      "-vf",
+      `fps=${layout.gifFps},scale=${layout.gifWidth}:-1:flags=lanczos,split[s0][s1];` +
+        "[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=3",
+      "-loop", "0",
+      gifPath,
+    ]);
+    console.log(`GIF:   ${gifPath}`);
+  }
+
+  const posterPath = path.join(outDir, layout.poster);
+  await ffmpeg([
+    "-ss", "1.2",
+    "-i", outputPath,
+    "-frames:v", "1",
+    "-q:v", "2",
+    posterPath,
+  ]);
+  console.log(`Poster: ${posterPath}`);
+
+  return { outputPath, segments };
 }
 
 export async function render(argv) {
@@ -216,6 +411,7 @@ export async function render(argv) {
       out: { type: "string" },
       "no-gif": { type: "boolean", default: false },
       "no-captions": { type: "boolean", default: false },
+      vertical: { type: "boolean", default: false },
       zoom: { type: "string", default: "1.28" },
     },
   });
@@ -240,12 +436,6 @@ export async function render(argv) {
     ? record.video
     : path.resolve(recordDir, record.video);
 
-  const assetsDir = path.join(outDir, "assets");
-  await mkdir(assetsDir, { recursive: true });
-
-  const brand = record.config?.brand || {};
-  const bgPath = path.join(assetsDir, "background.png");
-  const framePath = path.join(assetsDir, "frame.png");
   const hostname =
     record.config?.displayUrl ||
     (() => {
@@ -255,9 +445,6 @@ export async function render(argv) {
         return "your-app.com";
       }
     })();
-
-  await makeBackground(bgPath, brand);
-  await makeFrame(framePath, hostname);
 
   const info = await probe(videoPath);
   const videoStream = (info.streams || []).find((s) => s.codec_type === "video");
@@ -277,75 +464,36 @@ export async function render(argv) {
   );
 
   const zoom = Math.max(1, Number(values.zoom || 1.28));
-  const segments = buildSegments(record.events || [], durationSec);
-  const videoFilter = buildVideoFilter({
-    segments,
-    videoW,
-    videoH,
-    scale: Number(record.scale || 1),
-    zoom,
-    videoOffset,
-  });
-
   const font = values["no-captions"] ? null : findFont();
   if (!values["no-captions"] && !font) {
     console.warn("No system font found; captions will be skipped.");
   }
-  const captionFilter = buildCaptionFilters(record.events || [], durationSec, font);
 
-  const outputPath = path.join(outDir, "demo-16x9.mp4");
+  const layouts = [LAYOUTS.landscape];
+  if (values.vertical) layouts.push(LAYOUTS.vertical);
 
-  const graph = [
-    `[0:v]scale=${OUT_W}:${OUT_H}[bg]`,
-    videoFilter,
-    `[bg][base]overlay=${CONTENT_X}:${CONTENT_Y}:format=auto[comp]`,
-    `[comp][2:v]overlay=0:0[out]`,
-  ];
-
-  if (captionFilter) graph.push(`[out]${captionFilter}[v]`);
-  else graph.push(`[out]null[v]`);
-
-  await ffmpeg([
-    "-loop", "1", "-i", bgPath,
-    "-i", videoPath,
-    "-loop", "1", "-i", framePath,
-    "-filter_complex", graph.join(";"),
-    "-map", "[v]",
-    "-an",
-    "-r", "30",
-    "-c:v", "libx264",
-    "-preset", "medium",
-    "-crf", "18",
-    "-pix_fmt", "yuv420p",
-    "-movflags", "+faststart",
-    "-t", durationSec.toFixed(3),
-    outputPath,
-  ]);
-
-  console.log(`Video: ${outputPath}`);
-
-  if (!values["no-gif"]) {
-    const gifPath = path.join(outDir, "demo.gif");
-    await ffmpeg([
-      "-i", outputPath,
-      "-vf",
-      "fps=15,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=3",
-      "-loop", "0",
-      gifPath,
-    ]);
-    console.log(`GIF:   ${gifPath}`);
+  let last = null;
+  for (const layout of layouts) {
+    last = await renderLayout({
+      layout,
+      record,
+      videoPath,
+      outDir,
+      videoW,
+      videoH,
+      durationSec,
+      videoOffset,
+      zoom,
+      font,
+      hostname,
+      noGif: values["no-gif"],
+    });
   }
 
-  const posterPath = path.join(outDir, "poster.png");
-  await ffmpeg([
-    "-ss", "1.2",
-    "-i", outputPath,
-    "-frames:v", "1",
-    "-q:v", "2",
-    posterPath,
-  ]);
-  console.log(`Poster: ${posterPath}`);
-
-  console.log(`\nDone. ${segments.length} segment(s), ${durationSec.toFixed(1)}s.\n`);
-  return outputPath;
+  console.log(
+    `\nDone. ${last?.segments.length || 0} segment(s), ${durationSec.toFixed(1)}s` +
+      (values.vertical ? ", 16:9 + 9:16" : "") +
+      ".\n",
+  );
+  return last?.outputPath;
 }

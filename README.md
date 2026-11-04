@@ -38,13 +38,21 @@ fresh demo.
 
 **What you get**
 
-- 1080p MP4 + GIF + poster
+- 1080p MP4 + GIF + poster, in **16:9 and 9:16**
 - automatic zoom into each click
 - a visible cursor and click ripple
 - benefit-driven captions
 - a browser frame and a generated background
 - a `record.json` timeline you can re-render without recording again
 - everything runs locally — no upload, no cloud
+
+### Formats
+
+| 16:9 — README / landing page | 9:16 — Shorts / Reels / 小红书 |
+|---|---|
+| <img src="docs/poster.png" alt="16:9 demo poster" width="100%"> | <img src="docs/poster-9x16.png" alt="9:16 vertical demo poster" width="100%"> |
+
+[16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [9:16 GIF](docs/hero-9x16.gif)
 
 ## Install
 
@@ -79,7 +87,7 @@ node bin/demo-reel.mjs demo
 # 3. Use it on your own app
 node bin/demo-reel.mjs plan --url https://your-app.com
 node bin/demo-reel.mjs record --config demo.json
-node bin/demo-reel.mjs render --config demo/record.json
+node bin/demo-reel.mjs render --config demo/record.json --vertical
 ```
 
 Output:
@@ -87,8 +95,11 @@ Output:
 ```
 demo/
   demo-16x9.mp4
+  demo-9x16.mp4
   demo.gif
+  demo-9x16.gif
   poster.png
+  poster-9x16.png
   record.json
 ```
 
@@ -164,6 +175,7 @@ Useful flags:
 --proxy http://127.0.0.1:10808
 --viewport 1440x810
 --headed                # watch the recording happen
+--vertical              # also render 9:16 + vertical GIF
 --no-gif
 --no-captions
 --zoom 1.28
@@ -186,8 +198,8 @@ cookies.
 1. `plan` opens the page and inventories buttons, links and inputs.
 2. `record` drives Chromium, moves the cursor, clicks, types and records.
 3. Click timestamps become zoom keyframes.
-4. `render` crops around each click, adds captions, a browser frame and a
-   background, then encodes MP4 + GIF with ffmpeg.
+4. `render` crops around each click, then composes the same timeline into a
+   16:9 browser canvas and a 9:16 vertical card, and encodes MP4 + GIF.
 
 Because it drives a real browser, it works with React, Vue, Svelte, plain HTML,
 SPAs and authenticated pages.
@@ -196,7 +208,7 @@ SPAs and authenticated pages.
 
 | Example | Story | Output |
 |---|---|---|
-| Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [MP4](docs/hero.mp4) · [GIF](docs/hero.gif) |
+| Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
 
 ## When a site cannot be recorded
 
@@ -241,7 +253,7 @@ are yours or licensed.
 
 ## Roadmap
 
-- [ ] 9:16 vertical export
+- [x] 9:16 vertical export
 - [ ] Screen-recording input (auto-zoom + captions on existing footage)
 - [ ] Voiceover (TTS)
 - [ ] Device frames (iPhone, Android, macOS)

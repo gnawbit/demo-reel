@@ -35,13 +35,21 @@ UI 改了，重跑一遍，就是新的 demo。
 
 **你会得到**
 
-- 1080p MP4 + GIF + 封面
+- 1080p MP4 + GIF + 封面，**16:9 和 9:16**
 - 每次点击自动放大
 - 光标和点击波纹
 - 讲收益、不讲按钮名字的字幕
 - 浏览器边框和生成的背景
 - 可重渲染的 `record.json` 时间线
 - 全部在本机完成，不上传、不联网渲染
+
+### 输出格式
+
+| 16:9 — README / 官网 | 9:16 — 抖音 / 视频号 / 小红书 |
+|---|---|
+| <img src="docs/poster.png" alt="16:9 演示封面" width="100%"> | <img src="docs/poster-9x16.png" alt="9:16 竖屏演示封面" width="100%"> |
+
+[16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [9:16 GIF](docs/hero-9x16.gif)
 
 ## 安装
 
@@ -75,7 +83,7 @@ node bin/demo-reel.mjs demo
 # 3. 录你自己的产品
 node bin/demo-reel.mjs plan --url https://your-app.com
 node bin/demo-reel.mjs record --config demo.json
-node bin/demo-reel.mjs render --config demo/record.json
+node bin/demo-reel.mjs render --config demo/record.json --vertical
 ```
 
 输出：
@@ -83,8 +91,11 @@ node bin/demo-reel.mjs render --config demo/record.json
 ```
 demo/
   demo-16x9.mp4
+  demo-9x16.mp4
   demo.gif
+  demo-9x16.gif
   poster.png
+  poster-9x16.png
   record.json
 ```
 
@@ -159,6 +170,7 @@ demo/
 --proxy http://127.0.0.1:10808
 --viewport 1440x810
 --headed                # 看着它录
+--vertical              # 同时输出 9:16 和竖屏 GIF
 --no-gif
 --no-captions
 --zoom 1.28
@@ -180,7 +192,7 @@ demo-reel 不会向你要密码，也不会上传 cookie。
 1. `plan` 打开页面，列出按钮、链接和输入框。
 2. `record` 驱动 Chromium，移动光标、点击、输入、录屏。
 3. 点击时间戳变成缩放关键帧。
-4. `render` 裁出点击区域、加字幕、浏览器边框和背景，再用 ffmpeg 编码。
+4. `render` 裁出点击区域，把同一条时间线分别合成到 16:9 浏览器画布和 9:16 竖屏卡片，再用 ffmpeg 编码。
 
 因为驱动的是真实浏览器，React、Vue、Svelte、纯 HTML、SPA 和登录后的页面都能录。
 
@@ -188,7 +200,7 @@ demo-reel 不会向你要密码，也不会上传 cookie。
 
 | 示例 | 故事 | 输出 |
 |---|---|---|
-| Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [MP4](docs/hero.mp4) · [GIF](docs/hero.gif) |
+| Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
 
 ## 录不了的站点
 
@@ -225,7 +237,7 @@ demo-reel 不会向你要密码，也不会上传 cookie。
 
 ## 路线图
 
-- [ ] 9:16 竖屏导出
+- [x] 9:16 竖屏导出
 - [ ] 已有录屏输入（自动缩放 + 字幕）
 - [ ] 配音（TTS）
 - [ ] 设备边框（iPhone、Android、macOS）
