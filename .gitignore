@@ -1,0 +1,8 @@
+node_modules/
+demo/
+demo-*/
+auth.json
+plan.json
+plan.png
+*.log
+.DS_Store

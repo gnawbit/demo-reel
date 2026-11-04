@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Northstar — Demo workspace</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">N</div>
+          <div>
+            <div class="brand-name">Northstar</div>
+            <div class="brand-sub">Workspace</div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-item active" href="#"><span class="nav-icon">◈</span> Overview</a>
+          <a class="nav-item" href="#"><span class="nav-icon">▤</span> Projects</a>
+          <a class="nav-item" href="#"><span class="nav-icon">◔</span> Analytics</a>
+          <a class="nav-item" href="#"><span class="nav-icon">◉</span> Team</a>
+          <a class="nav-item" href="#"><span class="nav-icon">⚙</span> Settings</a>
+        </nav>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Pro plan</div>
+          <div class="sidebar-card-text">Unlimited projects and guests.</div>
+          <button class="ghost-button">Manage plan</button>
+        </div>
+
+        <div class="user">
+          <div class="avatar">AL</div>
+          <div>
+            <div class="user-name">Alex Lee</div>
+            <div class="user-mail">alex@northstar.app</div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="search">
+            <span class="search-icon">⌕</span>
+            <input aria-label="Search" placeholder="Search projects, tasks, people…" />
+            <span class="kbd">⌘K</span>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-button" aria-label="Notifications">◔</button>
+            <button id="new-project" class="primary-button">
+              <span class="plus">+</span> New project
+            </button>
+          </div>
+        </header>
+
+        <section class="hero">
+          <div>
+            <h1>Good morning, Alex</h1>
+            <p>Here’s what’s moving across your workspace today.</p>
+          </div>
+          <div class="hero-meta">
+            <span class="pulse"></span>
+            All systems operational
+          </div>
+        </section>
+
+        <section class="stats">
+          <article class="stat-card">
+            <div class="stat-label">Active projects</div>
+            <div class="stat-value">12</div>
+            <div class="stat-delta up">+3 this week</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label">Tasks completed</div>
+            <div class="stat-value">87<span>%</span></div>
+            <div class="stat-delta up">+12.4%</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-label">Hours saved</div>
+            <div class="stat-value">42<span>h</span></div>
+            <div class="stat-delta">vs. last month</div>
+          </article>
+        </section>
+
+        <section class="panel chart-panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Team velocity</div>
+              <div class="panel-sub">Tasks shipped per day, last 14 days</div>
+            </div>
+            <div class="legend"><span class="dot"></span> Shipped</div>
+          </div>
+          <div class="chart">
+            <div class="bars" id="bars"></div>
+            <div class="chart-baseline"></div>
+          </div>
+        </section>
+
+        <section class="panel projects-panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Projects</div>
+              <div class="panel-sub">Your team’s active work</div>
+            </div>
+            <button class="text-button">View all →</button>
+          </div>
+          <div class="project-grid" id="project-grid">
+            <article class="project-card">
+              <div class="project-icon violet">◈</div>
+              <div class="project-name">Website refresh</div>
+              <div class="project-meta">Design · 8 tasks left</div>
+              <div class="progress"><span style="width: 72%"></span></div>
+            </article>
+            <article class="project-card">
+              <div class="project-icon green">▤</div>
+              <div class="project-name">Q4 launch</div>
+              <div class="project-meta">Marketing · 14 tasks left</div>
+              <div class="progress"><span style="width: 46%"></span></div>
+            </article>
+            <article class="project-card">
+              <div class="project-icon amber">◔</div>
+              <div class="project-name">Mobile onboarding</div>
+              <div class="project-meta">Product · 3 tasks left</div>
+              <div class="progress"><span style="width: 88%"></span></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-head">
+          <div>
+            <div class="modal-kicker">Create</div>
+            <h2 id="modal-title">New project</h2>
+          </div>
+          <button class="icon-button" id="close-modal" aria-label="Close">×</button>
+        </div>
+
+        <label class="field">
+          <span>Project name</span>
+          <input id="project-name" name="project-name" placeholder="e.g. Q4 Launch" autocomplete="off" />
+        </label>
+
+        <div class="field">
+          <span>Template</span>
+          <div class="template-row">
+            <button class="template active" type="button">Blank</button>
+            <button class="template" type="button">Sprint</button>
+            <button class="template" type="button">Campaign</button>
+          </div>
+        </div>
+
+        <div class="modal-foot">
+          <div class="modal-hint">You can invite teammates later.</div>
+          <button id="create-project" class="primary-button">Create project</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">Project created</div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
