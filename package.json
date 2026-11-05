@@ -23,14 +23,14 @@
     "product-launch"
   ],
   "license": "MIT",
-  "author": "yanjiangfan",
+  "author": "gnawbit",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/yanjiangfan/demo-reel.git"
+    "url": "git+ssh://git@github.com/gnawbit/demo-reel.git"
   },
-  "homepage": "https://github.com/yanjiangfan/demo-reel",
+  "homepage": "https://github.com/gnawbit/demo-reel",
   "bugs": {
-    "url": "https://github.com/yanjiangfan/demo-reel/issues"
+    "url": "https://github.com/gnawbit/demo-reel/issues"
   },
   "engines": {
     "node": ">=20"

@@ -8,7 +8,7 @@ The `main` branch is the supported version until the first tagged release.
 
 Please use GitHub's private vulnerability reporting:
 
-https://github.com/yanjiangfan/demo-reel/security/advisories/new
+https://github.com/gnawbit/demo-reel/security/advisories/new
 
 Do not open a public issue for a vulnerability.
 

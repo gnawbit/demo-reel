@@ -4,11 +4,11 @@
   "version": "0.1.0",
   "description": "Turn any URL into a polished demo video and GIF: a real browser, auto-zoom on clicks, captions, a browser frame and a background, rendered to MP4 + GIF.",
   "author": {
-    "name": "yanjiangfan",
-    "url": "https://github.com/yanjiangfan"
+    "name": "gnawbit",
+    "url": "https://github.com/gnawbit"
   },
-  "homepage": "https://github.com/yanjiangfan/demo-reel",
-  "repository": "https://github.com/yanjiangfan/demo-reel",
+  "homepage": "https://github.com/gnawbit/demo-reel",
+  "repository": "https://github.com/gnawbit/demo-reel",
   "license": "MIT",
   "keywords": [
     "demo",

@@ -30,14 +30,3 @@ node bin/demo-reel.mjs render \
 
 This is the fallback for sites that block automation, and the path for desktop
 and mobile apps.
-
-## 3. Real-world example
-
-[`story-clearmark.json`](story-clearmark.json) records `generaly.top`: anchor
-navigation, a drag comparison slider and a download section. Useful as a
-reference for `drag` and Chinese captions.
-
-```bash
-node bin/demo-reel.mjs record --config examples/story-clearmark.json --out demo-clearmark
-node bin/demo-reel.mjs render --config demo-clearmark/record.json --out demo-clearmark --vertical
-```

@@ -6,7 +6,7 @@ a story file, a browser, a renderer.
 ## Development setup
 
 ```bash
-git clone https://github.com/yanjiangfan/demo-reel
+git clone https://github.com/gnawbit/demo-reel
 cd demo-reel
 npm install
 npx playwright install chromium

@@ -4,7 +4,7 @@
 [![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
 [![Version](https://img.shields.io/badge/version-0.1.0-6c5ce7)](package.json)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
-[![GitHub stars](https://img.shields.io/github/stars/yanjiangfan/demo-reel?style=social)](https://github.com/yanjiangfan/demo-reel/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/gnawbit/demo-reel?style=social)](https://github.com/gnawbit/demo-reel/stargazers)
 
 **Give it a URL. Get a polished demo video and GIF.**
 
@@ -59,13 +59,13 @@ fresh demo.
 As an agent skill:
 
 ```bash
-npx skills add yanjiangfan/demo-reel
+npx skills add gnawbit/demo-reel
 ```
 
 From source:
 
 ```bash
-git clone https://github.com/yanjiangfan/demo-reel
+git clone https://github.com/gnawbit/demo-reel
 cd demo-reel
 npm install
 npx playwright install chromium

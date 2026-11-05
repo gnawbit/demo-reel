@@ -56,13 +56,13 @@ UI 改了，重跑一遍，就是新的 demo。
 作为 agent skill：
 
 ```bash
-npx skills add yanjiangfan/demo-reel
+npx skills add gnawbit/demo-reel
 ```
 
 从源码：
 
 ```bash
-git clone https://github.com/yanjiangfan/demo-reel
+git clone https://github.com/gnawbit/demo-reel
 cd demo-reel
 npm install
 npx playwright install chromium

@@ -1,9 +1,9 @@
 {
   "name": "demo-reel",
-  "description": "demo-reel by yanjiangfan: turn any URL into a polished demo video and GIF.",
+  "description": "demo-reel by gnawbit: turn any URL into a polished demo video and GIF.",
   "owner": {
-    "name": "yanjiangfan",
-    "url": "https://github.com/yanjiangfan"
+    "name": "gnawbit",
+    "url": "https://github.com/gnawbit"
   },
   "plugins": [
     {
