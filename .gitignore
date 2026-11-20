@@ -7,3 +7,14 @@ plan.png
 *.log
 *.tgz
 .DS_Store
+AGENTS.md
+AGENTS.local.md
+.serena/
+.env
+.env.*
+!.env.example
+!.env.sample
+.auth/
+playwright/.auth/
+*.pem
+*.key
