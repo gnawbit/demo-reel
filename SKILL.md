@@ -59,7 +59,18 @@ checkout first. If the skill was copied without the CLI source, clone
 there if dependencies are missing. The unscoped npm package `demo-reel`
 belongs to a different project.
 
-Run this first:
+On current `main`, query the installed CLI before choosing flags:
+
+```bash
+node bin/demo-reel.mjs --version
+node bin/demo-reel.mjs capabilities --json
+node bin/demo-reel.mjs doctor --json
+```
+
+JSON reports include `schemaVersion` and `version`. Inspect required checks and
+their recovery hints; optional font warnings do not fail the command. Chromium
+is checked for installation, not launched. If these queries are unsupported
+(including `v0.2.0`), use `help` and the plain-text diagnostic instead:
 
 ```bash
 node bin/demo-reel.mjs doctor

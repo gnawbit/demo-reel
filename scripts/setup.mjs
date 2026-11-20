@@ -1,15 +1,12 @@
 import { spawn } from "node:child_process";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { parseArgs } from "node:util";
+import { parseCommand } from "./lib/options.mjs";
 
 const require = createRequire(import.meta.url);
 
 export async function setup(argv) {
-  const { values } = parseArgs({
-    args: argv,
-    options: { "with-deps": { type: "boolean", default: false } },
-  });
+  const { values } = parseCommand("setup", argv);
   const cli = path.join(path.dirname(require.resolve("playwright/package.json")), "cli.js");
   const args = [cli, "install", "chromium"];
   if (values["with-deps"]) args.push("--with-deps");

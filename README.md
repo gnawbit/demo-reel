@@ -235,7 +235,9 @@ demo-reel mark. Chinese text automatically uses a CJK font.
 
 | Command | What it does |
 |---|---|
-| `demo-reel doctor` | Check Node, Chromium, ffmpeg, fonts |
+| `demo-reel --version` | Print the installed CLI version |
+| `demo-reel capabilities --json` | List supported commands, flags and JSON support |
+| `demo-reel doctor [--json]` | Check Node, Chromium, ffmpeg, fonts |
 | `demo-reel setup` | Install the Chromium version used by this CLI |
 | `demo-reel init --url <url>` | Create an editable story file |
 | `demo-reel plan --url <url>` | Screenshot + list interactive elements |
@@ -243,6 +245,13 @@ demo-reel mark. Chinese text automatically uses a CJK font.
 | `demo-reel render --config demo/record.json` | Render MP4 + GIF |
 | `demo-reel serve` | Serve the bundled demo app |
 | `demo-reel demo` | Record + render the bundled demo |
+
+For agents, `capabilities --json` and `doctor --json` emit one JSON object on
+stdout with `schemaVersion: 1` and the installed version. Diagnostic checks have
+stable `id`, `required`, `status` and recovery `hint` fields on failure. Exit code
+`1` means a required check failed; missing caption fonts are warnings (exit `0`
+if required checks pass). Chromium is checked for installation, not launched.
+These commands are available on `main`; the `v0.2.0` release predates them.
 
 Useful flags:
 

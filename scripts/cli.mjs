@@ -1,9 +1,13 @@
+import { version } from "./lib/metadata.mjs";
+
 const HELP = `
 demo-reel — turn any URL into a polished demo video and GIF.
 
 Usage:
   demo-reel setup   [--with-deps]
-  demo-reel doctor
+  demo-reel --version
+  demo-reel capabilities [--json]
+  demo-reel doctor [--json]
   demo-reel init    --url <url> [--out demo.json]
   demo-reel plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
   demo-reel record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
@@ -41,6 +45,16 @@ export async function main(argv) {
   }
 
   switch (command) {
+    case "--version":
+    case "-v": {
+      if (rest.length) throw new Error("--version does not accept arguments");
+      console.log(version);
+      return;
+    }
+    case "capabilities": {
+      const { capabilities } = await import("./capabilities.mjs");
+      return capabilities(rest);
+    }
     case "setup": {
       const { setup } = await import("./setup.mjs");
       return setup(rest);
@@ -51,7 +65,7 @@ export async function main(argv) {
     }
     case "doctor": {
       const { doctor } = await import("./doctor.mjs");
-      return doctor();
+      return doctor(rest);
     }
     case "plan": {
       const { plan } = await import("./plan.mjs");

@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseArgs } from "node:util";
+import { parseCommand } from "./lib/options.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -62,13 +62,7 @@ export async function startServer({ port = 4173, dir = "examples/site" } = {}) {
 }
 
 export async function serve(argv) {
-  const { values } = parseArgs({
-    args: argv,
-    options: {
-      port: { type: "string", default: "4173" },
-      dir: { type: "string", default: "examples/site" },
-    },
-  });
+  const { values } = parseCommand("serve", argv);
 
   const { url } = await startServer({
     port: Number(values.port),

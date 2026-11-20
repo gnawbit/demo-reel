@@ -1,92 +1,78 @@
 import { existsSync } from "node:fs";
-import { chromium } from "playwright";
-import sharp from "sharp";
-import { FFMPEG, FFPROBE, run } from "./lib/ffmpeg.mjs";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { findCjkFont, findFont } from "./lib/fonts.mjs";
+import { parseCommand } from "./lib/options.mjs";
+import { schemaVersion, version } from "./lib/metadata.mjs";
 
-export async function doctor() {
+const exec = promisify(execFile);
+const reinstall = "Reinstall CLI dependencies (from source: npm ci).";
+
+// Load native dependencies separately so broken installs still produce a report.
+export async function diagnose({
+  nodeVersion = process.versions.node,
+  load = (name) => import(name),
+  exists = existsSync,
+  run = (file) => exec(file, ["-version"], { windowsHide: true, timeout: 10000 }),
+  fonts = { latin: findFont, cjk: findCjkFont },
+} = {}) {
   const checks = [];
-
-  const nodeMajor = Number(process.versions.node.split(".")[0]);
-  checks.push({
-    ok: nodeMajor >= 20,
-    label: "Node.js >= 20",
-    detail: process.version,
-    hint: "Install Node.js 20 or newer.",
-  });
-
-  checks.push({
-    ok: Boolean(FFMPEG) && existsSync(FFMPEG),
-    label: "ffmpeg",
-    detail: FFMPEG || "not found",
-    hint: "Reinstall dependencies: npm install",
-  });
-
-  if (FFMPEG && existsSync(FFMPEG)) {
+  async function check(id, required, hint, probe) {
     try {
-      const { stdout, stderr } = await run(FFMPEG, ["-version"], { capture: true });
-      const first = (stdout || stderr).split("\n")[0].trim();
-      checks.push({ ok: true, label: "ffmpeg version", detail: first });
-    } catch (err) {
-      checks.push({ ok: false, label: "ffmpeg version", detail: err.message });
+      checks.push({ id, required, status: "ok", detail: await probe() });
+    } catch (error) {
+      checks.push({ id, required, status: required ? "error" : "warning", detail: error.message, hint });
     }
   }
-
-  checks.push({
-    ok: Boolean(FFPROBE) && existsSync(FFPROBE),
-    label: "ffprobe",
-    detail: FFPROBE || "not found",
-    hint: "Reinstall dependencies: npm install",
+  await check("node", true, "Install Node.js 20 or newer.", () => {
+    if (Number(nodeVersion.split(".")[0]) < 20) throw new Error(`Unsupported Node.js ${nodeVersion}`);
+    return nodeVersion;
   });
-
-  let chromiumPath = "";
-  try {
-    chromiumPath = chromium.executablePath();
-  } catch {
-    chromiumPath = "";
+  for (const id of ["ffmpeg", "ffprobe"]) {
+    await check(id, true, reinstall, async () => {
+      const module = await load(`@${id}-installer/${id}`);
+      const file = module.default.path;
+      if (!file || !exists(file)) throw new Error("Executable not found");
+      const { stdout, stderr } = await run(file);
+      return (stdout || stderr).split("\n")[0].trim();
+    });
   }
-  checks.push({
-    ok: Boolean(chromiumPath) && existsSync(chromiumPath),
-    label: "Playwright Chromium",
-    detail: chromiumPath || "not found",
-    hint: "Run: demo-reel setup (from source: node bin/demo-reel.mjs setup)",
+  await check("chromium", true, "Run demo-reel setup (from source: node bin/demo-reel.mjs setup).", async () => {
+    const { chromium } = await load("playwright");
+    const file = chromium.executablePath();
+    if (!exists(file)) throw new Error("Chromium executable not found");
+    return "Executable found; browser launch and system libraries are not tested.";
   });
-
-  checks.push({
-    ok: true,
-    label: "sharp",
-    detail: sharp.versions?.sharp || "installed",
+  await check("sharp", true, reinstall, async () => {
+    const { default: sharp } = await load("sharp");
+    await sharp({ create: { width: 1, height: 1, channels: 4, background: "white" } }).png().toBuffer();
+    return sharp.versions?.sharp || "Image encoding passed";
   });
-
-  const font = findFont();
-  checks.push({
-    ok: Boolean(font),
-    label: "System font for captions",
-    detail: font || "not found",
-    hint: "Install Arial/Segoe UI, or captions will be skipped.",
+  await check("font.latin", false, "Install Arial, Segoe UI or DejaVu Sans; captions may otherwise be skipped.", () => {
+    if (!fonts.latin()) throw new Error("Caption font not found");
+    return "Caption font found";
   });
-
-  const cjkFont = findCjkFont();
-  checks.push({
-    ok: Boolean(cjkFont),
-    label: "CJK font for Chinese captions",
-    detail: cjkFont || "not found",
-    hint: "Install Microsoft YaHei, PingFang or Noto Sans CJK.",
+  await check("font.cjk", false, "For Chinese captions, install Microsoft YaHei, PingFang or Noto Sans CJK.", () => {
+    if (!fonts.cjk()) throw new Error("CJK font not found");
+    return "CJK font found";
   });
+  const errors = checks.filter((check) => check.status === "error").length;
+  const warnings = checks.filter((check) => check.status === "warning").length;
+  return { schemaVersion, version, ok: errors === 0, checks, summary: { errors, warnings } };
+}
 
-  console.log("\ndemo-reel doctor\n");
-  for (const check of checks) {
-    const mark = check.ok ? "OK  " : "FAIL";
-    console.log(`${mark}  ${check.label.padEnd(28)} ${check.detail}`);
-    if (!check.ok && check.hint) console.log(`      -> ${check.hint}`);
+export async function doctor(argv = []) {
+  const { values } = parseCommand("doctor", argv);
+  const report = await diagnose();
+  if (values.json) console.log(JSON.stringify(report));
+  else {
+    console.log(`\ndemo-reel doctor (${version})\n`);
+    for (const check of report.checks) {
+      console.log(`${check.status.toUpperCase().padEnd(7)} ${check.id.padEnd(14)} ${check.detail}`);
+      if (check.hint) console.log(`        -> ${check.hint}`);
+    }
+    console.log(`\n${report.summary.errors} error(s), ${report.summary.warnings} warning(s).\n`);
   }
-
-  const failed = checks.filter((c) => !c.ok);
-  console.log(
-    failed.length === 0
-      ? "\nEverything looks good.\n"
-      : `\n${failed.length} check(s) failed.\n`,
-  );
-
-  if (failed.length > 0) process.exitCode = 1;
+  if (!report.ok) process.exitCode = 1;
+  return report;
 }

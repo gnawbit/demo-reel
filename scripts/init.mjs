@@ -1,15 +1,9 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { parseArgs } from "node:util";
+import { parseCommand } from "./lib/options.mjs";
 
 export async function init(argv) {
-  const { values } = parseArgs({
-    args: argv,
-    options: {
-      url: { type: "string" },
-      out: { type: "string", default: "demo.json" },
-    },
-  });
+  const { values } = parseCommand("init", argv);
 
   if (!values.url) throw new Error("Provide --url https://your-app.com");
   let url;

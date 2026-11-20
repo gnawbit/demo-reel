@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add machine-readable diagnostics, version and capability queries; keep diagnostics usable when dependencies are missing.
 - Wrap captions within the frame, prevent overlaps and preserve recording brightness under decorative frames.
 - Ease click zooms and pans without cutting the timeline; configure timing with `zoomDuration` or `--zoom-duration`.
 - Select poster frames with `posterAt` or `--poster-at`; default to a frame near the end and support short clips.

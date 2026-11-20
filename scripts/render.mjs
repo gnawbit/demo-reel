@@ -1,6 +1,6 @@
 import { mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { parseArgs } from "node:util";
+import { parseCommand } from "./lib/options.mjs";
 import sharp from "sharp";
 import { ffmpeg, probe } from "./lib/ffmpeg.mjs";
 import { findCjkFont, findFont, hasCjk } from "./lib/fonts.mjs";
@@ -387,20 +387,7 @@ function marksToEvents(marks, videoW, videoH) {
 }
 
 export async function render(argv) {
-  const { values } = parseArgs({
-    args: argv,
-    options: {
-      config: { type: "string" },
-      video: { type: "string" },
-      out: { type: "string" },
-      "no-gif": { type: "boolean", default: false },
-      "no-captions": { type: "boolean", default: false },
-      vertical: { type: "boolean", default: false },
-      zoom: { type: "string", default: "1.28" },
-      "zoom-duration": { type: "string" },
-      "poster-at": { type: "string" },
-    },
-  });
+  const { values } = parseCommand("render", argv);
 
   if (!values.config) throw new Error("Missing --config");
 

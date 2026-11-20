@@ -1,19 +1,12 @@
 import path from "node:path";
-import { parseArgs } from "node:util";
+import { parseCommand } from "./lib/options.mjs";
 import { fileURLToPath } from "node:url";
 import { record } from "./record.mjs";
 import { render } from "./render.mjs";
 import { startServer } from "./serve.mjs";
 
 export async function demo(argv) {
-  const { values } = parseArgs({
-    args: argv,
-    options: {
-      out: { type: "string", default: "demo" },
-      port: { type: "string", default: "4173" },
-      story: { type: "string", default: "onboarding" },
-    },
-  });
+  const { values } = parseCommand("demo", argv);
 
   const stories = new Map([
     ["onboarding", "../examples/story.json"],

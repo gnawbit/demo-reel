@@ -224,7 +224,9 @@ demo/
 
 | 命令 | 作用 |
 |---|---|
-| `demo-reel doctor` | 检查 Node、Chromium、ffmpeg、字体 |
+| `demo-reel --version` | 输出已安装 CLI 的版本 |
+| `demo-reel capabilities --json` | 查询支持的命令、参数及 JSON 输出 |
+| `demo-reel doctor [--json]` | 检查 Node、Chromium、ffmpeg、字体 |
 | `demo-reel setup` | 安装与当前 CLI 匹配的 Chromium |
 | `demo-reel init --url <url>` | 创建可编辑的故事文件 |
 | `demo-reel plan --url <url>` | 截图 + 列出可交互元素 |
@@ -232,6 +234,12 @@ demo/
 | `demo-reel render --config demo/record.json` | 渲染 MP4 + GIF |
 | `demo-reel serve` | 启动内置 demo 站点 |
 | `demo-reel demo` | 录制 + 渲染内置 demo |
+
+Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的单个 JSON
+对象，包含 `schemaVersion: 1` 和已安装版本。诊断包含稳定的 `id`、`required`、
+`status`，失败时提供修复提示 `hint`。必需检查失败返回退出码 `1`；缺少字体仅警告，
+必需项通过时退出码仍为 `0`。Chromium 仅检查是否安装，不实际启动。
+这些命令已在 `main` 提供，`v0.2.0` 发布版尚不包含。
 
 常用参数：
 

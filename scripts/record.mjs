@@ -1,6 +1,6 @@
 import { copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { parseArgs } from "node:util";
+import { parseCommand } from "./lib/options.mjs";
 import {
   clickAndType,
   dragBy,
@@ -20,20 +20,7 @@ function parseViewport(value, fallback = { width: 1440, height: 810 }) {
 }
 
 export async function record(argv) {
-  const { values } = parseArgs({
-    args: argv,
-    options: {
-      config: { type: "string" },
-      url: { type: "string" },
-      out: { type: "string", default: "demo" },
-      login: { type: "boolean", default: false },
-      "storage-state": { type: "string" },
-      "save-state": { type: "string" },
-      proxy: { type: "string" },
-      viewport: { type: "string" },
-      headed: { type: "boolean", default: false },
-    },
-  });
+  const { values } = parseCommand("record", argv);
 
   if (!values.config && !values.url) {
     throw new Error("Provide --config demo.json (or at least --url)");

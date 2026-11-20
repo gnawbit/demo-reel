@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { parseArgs } from "node:util";
+import { parseCommand } from "./lib/options.mjs";
 import { launchBrowser, newContext } from "./lib/browser.mjs";
 import { waitForEnter } from "./lib/tty.mjs";
 
@@ -11,18 +11,7 @@ function parseViewport(value) {
 }
 
 export async function plan(argv) {
-  const { values } = parseArgs({
-    args: argv,
-    options: {
-      url: { type: "string" },
-      out: { type: "string", default: "plan.json" },
-      login: { type: "boolean", default: false },
-      "storage-state": { type: "string" },
-      proxy: { type: "string" },
-      viewport: { type: "string" },
-      headless: { type: "boolean", default: true },
-    },
-  });
+  const { values } = parseCommand("plan", argv);
 
   if (!values.url) throw new Error("Missing --url");
 
