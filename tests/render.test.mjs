@@ -92,7 +92,7 @@ test("rendering preserves brightness, caption timing and valid poster selection"
     }
     for (const posterAt of [-1, "0", null, 0.6]) {
       await save({ video: "source.mp4", marks: [], posterAt });
-      await assert.rejects(run(), /posterAt \/ --poster-at must be a number/);
+      await assert.rejects(run(), /(?:\/posterAt|posterAt \/ --poster-at)/);
     }
     await save({ video: "source.mp4", marks: [] });
     for (const value of ["-1", "NaN", "Infinity", ""]) {

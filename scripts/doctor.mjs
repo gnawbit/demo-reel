@@ -48,6 +48,11 @@ export async function diagnose({
     await sharp({ create: { width: 1, height: 1, channels: 4, background: "white" } }).png().toBuffer();
     return sharp.versions?.sharp || "Image encoding passed";
   });
+  await check("config-validator", true, reinstall, async () => {
+    const { inspectConfig } = await load("./lib/config.mjs");
+    if (!inspectConfig({ marks: [] }).ok) throw new Error("Config schema could not be validated");
+    return "Config schema loaded";
+  });
   await check("font.latin", false, "Install Arial, Segoe UI or DejaVu Sans; captions may otherwise be skipped.", () => {
     if (!fonts.latin()) throw new Error("Caption font not found");
     return "Caption font found";

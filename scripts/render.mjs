@@ -1,4 +1,4 @@
-import { mkdir, readFile } from "node:fs/promises";
+import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { parseCommand } from "./lib/options.mjs";
 import sharp from "sharp";
@@ -6,6 +6,7 @@ import { ffmpeg, probe } from "./lib/ffmpeg.mjs";
 import { findCjkFont, findFont, hasCjk } from "./lib/fonts.mjs";
 import { buildCameraFilter } from "./lib/camera.mjs";
 import { createCaptionLayers } from "./lib/captions.mjs";
+import { assertConfig, readConfig } from "./lib/config.mjs";
 
 const LAYOUTS = {
   landscape: {
@@ -392,7 +393,7 @@ export async function render(argv) {
   if (!values.config) throw new Error("Missing --config");
 
   const configPath = path.resolve(values.config);
-  const raw = JSON.parse(await readFile(configPath, "utf8"));
+  const raw = assertConfig(await readConfig(configPath));
   const videoOverride = values.video ? path.resolve(values.video) : null;
   const isMarkConfig = Array.isArray(raw.marks) && (videoOverride || raw.video);
 
@@ -433,7 +434,7 @@ export async function render(argv) {
     if (!raw.video) {
       outDir = values.out ? path.resolve(values.out) : path.resolve("demo");
       const recordPath = path.join(outDir, "record.json");
-      record = JSON.parse(await readFile(recordPath, "utf8"));
+      record = assertConfig(await readConfig(recordPath), { kind: "record" });
       recordDir = outDir;
     }
 

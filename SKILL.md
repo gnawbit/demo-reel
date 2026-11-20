@@ -207,6 +207,17 @@ Avoid brittle selectors like `div > div:nth-child(4) > button`.
 
 ### 3. Record
 
+On current `main`, validate the story before recording:
+
+```bash
+node bin/demo-reel.mjs validate --config demo.json --json
+```
+
+Fix reported JSON Pointer paths, then retry. Validation checks structure and
+supported fields; selectors, authentication and media still need runtime checks.
+The schema is `schemas/story.schema.json`. Use `capabilities --json` to check
+availability; `v0.2.0` does not include this command.
+
 ```bash
 node bin/demo-reel.mjs record --config demo.json --out demo
 ```

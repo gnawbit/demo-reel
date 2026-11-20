@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseCommand } from "./lib/options.mjs";
 import {
@@ -12,11 +12,13 @@ import {
   resolveLocator,
 } from "./lib/browser.mjs";
 import { waitForEnter } from "./lib/tty.mjs";
+import { assertConfig, readConfig } from "./lib/config.mjs";
 
 function parseViewport(value, fallback = { width: 1440, height: 810 }) {
-  if (!value) return fallback;
-  const [w, h] = value.split("x").map(Number);
-  return { width: w || fallback.width, height: h || fallback.height };
+  if (value === undefined) return fallback;
+  if (!/^[1-9]\d*x[1-9]\d*$/.test(value)) throw new Error("--viewport must be WIDTHxHEIGHT with positive integers");
+  const [width, height] = value.split("x").map(Number);
+  return { width, height };
 }
 
 export async function record(argv) {
@@ -28,9 +30,10 @@ export async function record(argv) {
 
   const configPath = values.config ? path.resolve(values.config) : null;
   const config = configPath
-    ? JSON.parse(await readFile(configPath, "utf8"))
+    ? await readConfig(configPath)
     : {};
 
+  assertConfig({ ...config, ...(values.url ? { url: values.url } : {}) }, { kind: "story" });
   const url = values.url || config.url;
   if (!url) throw new Error("Missing url in config or --url");
 
@@ -38,6 +41,7 @@ export async function record(argv) {
     width: 1440,
     height: 810,
   });
+  assertConfig({ ...config, url, viewport }, { kind: "story" });
   const scale = 1;
   const steps = config.steps || [];
   if (steps.length === 0) throw new Error("Config has no steps");

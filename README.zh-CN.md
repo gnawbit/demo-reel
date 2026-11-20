@@ -229,6 +229,7 @@ demo/
 | `demo-reel doctor [--json]` | 检查 Node、Chromium、ffmpeg、字体 |
 | `demo-reel setup` | 安装与当前 CLI 匹配的 Chromium |
 | `demo-reel init --url <url>` | 创建可编辑的故事文件 |
+| `demo-reel validate --config demo.json [--json]` | 预检故事、录屏标记或录制时间线 |
 | `demo-reel plan --url <url>` | 截图 + 列出可交互元素 |
 | `demo-reel record --config demo.json` | 录制故事 |
 | `demo-reel render --config demo/record.json` | 渲染 MP4 + GIF |
@@ -240,6 +241,15 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 `status`，失败时提供修复提示 `hint`。必需检查失败返回退出码 `1`；缺少字体仅警告，
 必需项通过时退出码仍为 `0`。Chromium 仅检查是否安装，不实际启动。
 这些命令已在 `main` 提供，`v0.2.0` 发布版尚不包含。
+
+录制前运行 `validate --config demo.json --json`，按随包提供的
+[JSON Schema](schemas/story.schema.json) 检查类型、动作、必需目标和未知字段。
+失败返回退出码 `1`，错误包含 `code`、JSON Pointer 路径 `path`（如
+`/steps/0/action`）、`message` 和 `hint`；JSON 语法或文件读取错误使用 `error` 对象。
+预检不会启动浏览器，也不验证选择器、登录态或媒体文件是否可用。
+`record` 和 `render` 也会在改写输出文件前校验输入。编辑器补全可在配置中加入
+`"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/main/schemas/story.schema.json"`。
+这些校验功能需要当前 `main`。
 
 常用参数：
 

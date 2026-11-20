@@ -32,7 +32,7 @@ test("doctor JSON is a single report and rejects unknown arguments", async () =>
   const report = JSON.parse(result.stdout);
   assert.equal(result.stderr, "");
   assert.equal(report.version, version);
-  assert.equal(report.checks.length, 7);
+  assert.equal(report.checks.length, 8);
   assert.equal(report.ok, report.summary.errors === 0);
   assert.equal(result.code || 0, report.ok ? 0 : 1);
   await assert.rejects(run(["doctor", "--json", "--unknown"]), (error) => {
@@ -70,8 +70,8 @@ test("an installation with no dependencies can still diagnose itself", async (t)
     const report = JSON.parse(error.stdout);
     assert.equal(error.code, 1);
     assert.equal(error.stderr, "");
-    assert.equal(report.summary.errors, 4);
-    for (const id of ["ffmpeg", "ffprobe", "chromium", "sharp"]) {
+    assert.equal(report.summary.errors, 5);
+    for (const id of ["ffmpeg", "ffprobe", "chromium", "sharp", "config-validator"]) {
       assert.equal(report.checks.find((c) => c.id === id).status, "error");
     }
     return true;

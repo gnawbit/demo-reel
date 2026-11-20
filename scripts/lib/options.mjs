@@ -18,7 +18,7 @@ export const commandOptions = {
   record: {
     config: { type: "string" },
     url: { type: "string" },
-    out: { type: "string", default: "demo" },
+    out: { type: "string" },
     login: { type: "boolean", default: false },
     "storage-state": { type: "string" },
     "save-state": { type: "string" },
@@ -48,6 +48,7 @@ export const commandOptions = {
   },
   doctor: { json: { type: "boolean", default: false } },
   capabilities: { json: { type: "boolean", default: false } },
+  validate: { config: { type: "string" }, json: { type: "boolean", default: false } },
 };
 
 export function parseCommand(command, argv) {

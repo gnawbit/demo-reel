@@ -8,6 +8,7 @@ Usage:
   demo-reel --version
   demo-reel capabilities [--json]
   demo-reel doctor [--json]
+  demo-reel validate --config demo.json [--json]
   demo-reel init    --url <url> [--out demo.json]
   demo-reel plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
   demo-reel record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
@@ -45,6 +46,10 @@ export async function main(argv) {
   }
 
   switch (command) {
+    case "validate": {
+      const { validate } = await import("./validate.mjs");
+      return validate(rest);
+    }
     case "--version":
     case "-v": {
       if (rest.length) throw new Error("--version does not accept arguments");

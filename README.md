@@ -240,6 +240,7 @@ demo-reel mark. Chinese text automatically uses a CJK font.
 | `demo-reel doctor [--json]` | Check Node, Chromium, ffmpeg, fonts |
 | `demo-reel setup` | Install the Chromium version used by this CLI |
 | `demo-reel init --url <url>` | Create an editable story file |
+| `demo-reel validate --config demo.json [--json]` | Validate a story, marks or recorded timeline without recording |
 | `demo-reel plan --url <url>` | Screenshot + list interactive elements |
 | `demo-reel record --config demo.json` | Record the story |
 | `demo-reel render --config demo/record.json` | Render MP4 + GIF |
@@ -252,6 +253,16 @@ stable `id`, `required`, `status` and recovery `hint` fields on failure. Exit co
 `1` means a required check failed; missing caption fonts are warnings (exit `0`
 if required checks pass). Chromium is checked for installation, not launched.
 These commands are available on `main`; the `v0.2.0` release predates them.
+
+Before recording, run `validate --config demo.json --json`. It checks types,
+supported actions, required targets and unknown fields against the packaged
+[JSON Schema](schemas/story.schema.json). Failures return exit `1` and errors
+with a `code`, JSON Pointer `path` (for example `/steps/0/action`), `message` and
+`hint`. Invalid JSON and unreadable files use an `error` object. Validation
+does not open the browser or check selectors, login state or media files.
+`record` and `render` also validate their input before changing output files.
+For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/main/schemas/story.schema.json"`
+to the config. These validation features require current `main`.
 
 Useful flags:
 
