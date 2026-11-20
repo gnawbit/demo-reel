@@ -88,6 +88,13 @@ npx skills add gnawbit/demo-reel
 ```
 
 将全局 CLI 或源码目录的位置告知编程助手即可。
+也可在 [Skills 目录](https://skills.sh/gnawbit/demo-reel/demo-reel)查看此 Skill。例如：
+
+- “把 http://localhost:3000 的注册流程做成 README 动图。”
+- “为我的 Web 应用制作带字幕的竖屏发布演示。”
+- “界面更新了，按原流程重新生成产品演示。”
+
+编程助手会编写故事并调用 CLI；处理已有录屏时，需要提供视频和要突出的时间点。
 
 ## 快速开始
 

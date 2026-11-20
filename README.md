@@ -93,6 +93,15 @@ npx skills add gnawbit/demo-reel
 ```
 
 Tell your agent whether to use the global CLI or a source checkout.
+The skill is also listed in the [Skills directory](https://skills.sh/gnawbit/demo-reel/demo-reel).
+Example requests:
+
+- "Make a README GIF showing the signup flow at http://localhost:3000."
+- "Create a portrait launch demo from my web app, with captions."
+- "Regenerate the product walkthrough after these UI changes."
+
+The agent plans a story and runs the CLI. For an existing recording, supply
+the video and the moments to highlight instead.
 
 ## Quickstart
 

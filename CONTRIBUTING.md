@@ -51,6 +51,12 @@ afterward. CI runs these checks on Linux, Windows and macOS with Node 20.
 
 If you change rendering, include a before/after GIF or MP4 in the PR.
 
+For skill description changes, use `evals/skill-routing.json` with the skill
+installed in the target agent. Record whether it loads `SKILL.md` for each
+request, plus the agent version and date. The labels are intended behavior,
+not measured results; metadata validation alone does not establish routing
+accuracy or directory ranking.
+
 ## Pull requests
 
 - One focused change per PR.

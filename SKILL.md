@@ -1,6 +1,11 @@
 ---
 name: demo-reel
-description: Turn any URL or screen recording into a polished 15–25 second demo video and GIF for a README, landing page, X, Product Hunt or App Store. Use when the user asks for a product demo, launch video, README GIF, social clip, or wants to show a web app in action.
+description: Create repeatable product demo videos and README GIFs from a web app URL or an existing screen recording. Use when asked for a launch video, browser walkthrough, signup or onboarding demo, or to regenerate a demo after UI changes, including 产品演示、网页录屏、README 动图. Runs locally and exports MP4, GIF and posters in landscape or portrait. Requires a story script or recording marks. Not for general video editing, text-to-video generation, or browser test assertions.
+license: MIT
+metadata:
+  author: gnawbit
+  repository: https://github.com/gnawbit/demo-reel
+  compatibility: Node.js 20+, Chromium via demo-reel setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
 ---
 
 # demo-reel
@@ -11,6 +16,15 @@ The skill drives a real Chromium browser with Playwright, records the page,
 zooms into each click, adds a cursor, captions, a browser frame and a
 background, then renders MP4 + GIF with ffmpeg.
 
+## Inputs and outputs
+
+- Web app: obtain its URL and the flow to demonstrate; inspect the page and
+  write a story before recording. `plan` lists controls; it does not create the story.
+- Existing recording: use the supplied video and timestamped `marks`; see
+  [Use an existing recording](#when-the-url-cannot-be-recorded).
+- Output: MP4, animated GIF, poster and a reusable timeline in the chosen
+  output directory. Return paths to the generated files after inspecting them.
+
 ## When to use this skill
 
 Use it when the user wants:
@@ -20,6 +34,11 @@ Use it when the user wants:
 - a short product walkthrough
 - a social clip of a web app
 - a repeatable demo that can be regenerated when the UI changes
+
+Examples: "Make a README GIF of my signup flow", "Turn this app into a
+portrait launch clip", or "把这个网站的创建项目流程做成演示视频".
+For general video editing, generated cinematic footage, or Playwright test
+assertions without a demo deliverable, use a workflow suited to that task.
 
 Do **not** use it to record sites the user does not own or have permission to
 record.
