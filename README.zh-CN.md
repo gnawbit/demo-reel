@@ -1,20 +1,22 @@
 # demo-reel
 
+[English](README.md) · 简体中文
+
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
 [![Version](https://img.shields.io/badge/version-0.1.0-6c5ce7)](package.json)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 
-**给它一个网址，拿回一条能发出去的产品演示视频和 GIF。**
+**把 Web 应用变成可重复生成的发布演示。**
 
 <img src="docs/hero.gif" alt="demo-reel 自动录屏、点击放大、加字幕" width="100%">
 
 [看 12 秒 MP4](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [路线图](#路线图)
 
-demo-reel 是一个 agent skill：它用真实浏览器打开你的产品，像人一样点击，
-自动放大每次点击、加光标、字幕、浏览器边框和背景，最后渲染成 MP4 + GIF。
+用 JSON 描述操作流程，或让编程助手代写。demo-reel 在真实浏览器中执行，
+添加点击放大、光标、字幕和浏览器边框，生成 MP4 + GIF。录制与渲染均在本机完成。
 
-不用手动剪辑，不用买录屏软件，一条命令。
+故事文件与代码一起保存，界面更新后即可重新生成演示。
 
 > 支持 Claude Code、Codex、Cursor，以及任何支持
 > [Agent Skills](https://agentskills.io) 的 agent。
@@ -30,8 +32,7 @@ demo-reel 是一个 agent skill：它用真实浏览器打开你的产品，像�
 - 发 X、小红书、Product Hunt 的短片
 - 新用户引导里的操作演示
 
-手动录一条要 1–3 小时，而且看起来像“随手录的”。demo-reel 把它变成可重复的命令：
-UI 改了，重跑一遍，就是新的 demo。
+用故事文件记录演示流程，您或编程助手都可以编辑，并在发布新版本后重新生成素材。
 
 **你会得到**
 
@@ -53,23 +54,27 @@ UI 改了，重跑一遍，就是新的 demo。
 
 ## 安装
 
-作为 agent skill：
+先从源码安装 CLI 和渲染依赖：
+
+```bash
+git clone https://github.com/gnawbit/demo-reel
+cd demo-reel
+npm ci
+npx playwright install chromium
+node bin/demo-reel.mjs doctor
+```
+
+要求：Node 20+。ffmpeg/ffprobe 由 npm 包提供，不需要系统安装。以下命令均在此仓库目录运行。
+
+npm 上名为 `demo-reel` 的包属于另一个项目，请使用上述源码安装方式。
+
+CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
 npx skills add gnawbit/demo-reel
 ```
 
-从源码：
-
-```bash
-git clone https://github.com/gnawbit/demo-reel
-cd demo-reel
-npm install
-npx playwright install chromium
-node bin/demo-reel.mjs doctor
-```
-
-要求：Node 20+。ffmpeg/ffprobe 由 npm 包提供，不需要系统安装。
+将 demo-reel 仓库所在目录告知编程助手，Skill 会使用其中的脚本和依赖分析、录制及渲染应用。
 
 ## 快速开始
 

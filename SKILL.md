@@ -26,6 +26,13 @@ record.
 
 ## Prerequisites
 
+Run the commands below from the demo-reel checkout containing `package.json`
+and `bin/demo-reel.mjs`, not from the user's app directory. Locate that
+checkout first. If the skill was copied without the CLI source, clone
+`https://github.com/gnawbit/demo-reel` into a separate directory. Run `npm ci`
+there if dependencies are missing. The unscoped npm package `demo-reel`
+belongs to a different project.
+
 Run this first:
 
 ```bash

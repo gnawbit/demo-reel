@@ -1,22 +1,24 @@
 # demo-reel
 
+English · [简体中文](README.zh-CN.md)
+
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
 [![Version](https://img.shields.io/badge/version-0.1.0-6c5ce7)](package.json)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/demo-reel?style=social)](https://github.com/gnawbit/demo-reel/stargazers)
 
-**Give it a URL. Get a polished demo video and GIF.**
+**Turn your web app into a repeatable launch demo.**
 
 <img src="docs/hero.gif" alt="demo-reel recording a SaaS dashboard, zooming into clicks and adding captions" width="100%">
 
 [Watch the 12s MP4](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
 
-demo-reel is an agent skill that records your product in a real browser, zooms
-into every click, adds a cursor, captions, a browser frame and a background,
-then renders a launch-ready MP4 + GIF.
+Describe a flow in JSON, or have your coding agent write it. demo-reel runs it
+in a real browser and renders MP4 + GIF with click zooms, a cursor, captions
+and a browser frame. Recording and rendering run locally.
 
-No timeline editing. No screen-studio subscription. One command.
+Keep the story with your code and re-run it when the UI changes.
 
 > Works with Claude Code, Codex, Cursor and any agent that supports
 > [Agent Skills](https://agentskills.io).
@@ -32,9 +34,8 @@ Every launch needs a demo:
 - a clip for X, LinkedIn, Product Hunt
 - a walkthrough for onboarding
 
-Recording one by hand takes 1–3 hours and still looks like a screen recording.
-demo-reel turns it into a repeatable command. Change the UI, re-run it, get a
-fresh demo.
+Keep these assets reproducible with a story file that you or your agent can
+edit and run again after a release.
 
 **What you get**
 
@@ -56,24 +57,30 @@ fresh demo.
 
 ## Install
 
-As an agent skill:
-
-```bash
-npx skills add gnawbit/demo-reel
-```
-
-From source:
+Install the CLI and rendering dependencies from source:
 
 ```bash
 git clone https://github.com/gnawbit/demo-reel
 cd demo-reel
-npm install
+npm ci
 npx playwright install chromium
 node bin/demo-reel.mjs doctor
 ```
 
 Requirements: Node 20+. ffmpeg and ffprobe come from npm packages; no system
-install needed.
+install needed. Run the commands below from this checkout.
+
+The npm package named `demo-reel` is a different project; use the source
+installation above.
+
+To add the agent workflow after setting up the CLI:
+
+```bash
+npx skills add gnawbit/demo-reel
+```
+
+Tell your agent where the demo-reel checkout is. The skill uses its scripts
+and installed dependencies to plan, record and render your app.
 
 ## Quickstart
 
