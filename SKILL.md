@@ -108,7 +108,12 @@ node bin/demo-reel.mjs plan --url https://your-app.com --login
 ```
 
 A visible browser opens. The user logs in manually. The session is saved to
-`auth.json` and reused for recording.
+`auth.json` in the current directory. Recording reuses it only when passed
+explicitly (use an absolute path if the working directory changes):
+
+```bash
+node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
+```
 
 ### 2. Create and edit `demo.json`
 
@@ -198,7 +203,7 @@ Avoid brittle selectors like `div > div:nth-child(4) > button`.
   if the renderer reports that one is too long, shorten it or split it across
   steps. New captions replace earlier ones without overlap.
 - End on the result, not on a menu.
-- No audio in v0.1.
+- Output videos have no audio; voiceover and music are not supported.
 
 ### 3. Record
 
@@ -256,8 +261,9 @@ Options:
 ```
 
 The vertical layout shows a badge and title at the top, the recording in a
-rounded card in the middle, and larger captions near the bottom. Keep vertical
-captions under ~40 characters so they do not clip.
+rounded card in the middle, and larger captions near the bottom. Captions wrap
+within the frame on current `main`; prefer short phrases and split text if the
+renderer reports that a caption is too long.
 
 ### Vertical branding
 
@@ -284,7 +290,8 @@ Look at `poster.png` and the MP4. If a step is wrong:
 - re-run `record`
 - re-run `render`
 
-Rendering is deterministic; recording is the only part that needs the browser.
+Rendering reuses the saved recording without a browser. Fonts and encoder
+versions can change the appearance across machines.
 
 ## Login and protected pages
 
@@ -295,7 +302,8 @@ node bin/demo-reel.mjs record --config demo.json --login
 ```
 
 The user logs in manually in a visible browser. Never ask for passwords or
-2FA codes in chat. The session is stored locally in `auth.json`.
+2FA codes in chat. The session is stored locally in `auth.json` and used for this
+recording. Manual login needs an interactive terminal; use saved state in CI.
 
 For CI or repeat runs:
 
@@ -361,7 +369,7 @@ Do not try to bypass captchas or anti-bot systems.
 | Chinese captions show boxes | Run `doctor`; install a CJK font (Microsoft YaHei, PingFang or Noto Sans CJK) |
 | ffmpeg error | Run `doctor`; reinstall dependencies |
 | Login state expired | Re-run with `--login` |
-| Element is inside an iframe | Use a selector inside the frame; if it fails, fall back to a recording |
+| Element is inside an iframe | Story steps have no dedicated frame locator; use a screen recording with marks |
 
 ## Guardrails
 

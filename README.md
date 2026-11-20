@@ -274,9 +274,16 @@ Useful flags:
 node bin/demo-reel.mjs record --config demo.json --login
 ```
 
-A visible browser opens. Log in manually. The session is saved to `auth.json`
-locally and reused. demo-reel never asks for your password and never uploads
-cookies.
+A visible browser opens. Log in manually in an interactive terminal. The session
+is saved to `auth.json` locally and used for this recording. On later runs, or
+after logging in with `plan --login`, pass it explicitly:
+
+```bash
+node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
+```
+
+Use an absolute state path when changing working directories. demo-reel never
+asks for your password and never uploads cookies. Keep login state out of Git.
 
 ## How it works
 

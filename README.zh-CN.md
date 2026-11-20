@@ -262,8 +262,15 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 node bin/demo-reel.mjs record --config demo.json --login
 ```
 
-会打开一个有头浏览器，你手动登录，登录态保存在本地 `auth.json`，后续复用。
-demo-reel 不会向你要密码，也不会上传 cookie。
+请在可交互终端运行。浏览器打开后手动登录，登录态保存在本地 `auth.json`，
+供本次录制使用。后续运行，或先用 `plan --login` 登录后，必须显式传入：
+
+```bash
+node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
+```
+
+切换工作目录时请使用登录态文件的绝对路径。demo-reel 不会向你要密码，也不会
+上传 cookie。不要将登录态提交到 Git。
 
 ## 工作原理
 
