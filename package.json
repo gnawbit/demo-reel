@@ -1,6 +1,6 @@
 {
   "name": "@gnawbit/demo-reel",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Repeatable web app demo videos and GIFs. A local CLI and agent skill for Claude Code, Codex and Cursor.",
   "type": "module",
   "bin": {

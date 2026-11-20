@@ -1,10 +1,14 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 — 2026-11-20
 
 - Package the CLI as `@gnawbit/demo-reel` with an explicit runtime file list.
 - Add `setup` and support running the installed demo outside the source checkout.
 - Add `init --url` to create an editable story without overwriting existing files.
+- Improve skill task matching, input/output guidance and installation instructions.
+- Exclude password field values from page plans and logs.
+- Scroll targets into view before browser interactions and use the demo server's actual port.
+- Validate packaged installation, recording and rendering on Linux, Windows and macOS.
 
 ## 0.1.0 — 2026-11-04
 

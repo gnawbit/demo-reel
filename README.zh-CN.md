@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
-[![Version](https://img.shields.io/badge/version-0.1.0-6c5ce7)](package.json)
+[![Version](https://img.shields.io/badge/version-0.2.0-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.2.0)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 
 **把 Web 应用变成可重复生成的发布演示。**
@@ -57,7 +57,7 @@
 直接从本仓库安装 CLI：
 
 ```bash
-npm install --global git+https://github.com/gnawbit/demo-reel.git
+npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.2.0
 demo-reel setup
 demo-reel demo
 ```
