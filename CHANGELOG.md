@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Upgrade Sharp to 0.35.5 for patched image libraries; require Node.js 20.9 or newer.
 - Validate stories, marks and recorded timelines before execution; add a packaged JSON Schema and field-level JSON diagnostics.
 - Add machine-readable diagnostics, version and capability queries; keep diagnostics usable when dependencies are missing.
 - Wrap captions within the frame, prevent overlaps and preserve recording brightness under decorative frames.

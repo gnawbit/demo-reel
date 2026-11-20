@@ -5,7 +5,7 @@ license: MIT
 metadata:
   author: gnawbit
   repository: https://github.com/gnawbit/demo-reel
-  compatibility: Node.js 20+, Chromium via demo-reel setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
+  compatibility: Node.js 20.9+, Chromium via demo-reel setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
 ---
 
 # demo-reel

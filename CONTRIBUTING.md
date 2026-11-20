@@ -24,7 +24,7 @@ This starts the bundled app, records `examples/story.json`, and renders
 
 ## Code style
 
-- Node 20+, ESM, plain JavaScript. No build step.
+- Node 20.9+, ESM, plain JavaScript. No build step.
 - Keep the CLI dependency-light.
 - Prefer small modules in `scripts/lib/`.
 - Do not add a framework for a 200-line feature.

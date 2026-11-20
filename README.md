@@ -65,7 +65,7 @@ demo-reel setup
 demo-reel demo
 ```
 
-Requires Node 20+ and Git. Run `demo-reel` from your working directory;
+Requires Node 20.9+ and Git. Run `demo-reel` from your working directory;
 the bundled demo writes its output to `./demo`. On Linux, use
 `demo-reel setup --with-deps` if browser system libraries are missing.
 ffmpeg and ffprobe are included as dependencies.

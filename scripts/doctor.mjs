@@ -3,7 +3,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { findCjkFont, findFont } from "./lib/fonts.mjs";
 import { parseCommand } from "./lib/options.mjs";
-import { schemaVersion, version } from "./lib/metadata.mjs";
+import { nodeRange, schemaVersion, supportsNodeVersion, version } from "./lib/metadata.mjs";
 
 const exec = promisify(execFile);
 const reinstall = "Reinstall CLI dependencies (from source: npm ci).";
@@ -24,8 +24,8 @@ export async function diagnose({
       checks.push({ id, required, status: required ? "error" : "warning", detail: error.message, hint });
     }
   }
-  await check("node", true, "Install Node.js 20 or newer.", () => {
-    if (Number(nodeVersion.split(".")[0]) < 20) throw new Error(`Unsupported Node.js ${nodeVersion}`);
+  await check("node", true, `Install Node.js ${nodeRange}.`, () => {
+    if (!supportsNodeVersion(nodeVersion)) throw new Error(`Unsupported Node.js ${nodeVersion}`);
     return nodeVersion;
   });
   for (const id of ["ffmpeg", "ffprobe"]) {

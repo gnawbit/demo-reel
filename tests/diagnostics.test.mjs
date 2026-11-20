@@ -7,12 +7,17 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { diagnose } from "../scripts/doctor.mjs";
-import { version } from "../scripts/lib/metadata.mjs";
+import { supportsNodeVersion, version } from "../scripts/lib/metadata.mjs";
 
 const exec = promisify(execFile);
 const root = fileURLToPath(new URL("../", import.meta.url));
 const run = (args, dir = root) => exec(process.execPath, [path.join(dir, "bin/demo-reel.mjs"), ...args], {
   cwd: os.tmpdir(), windowsHide: true, timeout: 20000,
+});
+
+test("runtime requirement matches the native image dependency", () => {
+  for (const value of ["18.20.0", "20.0.0", "20.8.9"]) assert.equal(supportsNodeVersion(value), false);
+  for (const value of ["20.9.0", "20.19.0", "22.0.0", "24.18.0"]) assert.equal(supportsNodeVersion(value), true);
 });
 
 test("version and capabilities work outside the checkout", async () => {

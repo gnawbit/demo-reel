@@ -62,7 +62,7 @@ demo-reel setup
 demo-reel demo
 ```
 
-要求 Node 20+ 和 Git。可以在工作目录运行 `demo-reel`，内置示例会将结果写入
+要求 Node 20.9+ 和 Git。可以在工作目录运行 `demo-reel`，内置示例会将结果写入
 `./demo`。Linux 若缺少浏览器系统依赖，可用 `demo-reel setup --with-deps`。
 ffmpeg/ffprobe 随依赖安装。
 
