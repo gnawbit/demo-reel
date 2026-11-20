@@ -36,8 +36,14 @@ This starts the bundled app, records `examples/story.json`, and renders
 node --check bin/demo-reel.mjs
 for f in scripts/*.mjs scripts/lib/*.mjs; do node --check "$f"; done
 node bin/demo-reel.mjs doctor
-node bin/demo-reel.mjs demo
+npm test
 ```
+
+The tests cover password redaction, browser actions inside and outside the
+viewport, and a complete demo recording on an automatically assigned port.
+They check both video formats, decode the MP4s, and inspect the animated GIFs
+and posters. Test outputs are created in temporary directories and removed
+afterward. CI runs these checks on Linux and Windows with Node 20.
 
 If you change rendering, include a before/after GIF or MP4 in the PR.
 

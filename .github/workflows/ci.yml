@@ -6,8 +6,13 @@ on:
   pull_request:
 
 jobs:
-  syntax:
-    runs-on: ubuntu-latest
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -19,11 +24,18 @@ jobs:
       - run: npm ci
 
       - name: Syntax check
+        shell: bash
         run: |
           set -e
-          for f in bin/*.mjs scripts/*.mjs scripts/lib/*.mjs; do
+          for f in bin/*.mjs scripts/*.mjs scripts/lib/*.mjs tests/*.mjs; do
             node --check "$f"
           done
 
       - name: CLI help
         run: node bin/demo-reel.mjs help
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser and rendering regression tests
+        run: npm test
