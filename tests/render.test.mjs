@@ -12,7 +12,7 @@ import { ffmpeg } from "../scripts/lib/ffmpeg.mjs";
 const exec = promisify(execFile);
 const cli = fileURLToPath(new URL("../bin/demo-reel.mjs", import.meta.url));
 
-test("poster selection uses output frames and validates times before rendering", { timeout: 120000 }, async (t) => {
+test("rendering preserves brightness, caption timing and valid poster selection", { timeout: 120000 }, async (t) => {
   const temp = await mkdtemp(path.join(os.tmpdir(), "demo-reel-posters-"));
   t.after(() => rm(temp, { recursive: true, force: true }));
   const source = path.join(temp, "source.mp4");
@@ -35,7 +35,7 @@ test("poster selection uses output frames and validates times before rendering",
     assert.equal(metadata.height, height);
     const pixel = await image.extract({ left: width / 2, top: height / 2, width: 1, height: 1 })
       .removeAlpha().raw().toBuffer();
-    assert.ok(pixel[channel] > 150, `expected channel ${channel}, got ${[...pixel]}`);
+    assert.ok(pixel[channel] > 230, `frame overlays must preserve the source brightness, got ${[...pixel]}`);
     assert.ok(pixel[channel === 0 ? 2 : 0] < 30, `unexpected color: ${[...pixel]}`);
   };
 
@@ -56,6 +56,33 @@ test("poster selection uses output frames and validates times before rendering",
     await save({ video: "source.mp4", duration: 0.6, events: [], config: { posterAt: 0 } });
     await run("--poster-at", "0.599");
     await expectColor("poster.png", 1920, 1080, 2);
+  });
+
+  await t.test("a rapid next caption replaces the previous one in both layouts", async () => {
+    await save({ video: "source.mp4", marks: [
+      { t: 0, duration: 0, caption: "Wide words across the whole screen before the next caption", zoom: false },
+      { t: 0.2, duration: 0, caption: "B", zoom: false },
+    ] });
+    await exec(process.execPath, [cli, "render", "--config", config, "--out", out, "--no-gif", "--vertical"], {
+      windowsHide: true, timeout: 60000,
+    });
+    for (const [file, top, height] of [["poster.png", 910, 130], ["poster-9x16.png", 1420, 220]]) {
+      const { data, info } = await sharp(path.join(out, file)).extract({
+        left: 0, top, width: file === "poster.png" ? 1920 : 1080, height,
+      }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+      let centerInk = 0, outsideInk = 0;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < info.width; x++) {
+          const i = (y * info.width + x) * 3;
+          if (data[i] > 220 && data[i + 1] > 220 && data[i + 2] > 220) {
+            if (Math.abs(x - info.width / 2) < 100) centerInk++;
+            else outsideInk++;
+          }
+        }
+      }
+      assert.ok(centerInk > 20, "replacement caption must remain visible after its PNG input ends");
+      assert.equal(outsideInk, 0, "earlier wide caption must not linger underneath the next caption");
+    }
   });
 
   await t.test("invalid times preserve existing output", async () => {

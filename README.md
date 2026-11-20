@@ -12,7 +12,7 @@ English · [简体中文](README.zh-CN.md)
 
 <img src="docs/hero.gif" alt="demo-reel recording a SaaS dashboard, zooming into clicks and adding captions" width="100%">
 
-[Watch the 12s MP4](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
+[Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
 
 Describe a flow in JSON, or have your coding agent write it. demo-reel runs it
 in a real browser and renders MP4 + GIF with click zooms, a cursor, captions
@@ -191,6 +191,10 @@ Tips:
 - Add a short `wait` after an action so the result and caption can land.
 - Use `"zoom": false` when the interesting result is elsewhere on screen.
 - Captions state the benefit, not the UI label.
+
+On `main`, captions wrap to fit the frame and shrink modestly when needed.
+If a caption cannot fit at a readable size, rendering asks you to shorten it
+or split it across steps. A new caption replaces the previous one immediately.
 
 ### Camera movement
 

@@ -5,6 +5,7 @@ import sharp from "sharp";
 import { ffmpeg, probe } from "./lib/ffmpeg.mjs";
 import { findCjkFont, findFont, hasCjk } from "./lib/fonts.mjs";
 import { buildCameraFilter } from "./lib/camera.mjs";
+import { createCaptionLayers } from "./lib/captions.mjs";
 
 const LAYOUTS = {
   landscape: {
@@ -13,7 +14,7 @@ const LAYOUTS = {
     height: 1080,
     content: { x: 160, y: 122, w: 1600, h: 900 },
     frame: { type: "browser", x: 144, y: 70, w: 1632, h: 952 },
-    caption: { y: 930, size: 36, box: 16 },
+    caption: { y: 910, size: 36, box: 16, width: 1520, height: 130 },
     title: null,
     watermark: null,
     video: "demo-16x9.mp4",
@@ -28,7 +29,7 @@ const LAYOUTS = {
     height: 1920,
     content: { x: 40, y: 620, w: 1000, h: 562 },
     frame: { type: "card", x: 24, y: 604, w: 1032, h: 594 },
-    caption: { y: 1460, size: 42, box: 20 },
+    caption: { y: 1420, size: 42, box: 20, width: 960, height: 220 },
     title: { pillY: 180, domainY: 230, size: 30 },
     watermark: { y: 1800, size: 18 },
     video: "demo-9x16.mp4",
@@ -130,7 +131,12 @@ async function makeBrowserFrame(file, hostname, layout) {
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="22" stdDeviation="28" flood-color="#000000" flood-opacity="0.45"/>
     </filter>
+    <mask id="content-cutout">
+      <rect width="${layout.width}" height="${layout.height}" fill="white"/>
+      <rect x="${layout.content.x}" y="${layout.content.y}" width="${layout.content.w}" height="${layout.content.h}" fill="black"/>
+    </mask>
   </defs>
+  <g mask="url(#content-cutout)">
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="#0D1117" filter="url(#shadow)" opacity="0.25"/>
   <path d="M${x} ${y + 18}a18 18 0 0 1 18-18h${w - 36}a18 18 0 0 1 18 18v${bar - 18}H${x}z" fill="#0D1117"/>
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="none" stroke="#2A3140" stroke-width="1.5"/>
@@ -141,6 +147,7 @@ async function makeBrowserFrame(file, hostname, layout) {
   <rect x="${x + 104}" y="${y + 13}" width="560" height="26" rx="13" fill="#161B23" stroke="#262D3A"/>
   <text x="${x + 122}" y="${y + 30}" font-family="Arial, Segoe UI, sans-serif" font-size="12.5" fill="#8A93A6">${url}</text>
   <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="17" fill="none" stroke="#ffffff" stroke-opacity="0.04"/>
+  </g>
 </svg>`;
 
   await sharp(Buffer.from(svg)).png().toFile(file);
@@ -159,49 +166,20 @@ async function makeCardFrame(file, layout) {
       <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
       <stop offset="1" stop-color="#ffffff" stop-opacity="0.02"/>
     </linearGradient>
+    <mask id="content-cutout">
+      <rect width="${layout.width}" height="${layout.height}" fill="white"/>
+      <rect x="${layout.content.x}" y="${layout.content.y}" width="${layout.content.w}" height="${layout.content.h}" fill="black"/>
+    </mask>
   </defs>
+  <g mask="url(#content-cutout)">
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="22" fill="#0D1117" filter="url(#shadow)" opacity="0.3"/>
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="22" fill="none" stroke="#2A3140" stroke-width="1.5"/>
   <rect x="${x + 1.5}" y="${y + 1.5}" width="${w - 3}" height="${h - 3}" rx="20.5" fill="none" stroke="url(#edge)" stroke-width="1"/>
   <path d="M${x + 24} ${y + 1.5}H${x + w - 24}" stroke="#ffffff" stroke-opacity="0.10" stroke-width="1"/>
+  </g>
 </svg>`;
 
   await sharp(Buffer.from(svg)).png().toFile(file);
-}
-
-function buildCaptionFilters(events, durationSec, font, cjkFont, layout) {
-  if (!font) return "";
-
-  const withCaptions = events
-    .filter((e) => e.caption && Number.isFinite(e.tEnd ?? e.t))
-    .sort((a, b) => a.t - b.t);
-
-  if (withCaptions.length === 0) return "";
-
-  const { y, size, box } = layout.caption;
-  const filters = [];
-
-  for (let i = 0; i < withCaptions.length; i += 1) {
-    const start = (withCaptions[i].tEnd ?? withCaptions[i].t) / 1000;
-    const next = withCaptions[i + 1]
-      ? (withCaptions[i + 1].tEnd ?? withCaptions[i + 1].t) / 1000
-      : null;
-    let end = Math.min(next || start + 2.8, start + 2.8, durationSec);
-    if (end - start < 0.7) end = Math.min(start + 1.4, durationSec);
-    if (end <= start) continue;
-
-    const captionFont = hasCjk(withCaptions[i].caption) ? cjkFont || font : font;
-    const fontPath = fontPathForFilter(captionFont);
-    const text = escapeDrawtext(withCaptions[i].caption);
-
-    filters.push(
-      `drawtext=fontfile='${fontPath}':text='${text}':fontcolor=white:fontsize=${size}:` +
-        `box=1:boxcolor=0x0B0F19@0.74:boxborderw=${box}:` +
-        `x=(w-text_w)/2:y=${y}:enable='between(t,${start.toFixed(3)},${end.toFixed(3)})'`,
-    );
-  }
-
-  return filters.join(",");
 }
 
 function buildVerticalChrome(font, cjkFont, hostname, layout, vertical = {}, accent) {
@@ -314,13 +292,9 @@ async function renderLayout({
     contentH: layout.content.h,
   });
 
-  const captionFilter = buildCaptionFilters(
-    record.events || [],
-    durationSec,
-    font,
-    cjkFont,
-    layout,
-  );
+  const captions = await createCaptionLayers({
+    events: record.events || [], durationSec, font, cjkFont, layout, assetsDir,
+  });
   const chromeFilter = buildVerticalChrome(
     font,
     cjkFont,
@@ -329,21 +303,26 @@ async function renderLayout({
     record.config?.vertical || {},
     record.config?.brand?.accent,
   );
-  const overlayFilters = [captionFilter, chromeFilter].filter(Boolean).join(",");
-
   const graph = [
     `[0:v]scale=${layout.width}:${layout.height}[bg]`,
     `[1:v]${camera.filter}[base]`,
     `[bg][base]overlay=${layout.content.x}:${layout.content.y}:format=auto[comp]`,
     `[comp][2:v]overlay=0:0[out]`,
-    overlayFilters ? `[out]${overlayFilters}[v]` : `[out]null[v]`,
   ];
+  let lastLayer = "out";
+  captions.forEach((caption, i) => {
+    graph.push(`[${lastLayer}][${i + 3}:v]overlay=${caption.x}:${caption.y}:` +
+      `enable='gte(t,${caption.start})*lt(t,${caption.end})'[caption${i}]`);
+    lastLayer = `caption${i}`;
+  });
+  graph.push(chromeFilter ? `[${lastLayer}]${chromeFilter}[v]` : `[${lastLayer}]null[v]`);
 
   const outputPath = path.join(outDir, layout.video);
   await ffmpeg([
-    "-loop", "1", "-i", bgPath,
+    "-loop", "1", "-framerate", "30", "-i", bgPath,
     "-i", videoPath,
-    "-loop", "1", "-i", framePath,
+    "-i", framePath,
+    ...captions.flatMap((caption) => ["-i", caption.file]),
     "-filter_complex", graph.join(";"),
     "-map", "[v]",
     "-an",

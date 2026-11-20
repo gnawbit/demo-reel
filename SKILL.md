@@ -183,7 +183,9 @@ Avoid brittle selectors like `div > div:nth-child(4) > button`.
 - Captions state the benefit, not the UI label:
   - Good: "Ship a landing page in 30 seconds"
   - Bad: "Click the button"
-- Keep captions under 60 characters.
+- Keep captions under 60 characters. On `main`, captions wrap inside the frame;
+  if the renderer reports that one is too long, shorten it or split it across
+  steps. New captions replace earlier ones without overlap.
 - End on the result, not on a menu.
 - No audio in v0.1.
 
