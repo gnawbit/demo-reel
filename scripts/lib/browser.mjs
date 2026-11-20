@@ -129,6 +129,7 @@ export async function resolveLocator(page, step) {
 }
 
 export async function moveAndClick(page, locator, pause = 700) {
+  await locator.scrollIntoViewIfNeeded();
   const box = await locator.boundingBox();
   if (!box) throw new Error("Element has no bounding box");
 
@@ -146,6 +147,7 @@ export async function moveAndClick(page, locator, pause = 700) {
 }
 
 export async function clickAndType(page, locator, text, pause = 500) {
+  await locator.scrollIntoViewIfNeeded();
   const box = await locator.boundingBox();
   if (!box) throw new Error("Element has no bounding box");
 
@@ -165,6 +167,7 @@ export async function clickAndType(page, locator, text, pause = 500) {
 }
 
 export async function dragBy(page, locator, dx, dy = 0, steps = 24, pause = 600) {
+  await locator.scrollIntoViewIfNeeded();
   const box = await locator.boundingBox();
   if (!box) throw new Error("Element has no bounding box");
 
@@ -186,6 +189,7 @@ export async function dragBy(page, locator, dx, dy = 0, steps = 24, pause = 600)
 }
 
 export async function hover(page, locator, pause = 500) {
+  await locator.scrollIntoViewIfNeeded();
   const box = await locator.boundingBox();
   if (!box) throw new Error("Element has no bounding box");
   const x = box.x + box.width / 2;
