@@ -25,7 +25,7 @@ test("installed package sets up and renders a demo outside its checkout", { time
   const packed = await npm(["pack", "--json", "--pack-destination", temp], root);
   const [pkg] = JSON.parse(packed.stdout);
   assert.equal(pkg.name, "@gnawbit/demo-reel");
-  for (const required of ["bin/demo-reel.mjs", "scripts/setup.mjs", "examples/story.json", "examples/site/index.html", "SKILL.md"]) {
+  for (const required of ["bin/demo-reel.mjs", "scripts/setup.mjs", "examples/story.json", "examples/stories/readme.json", "examples/stories/release.json", "examples/site/index.html", "SKILL.md"]) {
     assert.ok(pkg.files.some((file) => file.path === required), `${required} must be packaged`);
   }
   assert.equal(pkg.files.some((file) => /^(?:\.serena|\.github|tests|demo|docs)\//.test(file.path)), false);
@@ -46,6 +46,25 @@ test("installed package sets up and renders a demo outside its checkout", { time
   assert.equal(record.url, serverUrl, "recording must use the server's port");
   assert.deepEqual(record.events.map((event) => event.action), ["click", "type", "click", "click"]);
 
+  await verifyOutput(out);
+  for (const [story, project] of [["readme", "Launch plan"], ["release", "Release notes"]]) {
+    await t.test(`installed ${story} story reaches its result`, async () => {
+      const storyOut = path.join(consumer, story);
+      await exec(process.execPath, [
+        installedCli, "demo", "--story", story, "--port", "0", "--out", storyOut,
+      ], { cwd: consumer, windowsHide: true, timeout: 150000 });
+      const timeline = JSON.parse(await readFile(path.join(storyOut, "record.json"), "utf8"));
+      assert.ok(timeline.events.some((event) => event.action === "type" && event.label === project));
+      // Each story waits for its created card; recording fails if the flow breaks.
+      await verifyOutput(storyOut);
+    });
+  }
+  await assert.rejects(exec(process.execPath, [
+    installedCli, "demo", "--story", "../unknown", "--port", "not-a-port",
+  ], { cwd: consumer, windowsHide: true }), /Unknown demo story/);
+});
+
+async function verifyOutput(out) {
   for (const [video, gif, poster, width, height] of [
     ["demo-16x9.mp4", "demo.gif", "poster.png", 1920, 1080],
     ["demo-9x16.mp4", "demo-9x16.gif", "poster-9x16.png", 1080, 1920],
@@ -75,4 +94,4 @@ test("installed package sets up and renders a demo outside its checkout", { time
     const stats = await posterImage.stats();
     assert.ok(stats.channels.some((channel) => channel.stdev > 1), "poster must not be blank");
   }
-});
+}

@@ -11,8 +11,18 @@ export async function demo(argv) {
     options: {
       out: { type: "string", default: "demo" },
       port: { type: "string", default: "4173" },
+      story: { type: "string", default: "onboarding" },
     },
   });
+
+  const stories = new Map([
+    ["onboarding", "../examples/story.json"],
+    ["readme", "../examples/stories/readme.json"],
+    ["release", "../examples/stories/release.json"],
+  ]);
+  if (!stories.has(values.story)) {
+    throw new Error("Unknown demo story. Choose readme, onboarding or release.");
+  }
 
   const server = await startServer({
     port: Number(values.port),
@@ -23,7 +33,7 @@ export async function demo(argv) {
     console.log(`Demo site: ${server.url}\n`);
     await record([
       "--config",
-      fileURLToPath(new URL("../examples/story.json", import.meta.url)),
+      fileURLToPath(new URL(stories.get(values.story), import.meta.url)),
       "--url",
       server.url,
       "--out",

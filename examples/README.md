@@ -1,20 +1,71 @@
 # Examples
 
-Two ways to drive demo-reel:
+Three runnable recipes use **Northstar, the fictional app bundled in this repo**.
+They illustrate recording workflows, not external customer adoption. No account,
+credentials or external service is required.
 
-## 1. Record a URL
+Run from a source checkout of `main` after `npm ci` and
+`node bin/demo-reel.mjs setup`. The `--story` presets are not in `v0.2.0`.
 
-[`story.json`](story.json) uses a URL and a list of Playwright steps:
+| Task | Story | Preview |
+|---|---|---|
+| README GIF: create a project in three interactions | [readme.json](stories/readme.json) | [Result](../docs/examples/readme.webp) |
+| First-project onboarding: name, template, result | [story.json](story.json) | [Video](../docs/hero.mp4) |
+| Repeat a release demo with Chinese captions and portrait branding | [release.json](stories/release.json) | [Portrait](../docs/examples/release.webp) |
+
+## README GIF
 
 ```bash
-node bin/demo-reel.mjs record --config examples/story.json --out demo
-node bin/demo-reel.mjs render --config demo/record.json --vertical
+node bin/demo-reel.mjs demo --story readme --port 0 --out demo-readme
 ```
 
-The bundled site is served by `node bin/demo-reel.mjs serve --port 4173` or by
-`node bin/demo-reel.mjs demo`.
+Use `demo-readme/demo.gif` for a README or `demo-16x9.mp4` for a landing page.
+The final card should say **Launch plan**. Inspect the GIF before copying it
+into a public docs directory.
 
-## 2. Use an existing recording
+## First-project onboarding
+
+```bash
+node bin/demo-reel.mjs demo --story onboarding --port 0 --out demo-onboarding
+```
+
+The four interactions open the form, enter **Q4 Launch**, choose **Campaign**
+and create the project. This is also the default `demo` story.
+
+## Refresh release assets
+
+```bash
+node bin/demo-reel.mjs demo --story release --port 0 --out demo-release
+```
+
+The result card says **Release notes**. The 9:16 output demonstrates Chinese
+captions and custom title lines; `doctor` reports whether a CJK font is available.
+Run the same story into a new output directory after a UI change, then compare
+the result and adjust only the locators or copy affected by that change.
+
+To change a poster without recording again:
+
+```bash
+node bin/demo-reel.mjs render --config demo-release/record.json --poster-at 4 --vertical
+```
+
+Each recipe starts and stops its own server. `--port 0` picks an available port.
+All recipes export landscape and portrait MP4s, GIFs, posters and `record.json`.
+
+## Adapt a story to your app
+
+Copy a story, replace `url`, `displayUrl`, names and selectors, then run:
+
+```bash
+node bin/demo-reel.mjs plan --url http://localhost:3000
+node bin/demo-reel.mjs record --config my-story.json --out demo-my-app
+node bin/demo-reel.mjs render --config demo-my-app/record.json --vertical
+```
+
+Keep a `waitFor` step for the final visible result so a broken flow fails before
+rendering. Use a new output directory when keeping an earlier recording for comparison.
+
+## Use an existing recording
 
 [`story-video.json`](story-video.json) uses a recording plus normalized `marks`:
 

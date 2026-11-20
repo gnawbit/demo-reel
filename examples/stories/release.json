@@ -1,0 +1,48 @@
+{
+  "url": "http://127.0.0.1:4173",
+  "displayUrl": "northstar.app",
+  "viewport": { "width": 1440, "height": 810 },
+  "initialWait": 700,
+  "tail": 1800,
+  "vertical": {
+    "badge": "RELEASE DEMO",
+    "titleLines": ["一个故事文件", "更新发布演示"],
+    "subtitle": "重复运行 · 本地生成",
+    "cta": "demo-reel",
+    "watermark": false
+  },
+  "steps": [
+    { "action": "wait", "ms": 300 },
+    {
+      "action": "click",
+      "role": "button",
+      "name": "New project",
+      "pause": 700,
+      "zoom": false,
+      "caption": "从一个新项目开始"
+    },
+    {
+      "action": "type",
+      "selector": "input[name=project-name]",
+      "value": "Release notes",
+      "pause": 700,
+      "caption": "为这次发布起个名字"
+    },
+    {
+      "action": "click",
+      "role": "button",
+      "name": "Sprint",
+      "pause": 900,
+      "caption": "选择团队的工作模板"
+    },
+    {
+      "action": "click",
+      "role": "button",
+      "name": "Create project",
+      "pause": 1000,
+      "zoom": false,
+      "caption": "新项目已准备就绪"
+    },
+    { "action": "waitFor", "selector": "#project-grid .project-name:text-is('Release notes')" }
+  ]
+}

@@ -186,6 +186,8 @@ demo/
 
 ### 封面
 
+此功能在 `main` 分支可用，尚未包含在 `v0.2.0` 发布版中。
+
 封面默认取接近片尾的一帧，展示操作结果。在故事或录屏标记配置的顶层设置
 `"posterAt": 4.5` 可以指定画面；已有时间线可用
 `render --config demo/record.json --poster-at 4.5` 覆盖，无需重新录制。
@@ -261,6 +263,15 @@ demo-reel 不会向你要密码，也不会上传 cookie。
 | 示例 | 故事 | 输出 |
 |---|---|---|
 | Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
+
+Northstar 是内置的虚构应用。三个[可运行示例](examples/README.md)分别展示
+README 动图、首次创建项目，以及重复生成发布素材。从 `main` 源码目录运行：
+
+```bash
+node bin/demo-reel.mjs demo --story readme --port 0 --out demo-readme
+node bin/demo-reel.mjs demo --story onboarding --port 0 --out demo-onboarding
+node bin/demo-reel.mjs demo --story release --port 0 --out demo-release
+```
 
 ## 用已有录屏
 

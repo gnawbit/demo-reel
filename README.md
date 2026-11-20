@@ -194,6 +194,8 @@ Tips:
 
 ### Posters
 
+Available on `main`; not included in the `v0.2.0` release.
+
 Posters use a frame near the end to show the result. Set `"posterAt": 4.5`
 at the top level of a story or recording-marks config to choose another frame.
 For an existing timeline, `render --config demo/record.json --poster-at 4.5`
@@ -273,6 +275,16 @@ SPAs and authenticated pages.
 | Example | Story | Output |
 |---|---|---|
 | Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
+
+Northstar is a fictional bundled app. Try three [runnable recipes](examples/README.md)
+for a README GIF, first-project onboarding and repeatable release assets.
+The presets are available from a checkout of `main`:
+
+```bash
+node bin/demo-reel.mjs demo --story readme --port 0 --out demo-readme
+node bin/demo-reel.mjs demo --story onboarding --port 0 --out demo-onboarding
+node bin/demo-reel.mjs demo --story release --port 0 --out demo-release
+```
 
 ## Use an existing screen recording
 

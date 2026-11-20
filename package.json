@@ -10,6 +10,7 @@
     "bin/",
     "scripts/",
     "examples/site/",
+    "examples/stories/",
     "examples/story.json",
     "examples/story-video.json",
     "SKILL.md",

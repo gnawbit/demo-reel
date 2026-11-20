@@ -24,6 +24,10 @@ background, then renders MP4 + GIF with ffmpeg.
   [Use an existing recording](#when-the-url-cannot-be-recorded).
 - Output: MP4, animated GIF, poster and a reusable timeline in the chosen
   output directory. Return paths to the generated files after inspecting them.
+- For a runnable reference, see [example recipes](examples/README.md):
+  `demo --story readme|onboarding|release --port 0`. These use a fictional bundled
+  app; adapt the story to the user's real flow. Presets and poster selection
+  require the current `main` checkout and are not included in `v0.2.0`.
 
 ## When to use this skill
 

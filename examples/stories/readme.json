@@ -1,0 +1,34 @@
+{
+  "url": "http://127.0.0.1:4173",
+  "displayUrl": "northstar.app",
+  "viewport": { "width": 1440, "height": 810 },
+  "initialWait": 700,
+  "tail": 1600,
+  "steps": [
+    { "action": "wait", "ms": 300 },
+    {
+      "action": "click",
+      "role": "button",
+      "name": "New project",
+      "pause": 500,
+      "zoom": false,
+      "caption": "Turn an idea into a project"
+    },
+    {
+      "action": "type",
+      "selector": "input[name=project-name]",
+      "value": "Launch plan",
+      "pause": 600,
+      "caption": "Give the team a starting point"
+    },
+    {
+      "action": "click",
+      "role": "button",
+      "name": "Create project",
+      "pause": 900,
+      "zoom": false,
+      "caption": "Ready for the next step"
+    },
+    { "action": "waitFor", "selector": "#project-grid .project-name:text-is('Launch plan')" }
+  ]
+}

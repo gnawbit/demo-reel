@@ -9,7 +9,7 @@ Usage:
   demo-reel record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
   demo-reel render  --config demo.json [--out demo] [--video recording.mp4] [--vertical] [--no-gif]
   demo-reel serve   [--port 4173] [--dir examples/site]
-  demo-reel demo    [--out demo]
+  demo-reel demo    [--story readme|onboarding|release] [--out demo]
 
 Examples:
   demo-reel init --url https://your-app.com
