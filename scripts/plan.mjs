@@ -108,7 +108,7 @@ export async function plan(argv) {
 
           const text = (
             el.innerText ||
-            el.value ||
+            (el.type === "password" ? "" : el.value) ||
             el.getAttribute("aria-label") ||
             el.getAttribute("placeholder") ||
             el.getAttribute("title") ||
