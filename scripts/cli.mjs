@@ -29,6 +29,7 @@ Options:
   --video             Use an existing screen recording; the config needs "marks".
   --no-gif            Skip GIF export.
   --poster-at         Choose the poster time in output seconds, e.g. 4.5.
+  --zoom-duration     Ease between click targets in seconds (default 0.35; 0 for cuts).
 `;
 
 export async function main(argv) {

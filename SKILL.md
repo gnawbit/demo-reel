@@ -210,6 +210,10 @@ Options:
 
 ### 4. Render
 
+On `main`, zoom transitions default to 0.35 seconds. Set top-level `zoomDuration`
+or pass `--zoom-duration 0.5`; `0` uses cuts. `zoom: false` returns to overview.
+This camera behavior is not included in `v0.2.0`.
+
 Posters default to a frame near the end. Set top-level `posterAt` in the story
 or marks config, or pass `--poster-at 4.5` to override a saved timeline.
 Use seconds from the trimmed output, from zero up to (excluding) its duration.

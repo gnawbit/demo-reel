@@ -192,6 +192,14 @@ Tips:
 - Use `"zoom": false` when the interesting result is elsewhere on screen.
 - Captions state the benefit, not the UI label.
 
+### Camera movement
+
+On `main`, click zooms ease between targets over 0.35 seconds. Set top-level
+`"zoomDuration": 0.5` in a story or marks config, or override it with
+`render --config demo/record.json --zoom-duration 0.5`. Use `0` for immediate
+cuts and `"zoom": false` on a step to return to the full view. Rapid clicks
+continue from the current camera position. This is not in `v0.2.0`.
+
 ### Posters
 
 Available on `main`; not included in the `v0.2.0` release.

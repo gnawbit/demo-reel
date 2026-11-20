@@ -4,6 +4,7 @@ import { parseArgs } from "node:util";
 import sharp from "sharp";
 import { ffmpeg, probe } from "./lib/ffmpeg.mjs";
 import { findCjkFont, findFont, hasCjk } from "./lib/fonts.mjs";
+import { buildCameraFilter } from "./lib/camera.mjs";
 
 const LAYOUTS = {
   landscape: {
@@ -37,8 +38,6 @@ const LAYOUTS = {
     gifFps: 12,
   },
 };
-
-const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
 
 function hexToRgb(hex) {
   const clean = String(hex || "#070A12").replace("#", "");
@@ -170,88 +169,6 @@ async function makeCardFrame(file, layout) {
   await sharp(Buffer.from(svg)).png().toFile(file);
 }
 
-function buildSegments(events, durationSec) {
-  const pts = events
-    .filter((e) => Number.isFinite(e.t) && Number.isFinite(e.x) && Number.isFinite(e.y))
-    .map((e) => ({ ...e, sec: e.t / 1000 }))
-    .filter((e) => e.sec > 0.05 && e.sec < durationSec - 0.05)
-    .sort((a, b) => a.sec - b.sec);
-
-  if (pts.length === 0) return [{ start: 0, end: durationSec, focus: null }];
-
-  const segments = [];
-  let start = 0;
-
-  for (let i = 0; i < pts.length; i += 1) {
-    const end = pts[i].sec;
-    if (end - start > 0.25) {
-      const previous = i > 0 ? pts[i - 1] : null;
-      segments.push({
-        start,
-        end,
-        focus: previous && previous.zoom !== false ? previous : null,
-      });
-      start = end;
-    }
-  }
-
-  if (durationSec - start > 0.25) {
-    const last = pts[pts.length - 1];
-    segments.push({
-      start,
-      end: durationSec,
-      focus: last && last.zoom !== false ? last : null,
-    });
-  }
-
-  return segments.length ? segments : [{ start: 0, end: durationSec, focus: null }];
-}
-
-function buildVideoFilter({
-  segments,
-  videoW,
-  videoH,
-  scale,
-  zoom,
-  videoOffset = 0,
-  contentW,
-  contentH,
-}) {
-  const N = segments.length;
-  const split =
-    N > 1 ? `[1:v]split=${N}${segments.map((_, i) => `[v${i}]`).join("")};` : "";
-  const segmentFilters = [];
-
-  segments.forEach((seg, i) => {
-    const input = N > 1 ? `[v${i}]` : "[1:v]";
-    const trimStart = videoOffset + seg.start;
-    const trimEnd = videoOffset + seg.end;
-    const trim = `trim=start=${trimStart.toFixed(3)}:end=${trimEnd.toFixed(3)},setpts=PTS-STARTPTS`;
-    let crop = "";
-
-    if (seg.focus) {
-      const cw = Math.max(2, Math.round(videoW / zoom / 2) * 2);
-      const ch = Math.max(2, Math.round(videoH / zoom / 2) * 2);
-      const fx = seg.focus.x * scale;
-      const fy = seg.focus.y * scale;
-      const cx = Math.round(clamp(fx - cw / 2, 0, videoW - cw) / 2) * 2;
-      const cy = Math.round(clamp(fy - ch / 2, 0, videoH - ch) / 2) * 2;
-      crop = `,crop=${cw}:${ch}:${cx}:${cy},scale=${contentW}:${contentH}:flags=lanczos,setsar=1`;
-    } else {
-      crop = `,scale=${contentW}:${contentH}:force_original_aspect_ratio=increase,crop=${contentW}:${contentH},setsar=1`;
-    }
-
-    segmentFilters.push(`${input}${trim}${crop}[s${i}]`);
-  });
-
-  const concat =
-    N > 1
-      ? `${segments.map((_, i) => `[s${i}]`).join("")}concat=n=${N}:v=1:a=0[base]`
-      : "[s0]null[base]";
-
-  return `${split}${segmentFilters.join(";")};${concat}`;
-}
-
 function buildCaptionFilters(events, durationSec, font, cjkFont, layout) {
   if (!font) return "";
 
@@ -364,6 +281,7 @@ async function renderLayout({
   durationSec,
   videoOffset,
   zoom,
+  zoomDuration,
   font,
   cjkFont,
   hostname,
@@ -383,13 +301,14 @@ async function renderLayout({
     await makeCardFrame(framePath, layout);
   }
 
-  const segments = buildSegments(record.events || [], durationSec);
-  const videoFilter = buildVideoFilter({
-    segments,
+  const camera = buildCameraFilter({
+    events: record.events || [],
+    durationSec,
     videoW,
     videoH,
     scale: Number(record.scale || 1),
     zoom,
+    transition: zoomDuration,
     videoOffset,
     contentW: layout.content.w,
     contentH: layout.content.h,
@@ -414,7 +333,7 @@ async function renderLayout({
 
   const graph = [
     `[0:v]scale=${layout.width}:${layout.height}[bg]`,
-    videoFilter,
+    `[1:v]${camera.filter}[base]`,
     `[bg][base]overlay=${layout.content.x}:${layout.content.y}:format=auto[comp]`,
     `[comp][2:v]overlay=0:0[out]`,
     overlayFilters ? `[out]${overlayFilters}[v]` : `[out]null[v]`,
@@ -463,7 +382,7 @@ async function renderLayout({
   ]);
   console.log(`Poster: ${posterPath} (${posterAt.toFixed(2)}s)`);
 
-  return { outputPath, segments };
+  return { outputPath, moves: camera.moves };
 }
 
 function marksToEvents(marks, videoW, videoH) {
@@ -499,6 +418,7 @@ export async function render(argv) {
       "no-captions": { type: "boolean", default: false },
       vertical: { type: "boolean", default: false },
       zoom: { type: "string", default: "1.28" },
+      "zoom-duration": { type: "string" },
       "poster-at": { type: "string" },
     },
   });
@@ -597,7 +517,16 @@ export async function render(argv) {
     durationSec - Math.min(0.5, durationSec / 10)
   )) * 30) / 30;
 
-  const zoom = Math.max(1, Number(values.zoom || 1.28));
+  const zoom = Number(values.zoom);
+  if (!Number.isFinite(zoom) || zoom < 1 || zoom > 10) {
+    throw new Error("--zoom must be a number between 1 and 10");
+  }
+  const zoomDuration = values["zoom-duration"] === undefined
+    ? (record.config?.zoomDuration ?? 0.35)
+    : (values["zoom-duration"].trim() === "" ? NaN : Number(values["zoom-duration"]));
+  if (typeof zoomDuration !== "number" || !Number.isFinite(zoomDuration) || zoomDuration < 0) {
+    throw new Error("zoomDuration / --zoom-duration must be a non-negative number of seconds");
+  }
   const font = values["no-captions"] ? null : findFont();
   const cjkFont = values["no-captions"] ? null : findCjkFont();
   if (!values["no-captions"] && !font) {
@@ -622,6 +551,7 @@ export async function render(argv) {
       durationSec,
       videoOffset,
       zoom,
+      zoomDuration,
       font,
       cjkFont,
       hostname,
@@ -631,7 +561,7 @@ export async function render(argv) {
   }
 
   console.log(
-    `\nDone. ${last?.segments.length || 0} segment(s), ${durationSec.toFixed(1)}s` +
+    `\nDone. ${last?.moves.length || 0} camera move(s), ${durationSec.toFixed(1)}s` +
       (values.vertical ? ", 16:9 + 9:16" : "") +
       ".\n",
   );

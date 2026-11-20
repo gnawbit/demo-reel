@@ -67,6 +67,13 @@ test("poster selection uses output frames and validates times before rendering",
       await save({ video: "source.mp4", marks: [], posterAt });
       await assert.rejects(run(), /posterAt \/ --poster-at must be a number/);
     }
+    await save({ video: "source.mp4", marks: [] });
+    for (const value of ["-1", "NaN", "Infinity", ""]) {
+      await assert.rejects(run(`--zoom-duration=${value}`), /--zoom-duration must be a non-negative number/);
+    }
+    for (const value of ["0", "NaN", "Infinity", "11"]) {
+      await assert.rejects(run(`--zoom=${value}`), /--zoom must be a number/);
+    }
     assert.deepEqual(await readFile(path.join(out, "demo-16x9.mp4")), before);
   });
 });
