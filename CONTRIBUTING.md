@@ -9,7 +9,7 @@ a story file, a browser, a renderer.
 git clone https://github.com/gnawbit/demo-reel
 cd demo-reel
 npm install
-npx playwright install chromium
+node bin/demo-reel.mjs setup
 node bin/demo-reel.mjs doctor
 ```
 
@@ -41,6 +41,10 @@ npm test
 
 The tests cover password redaction, browser actions inside and outside the
 viewport, and a complete demo recording on an automatically assigned port.
+The demo test packs and installs the CLI into a temporary consumer project,
+runs browser setup, and records from outside the source checkout. Use
+`npm test` so the test can locate the active npm CLI; installation requires
+access to the configured npm registry.
 They check both video formats, decode the MP4s, and inspect the animated GIFs
 and posters. Test outputs are created in temporary directories and removed
 afterward. CI runs these checks on Linux, Windows and macOS with Node 20.

@@ -1,5 +1,6 @@
 import path from "node:path";
 import { parseArgs } from "node:util";
+import { fileURLToPath } from "node:url";
 import { record } from "./record.mjs";
 import { render } from "./render.mjs";
 import { startServer } from "./serve.mjs";
@@ -22,7 +23,7 @@ export async function demo(argv) {
     console.log(`Demo site: ${server.url}\n`);
     await record([
       "--config",
-      "examples/story.json",
+      fileURLToPath(new URL("../examples/story.json", import.meta.url)),
       "--url",
       server.url,
       "--out",

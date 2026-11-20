@@ -54,19 +54,32 @@
 
 ## 安装
 
-先从源码安装 CLI 和渲染依赖：
+直接从本仓库安装 CLI：
+
+```bash
+npm install --global git+https://github.com/gnawbit/demo-reel.git
+demo-reel setup
+demo-reel demo
+```
+
+要求 Node 20+ 和 Git。可以在工作目录运行 `demo-reel`，内置示例会将结果写入
+`./demo`。Linux 若缺少浏览器系统依赖，可用 `demo-reel setup --with-deps`。
+ffmpeg/ffprobe 随依赖安装。
+
+包名为 `@gnawbit/demo-reel`，目前通过 GitHub 分发。
+npm 上不带作用域的 `demo-reel` 属于另一个项目。
+
+参与开发时，从源码安装：
 
 ```bash
 git clone https://github.com/gnawbit/demo-reel
 cd demo-reel
 npm ci
-npx playwright install chromium
+node bin/demo-reel.mjs setup
 node bin/demo-reel.mjs doctor
 ```
 
-要求：Node 20+。ffmpeg/ffprobe 由 npm 包提供，不需要系统安装。以下命令均在此仓库目录运行。
-
-npm 上名为 `demo-reel` 的包属于另一个项目，请使用上述源码安装方式。
+以下示例使用源码目录；全局安装后，将 `node bin/demo-reel.mjs` 替换为 `demo-reel` 即可。
 
 CLI 环境就绪后，可安装 agent 工作流：
 
@@ -74,7 +87,7 @@ CLI 环境就绪后，可安装 agent 工作流：
 npx skills add gnawbit/demo-reel
 ```
 
-将 demo-reel 仓库所在目录告知编程助手，Skill 会使用其中的脚本和依赖分析、录制及渲染应用。
+将全局 CLI 或源码目录的位置告知编程助手即可。
 
 ## 快速开始
 
@@ -186,6 +199,7 @@ demo/
 | 命令 | 作用 |
 |---|---|
 | `demo-reel doctor` | 检查 Node、Chromium、ffmpeg、字体 |
+| `demo-reel setup` | 安装与当前 CLI 匹配的 Chromium |
 | `demo-reel init --url <url>` | 创建可编辑的故事文件 |
 | `demo-reel plan --url <url>` | 截图 + 列出可交互元素 |
 | `demo-reel record --config demo.json` | 录制故事 |

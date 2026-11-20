@@ -57,21 +57,34 @@ edit and run again after a release.
 
 ## Install
 
-Install the CLI and rendering dependencies from source:
+Install the CLI directly from this repository:
+
+```bash
+npm install --global git+https://github.com/gnawbit/demo-reel.git
+demo-reel setup
+demo-reel demo
+```
+
+Requires Node 20+ and Git. Run `demo-reel` from your working directory;
+the bundled demo writes its output to `./demo`. On Linux, use
+`demo-reel setup --with-deps` if browser system libraries are missing.
+ffmpeg and ffprobe are included as dependencies.
+
+The package identity is `@gnawbit/demo-reel`; distribution is currently through
+GitHub. The unscoped npm package `demo-reel` is a different project.
+
+For development, install from a checkout:
 
 ```bash
 git clone https://github.com/gnawbit/demo-reel
 cd demo-reel
 npm ci
-npx playwright install chromium
+node bin/demo-reel.mjs setup
 node bin/demo-reel.mjs doctor
 ```
 
-Requirements: Node 20+. ffmpeg and ffprobe come from npm packages; no system
-install needed. Run the commands below from this checkout.
-
-The npm package named `demo-reel` is a different project; use the source
-installation above.
+The examples below use the source checkout. With the global installation,
+replace `node bin/demo-reel.mjs` with `demo-reel`.
 
 To add the agent workflow after setting up the CLI:
 
@@ -79,8 +92,7 @@ To add the agent workflow after setting up the CLI:
 npx skills add gnawbit/demo-reel
 ```
 
-Tell your agent where the demo-reel checkout is. The skill uses its scripts
-and installed dependencies to plan, record and render your app.
+Tell your agent whether to use the global CLI or a source checkout.
 
 ## Quickstart
 
@@ -193,6 +205,7 @@ demo-reel mark. Chinese text automatically uses a CJK font.
 | Command | What it does |
 |---|---|
 | `demo-reel doctor` | Check Node, Chromium, ffmpeg, fonts |
+| `demo-reel setup` | Install the Chromium version used by this CLI |
 | `demo-reel init --url <url>` | Create an editable story file |
 | `demo-reel plan --url <url>` | Screenshot + list interactive elements |
 | `demo-reel record --config demo.json` | Record the story |

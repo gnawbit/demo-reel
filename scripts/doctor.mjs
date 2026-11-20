@@ -49,7 +49,7 @@ export async function doctor() {
     ok: Boolean(chromiumPath) && existsSync(chromiumPath),
     label: "Playwright Chromium",
     detail: chromiumPath || "not found",
-    hint: "Run: npx playwright install chromium",
+    hint: "Run: demo-reel setup (from source: node bin/demo-reel.mjs setup)",
   });
 
   checks.push({

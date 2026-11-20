@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -12,13 +12,32 @@ import { FFMPEG, probe } from "../scripts/lib/ffmpeg.mjs";
 const exec = promisify(execFile);
 const root = fileURLToPath(new URL("../", import.meta.url));
 
-test("demo records its own server and renders complete media", { timeout: 180000 }, async (t) => {
-  const out = await mkdtemp(path.join(os.tmpdir(), "demo-reel-demo-"));
-  t.after(() => rm(out, { recursive: true, force: true }));
+test("installed package sets up and renders a demo outside its checkout", { timeout: 300000 }, async (t) => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), "demo-reel-package-"));
+  t.after(() => rm(temp, { recursive: true, force: true }));
+  const consumer = path.join(temp, "consumer app");
+  const out = path.join(consumer, "demo");
+  await mkdir(consumer);
+  assert.ok(process.env.npm_execpath, "Run this integration test with npm test");
+  const npm = (args, cwd) => exec(process.execPath, [process.env.npm_execpath, ...args], {
+    cwd, windowsHide: true, timeout: 120000,
+  });
+  const packed = await npm(["pack", "--json", "--pack-destination", temp], root);
+  const [pkg] = JSON.parse(packed.stdout);
+  assert.equal(pkg.name, "@gnawbit/demo-reel");
+  for (const required of ["bin/demo-reel.mjs", "scripts/setup.mjs", "examples/story.json", "examples/site/index.html", "SKILL.md"]) {
+    assert.ok(pkg.files.some((file) => file.path === required), `${required} must be packaged`);
+  }
+  assert.equal(pkg.files.some((file) => /^(?:\.serena|\.github|tests|demo|docs)\//.test(file.path)), false);
+  await npm(["install", "--no-audit", "--no-fund", "--package-lock=false", path.join(temp, pkg.filename)], consumer);
+  const installedCli = path.join(consumer, "node_modules", "@gnawbit", "demo-reel", "bin", "demo-reel.mjs");
+  await exec(process.execPath, [installedCli, "setup"], {
+    cwd: consumer, windowsHide: true, timeout: 60000,
+  });
 
   const { stdout } = await exec(process.execPath, [
-    "bin/demo-reel.mjs", "demo", "--port", "0", "--out", out,
-  ], { cwd: root, windowsHide: true, timeout: 150000 });
+    installedCli, "demo", "--port", "0",
+  ], { cwd: consumer, windowsHide: true, timeout: 150000 });
   const serverUrl = stdout.match(/Demo site: (http:\/\/127\.0\.0\.1:\d+)/)?.[1];
   assert.ok(serverUrl, "demo must report the listening URL");
   assert.notEqual(new URL(serverUrl).port, "0", "URL must contain the assigned port");

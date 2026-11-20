@@ -26,8 +26,11 @@ record.
 
 ## Prerequisites
 
+If `demo-reel help` works, use that installed CLI from the working directory.
+Replace `node bin/demo-reel.mjs` with `demo-reel` in the examples below.
+
 Run the commands below from the demo-reel checkout containing `package.json`
-and `bin/demo-reel.mjs`, not from the user's app directory. Locate that
+and `bin/demo-reel.mjs` when using source, not from the user's app directory. Locate that
 checkout first. If the skill was copied without the CLI source, clone
 `https://github.com/gnawbit/demo-reel` into a separate directory. Run `npm ci`
 there if dependencies are missing. The unscoped npm package `demo-reel`
@@ -43,8 +46,10 @@ It checks Node, ffmpeg, ffprobe, Playwright Chromium and a caption font.
 If Chromium is missing:
 
 ```bash
-npx playwright install chromium
+node bin/demo-reel.mjs setup
 ```
+
+On Linux, `setup --with-deps` can install missing browser system libraries.
 
 ## Workflow
 

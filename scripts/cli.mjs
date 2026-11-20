@@ -2,6 +2,7 @@ const HELP = `
 demo-reel — turn any URL into a polished demo video and GIF.
 
 Usage:
+  demo-reel setup   [--with-deps]
   demo-reel doctor
   demo-reel init    --url <url> [--out demo.json]
   demo-reel plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
@@ -38,6 +39,10 @@ export async function main(argv) {
   }
 
   switch (command) {
+    case "setup": {
+      const { setup } = await import("./setup.mjs");
+      return setup(rest);
+    }
     case "init": {
       const { init } = await import("./init.mjs");
       return init(rest);

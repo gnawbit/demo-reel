@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Package the CLI as `@gnawbit/demo-reel` with an explicit runtime file list.
+- Add `setup` and support running the installed demo outside the source checkout.
 - Add `init --url` to create an editable story without overwriting existing files.
 
 ## 0.1.0 — 2026-11-04
