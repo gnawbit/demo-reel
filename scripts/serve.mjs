@@ -56,7 +56,7 @@ export async function startServer({ port = 4173, dir = "examples/site" } = {}) {
 
   return {
     server,
-    url: `http://127.0.0.1:${port}`,
+    url: `http://127.0.0.1:${server.address().port}`,
     close: () => new Promise((resolve) => server.close(resolve)),
   };
 }

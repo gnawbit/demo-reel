@@ -23,6 +23,8 @@ export async function demo(argv) {
     await record([
       "--config",
       "examples/story.json",
+      "--url",
+      server.url,
       "--out",
       values.out,
     ]);
