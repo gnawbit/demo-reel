@@ -3,6 +3,7 @@ demo-reel — turn any URL into a polished demo video and GIF.
 
 Usage:
   demo-reel doctor
+  demo-reel init    --url <url> [--out demo.json]
   demo-reel plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
   demo-reel record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
   demo-reel render  --config demo.json [--out demo] [--video recording.mp4] [--vertical] [--no-gif]
@@ -10,6 +11,7 @@ Usage:
   demo-reel demo    [--out demo]
 
 Examples:
+  demo-reel init --url https://your-app.com
   demo-reel plan --url https://your-app.com
   demo-reel record --config demo.json
   demo-reel render --config demo.json
@@ -36,6 +38,10 @@ export async function main(argv) {
   }
 
   switch (command) {
+    case "init": {
+      const { init } = await import("./init.mjs");
+      return init(rest);
+    }
     case "doctor": {
       const { doctor } = await import("./doctor.mjs");
       return doctor();

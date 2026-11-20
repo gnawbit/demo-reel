@@ -93,6 +93,14 @@ node bin/demo-reel.mjs demo
 
 # 3. Use it on your own app
 node bin/demo-reel.mjs plan --url https://your-app.com
+node bin/demo-reel.mjs init --url https://your-app.com
+```
+
+Edit the generated `demo.json` to add your app's click/type steps, using
+`plan.json` to find controls. The starter only waits on the page and will not
+overwrite an existing story. Use `--out stories/demo.json` for another path.
+
+```bash
 node bin/demo-reel.mjs record --config demo.json
 node bin/demo-reel.mjs render --config demo/record.json --vertical
 ```
@@ -185,6 +193,7 @@ demo-reel mark. Chinese text automatically uses a CJK font.
 | Command | What it does |
 |---|---|
 | `demo-reel doctor` | Check Node, Chromium, ffmpeg, fonts |
+| `demo-reel init --url <url>` | Create an editable story file |
 | `demo-reel plan --url <url>` | Screenshot + list interactive elements |
 | `demo-reel record --config demo.json` | Record the story |
 | `demo-reel render --config demo/record.json` | Render MP4 + GIF |

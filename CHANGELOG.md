@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add `init --url` to create an editable story without overwriting existing files.
+
 ## 0.1.0 — 2026-11-04
 
 First public version.

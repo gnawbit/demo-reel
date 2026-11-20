@@ -87,6 +87,14 @@ node bin/demo-reel.mjs demo
 
 # 3. 录你自己的产品
 node bin/demo-reel.mjs plan --url https://your-app.com
+node bin/demo-reel.mjs init --url https://your-app.com
+```
+
+参考 `plan.json` 中的控件，在生成的 `demo.json` 中添加点击、输入等操作。
+初始模板只停留在页面上，不会自动编排流程，也不会覆盖已有故事文件。
+可用 `--out stories/demo.json` 指定其他路径。
+
+```bash
 node bin/demo-reel.mjs record --config demo.json
 node bin/demo-reel.mjs render --config demo/record.json --vertical
 ```
@@ -178,6 +186,7 @@ demo/
 | 命令 | 作用 |
 |---|---|
 | `demo-reel doctor` | 检查 Node、Chromium、ffmpeg、字体 |
+| `demo-reel init --url <url>` | 创建可编辑的故事文件 |
 | `demo-reel plan --url <url>` | 截图 + 列出可交互元素 |
 | `demo-reel record --config demo.json` | 录制故事 |
 | `demo-reel render --config demo/record.json` | 渲染 MP4 + GIF |

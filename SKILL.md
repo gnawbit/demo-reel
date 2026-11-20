@@ -71,7 +71,16 @@ node bin/demo-reel.mjs plan --url https://your-app.com --login
 A visible browser opens. The user logs in manually. The session is saved to
 `auth.json` and reused for recording.
 
-### 2. Write `demo.json`
+### 2. Create and edit `demo.json`
+
+If there is no story file yet, create one:
+
+```bash
+node bin/demo-reel.mjs init --url https://your-app.com
+```
+
+The starter only waits on the page; replace its steps with the intended flow.
+`init` refuses to overwrite existing files. Use `--out` for another path.
 
 Create a config with 3–5 steps. Keep the whole demo between 12 and 25 seconds.
 
