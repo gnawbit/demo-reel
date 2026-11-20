@@ -206,6 +206,11 @@ Options:
 
 ### 4. Render
 
+Posters default to a frame near the end. Set top-level `posterAt` in the story
+or marks config, or pass `--poster-at 4.5` to override a saved timeline.
+Use seconds from the trimmed output, from zero up to (excluding) its duration.
+Inspect the poster and choose a time showing the completed result if needed.
+
 ```bash
 node bin/demo-reel.mjs render --config demo/record.json
 ```

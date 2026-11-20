@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Select poster frames with `posterAt` or `--poster-at`; default to a frame near the end and support short clips.
+
 ## 0.2.0 — 2026-11-20
 
 - Package the CLI as `@gnawbit/demo-reel` with an explicit runtime file list.

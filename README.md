@@ -192,6 +192,14 @@ Tips:
 - Use `"zoom": false` when the interesting result is elsewhere on screen.
 - Captions state the benefit, not the UI label.
 
+### Posters
+
+Posters use a frame near the end to show the result. Set `"posterAt": 4.5`
+at the top level of a story or recording-marks config to choose another frame.
+For an existing timeline, `render --config demo/record.json --poster-at 4.5`
+overrides that setting without recording again. Times are seconds into the
+trimmed output, starting at zero, and must be shorter than the video.
+
 ### Vertical branding
 
 The 9:16 output can carry a custom hook and CTA:

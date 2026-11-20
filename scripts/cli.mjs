@@ -28,6 +28,7 @@ Options:
   --vertical          Also render a 9:16 vertical video + GIF.
   --video             Use an existing screen recording; the config needs "marks".
   --no-gif            Skip GIF export.
+  --poster-at         Choose the poster time in output seconds, e.g. 4.5.
 `;
 
 export async function main(argv) {

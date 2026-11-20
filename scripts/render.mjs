@@ -368,6 +368,7 @@ async function renderLayout({
   cjkFont,
   hostname,
   noGif,
+  posterAt,
 }) {
   const assetsDir = path.join(outDir, "assets");
   await mkdir(assetsDir, { recursive: true });
@@ -454,13 +455,13 @@ async function renderLayout({
 
   const posterPath = path.join(outDir, layout.poster);
   await ffmpeg([
-    "-ss", "1.2",
+    "-ss", posterAt.toFixed(6),
     "-i", outputPath,
     "-frames:v", "1",
     "-q:v", "2",
     posterPath,
   ]);
-  console.log(`Poster: ${posterPath}`);
+  console.log(`Poster: ${posterPath} (${posterAt.toFixed(2)}s)`);
 
   return { outputPath, segments };
 }
@@ -498,6 +499,7 @@ export async function render(argv) {
       "no-captions": { type: "boolean", default: false },
       vertical: { type: "boolean", default: false },
       zoom: { type: "string", default: "1.28" },
+      "poster-at": { type: "string" },
     },
   });
 
@@ -581,6 +583,20 @@ export async function render(argv) {
     Math.min(timelineDuration, videoDurationSec - videoOffset),
   );
 
+  const requestedPoster = values["poster-at"] === undefined
+    ? record.config?.posterAt
+    : (values["poster-at"].trim() === "" ? NaN : Number(values["poster-at"]));
+  if (requestedPoster !== undefined && (
+    typeof requestedPoster !== "number" || !Number.isFinite(requestedPoster) ||
+    requestedPoster < 0 || requestedPoster >= durationSec
+  )) {
+    throw new Error(`posterAt / --poster-at must be a number from 0 up to (but not including) ${durationSec.toFixed(3)} seconds`);
+  }
+  // Select an existing 30 fps output frame, including for very short clips.
+  const posterAt = Math.floor((requestedPoster ?? (
+    durationSec - Math.min(0.5, durationSec / 10)
+  )) * 30) / 30;
+
   const zoom = Math.max(1, Number(values.zoom || 1.28));
   const font = values["no-captions"] ? null : findFont();
   const cjkFont = values["no-captions"] ? null : findCjkFont();
@@ -610,6 +626,7 @@ export async function render(argv) {
       cjkFont,
       hostname,
       noGif: values["no-gif"],
+      posterAt,
     });
   }
 
