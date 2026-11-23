@@ -413,7 +413,9 @@ where to zoom in `marks`:
 
 - `t` is seconds into the recording.
 - `x` and `y` are normalized `0..1`; use `zoom: false` to keep the full frame.
-- `duration` is the caption hold in seconds (default `0.6`).
+- `duration` delays the caption after `t`, in seconds (default `0.6`);
+  use `0` to show it at the mark. It does not set how long the caption stays.
+  Captions last up to 2.8 seconds, ending earlier at the next caption or video end.
 
 ```bash
 node bin/demo-reel.mjs render \

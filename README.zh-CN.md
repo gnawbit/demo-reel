@@ -386,7 +386,8 @@ Screen Studio、QuickTime 或系统录屏录下来，再用 `marks` 描述哪里
 
 - `t`：录屏里的秒数
 - `x` / `y`：归一化 `0..1`；`zoom: false` 表示这一步保持全景
-- `duration`：字幕停留秒数，默认 `0.6`
+- `duration`：字幕相对 `t` 的出现延迟，单位为秒，默认 `0.6`；设为 `0` 即在标记处出现，不是字幕停留时间。
+- 字幕最多显示 2.8 秒；下一条字幕出现或视频结束时会提前结束。
 
 ```bash
 node bin/demo-reel.mjs render \

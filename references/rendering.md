@@ -28,7 +28,8 @@ demo-reel render --config story-video.json --video recording.mp4 --vertical --js
 the current working directory. Marks use **seconds**. Prefer normalized `x`, `y`
 coordinates from 0 to 1; larger values are source pixels. `duration` delays the
 caption onset after the mark (default 0.6 seconds); `0` shows it immediately.
-It does not set the caption's display duration.
+It does not set the caption's display duration. Captions last up to 2.8 seconds,
+ending earlier at the next caption or video end.
 
 Rendering a recorded browser flow takes its `record.json` timeline instead.
 For style edits, update that file's nested `config`; changing only the original
