@@ -6,19 +6,19 @@
     <title>demo-reel by gnawbit — repeatable web demos and README GIFs</title>
     <meta
       name="description"
-      content="Record repeatable web app demos, README GIFs and portrait launch videos from editable JSON steps. Local CLI and Agent Skill for Windows, macOS and Linux."
+      content="Create repeatable web app demos from editable JSON steps or existing screen recordings with timestamp marks. Local CLI and Agent Skill for README GIFs and 9:16 launch videos."
     />
     <link rel="canonical" href="https://gnawbit.github.io/demo-reel/" />
     <link rel="sitemap" type="application/xml" href="https://gnawbit.github.io/demo-reel/sitemap.xml" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://gnawbit.github.io/demo-reel/" />
     <meta property="og:title" content="demo-reel — repeatable web app demos and README GIFs" />
-    <meta property="og:description" content="Record editable JSON steps locally and export MP4, GIF and posters. Re-run the story after UI changes." />
+    <meta property="og:description" content="Record JSON steps or render an existing screen recording with timestamp marks. Export local MP4, GIF and posters in 16:9 and 9:16." />
     <meta property="og:image" content="https://raw.githubusercontent.com/gnawbit/demo-reel/main/docs/poster.png" />
     <meta property="og:image:alt" content="A web app walkthrough rendered with demo-reel" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="demo-reel — repeatable web app demos and README GIFs" />
-    <meta name="twitter:description" content="Record editable JSON steps locally and export MP4, GIF and posters. Re-run the story after UI changes." />
+    <meta name="twitter:description" content="Record JSON steps or render an existing screen recording with timestamp marks. Export local MP4, GIF and posters in 16:9 and 9:16." />
     <meta name="twitter:image" content="https://raw.githubusercontent.com/gnawbit/demo-reel/main/docs/poster.png" />
     <style>
       :root {
@@ -74,19 +74,28 @@
         font-size: 16px;
       }
       .install {
-        display: inline-flex; align-items: center; gap: 12px;
+        display: flex; align-items: flex-start; gap: 12px;
+        width: min(760px, 100%); margin-left: auto; margin-right: auto;
         max-width: 100%; box-sizing: border-box;
         margin-top: 26px; padding: 12px 18px; border-radius: 12px;
         background: #0d121b; border: 1px solid var(--line);
         font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
         font-size: 13.5px;
       }
-      .install code { color: #c9c2ff; overflow-wrap: anywhere; min-width: 0; text-align: left; }
+      .install code { color: #c9c2ff; overflow-wrap: anywhere; white-space: pre-wrap; min-width: 0; flex: 1; text-align: left; }
       .install button {
         border: 0; background: rgba(255,255,255,.06); color: var(--muted);
-        border-radius: 7px; padding: 5px 9px; cursor: pointer; font: inherit;
+        border-radius: 7px; padding: 5px 9px; cursor: pointer; font: inherit; flex-shrink: 0;
       }
       .install button:hover { color: var(--text); }
+      .note { max-width: 760px; margin: 12px auto 0; color: var(--muted); font-size: 13px; }
+      .skill-install { margin-top: 24px; }
+      .skill-install h2 { font-size: 16px; margin: 0; }
+      .skill-install .install { margin-top: 10px; }
+      .workflows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 40px; }
+      .workflows h2 { font-size: 18px; margin: 0 0 10px; }
+      .workflows p + p { margin-top: 12px; }
+      .workflows code { overflow-wrap: anywhere; }
       .shot {
         margin: 44px auto 0; border-radius: 20px; overflow: hidden;
         border: 1px solid var(--line);
@@ -110,7 +119,7 @@
         display: flex; justify-content: space-between; gap: 20px;
       }
       @media (max-width: 760px) {
-        .features { grid-template-columns: 1fr; }
+        .features, .workflows { grid-template-columns: 1fr; }
         nav { display: none; }
         footer { flex-direction: column; }
       }
@@ -131,22 +140,56 @@
         <div class="eyebrow">Agent skill for Claude Code · Codex · Cursor</div>
         <h1>Web app in.<br /><span>Repeatable demo out.</span></h1>
         <p class="sub">
-          demo-reel by gnawbit records editable JSON steps in Chromium and exports
-          README GIFs, landscape or portrait MP4s and PNG posters. Add click zooms
-          and captions locally, then re-run the story after UI changes.
+          demo-reel by gnawbit turns web app flows or existing screen recordings
+          into README GIFs, MP4s and PNG posters in 16:9 and 9:16. Add click zooms
+          and captions locally, then re-run editable JSON steps after UI changes.
         </p>
         <div class="install">
-          <code>npx skills@1.9.0 add gnawbit/demo-reel@v0.3.3 --skill demo-reel</code>
-          <button onclick="navigator.clipboard.writeText('npx skills@1.9.0 add gnawbit/demo-reel@v0.3.3 --skill demo-reel'); this.textContent='Copied'">Copy</button>
+          <code id="cli-commands">npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.3
+demo-reel capabilities --json
+demo-reel doctor --json</code>
+          <button type="button" data-copy="cli-commands" aria-label="Copy CLI commands">Copy</button>
         </div>
-        <p class="sub">The Skill needs the CLI runtime.
-          <a href="https://github.com/gnawbit/demo-reel#install">Install both and check Node requirements.</a>
+        <p class="note">CLI: Node 20.9+ and Git. Windows, macOS and Linux.
+          FFmpeg and ffprobe are included. Output videos have no audio.
+          <a href="https://github.com/gnawbit/demo-reel#install">Installation details</a>.
         </p>
+        <div class="skill-install">
+          <h2>Add the Agent Skill</h2>
+          <div class="install">
+            <code id="skill-command">npx skills@1.9.0 add gnawbit/demo-reel@v0.3.3 --skill demo-reel</code>
+            <button type="button" data-copy="skill-command" aria-label="Copy Skill command">Copy</button>
+          </div>
+          <p class="note">Run in your target project after installing the CLI. Skills CLI needs Node 22.20+.
+            <a href="https://github.com/gnawbit/demo-reel#install">Client selection and Claude Code plugin</a>.
+          </p>
+        </div>
         <div class="shot">
           <img
             src="https://raw.githubusercontent.com/gnawbit/demo-reel/main/docs/hero.gif"
             alt="demo-reel turning a SaaS dashboard into a captioned demo video"
           />
+        </div>
+      </section>
+
+      <section class="workflows" aria-label="Choose your input">
+        <div class="card">
+          <h2>Web app URL + JSON steps</h2>
+          <p>Install Chromium with <code>demo-reel setup</code>, then rerun
+            <code>doctor</code>. Use <code>plan</code> to inspect controls, write
+            the requested flow, and run <code>record</code> followed by
+            <code>render --vertical</code>.</p>
+          <p>Keep the story with your app and update its steps when the UI changes.
+            <a href="https://github.com/gnawbit/demo-reel#quickstart">Record a web flow</a>.</p>
+        </div>
+        <div class="card">
+          <h2>Existing recording + timestamp marks</h2>
+          <p>Supply a local video and the moments to highlight. Add captions and
+            focus points in a JSON <code>marks</code> file, then validate and render it.
+            Timestamps come from you or video inspection.</p>
+          <p>Rendering uses no Chromium. If the browser is the only failed
+            <code>doctor</code> check, you can continue; fix other required errors first.
+            <a href="https://github.com/gnawbit/demo-reel#use-an-existing-screen-recording">Render an existing recording</a>.</p>
         </div>
       </section>
 
@@ -170,5 +213,17 @@
         <span>If this saved you an afternoon, a star helps.</span>
       </footer>
     </div>
+    <script>
+      for (const button of document.querySelectorAll('[data-copy]')) {
+        button.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);
+            button.textContent = 'Copied';
+          } catch {
+            button.textContent = 'Copy manually';
+          }
+        });
+      }
+    </script>
   </body>
 </html>

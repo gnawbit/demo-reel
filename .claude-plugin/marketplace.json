@@ -9,7 +9,7 @@
     {
       "name": "demo-reel",
       "source": "./",
-      "description": "A skill that records a product in a real browser, zooms into clicks, adds captions and a browser frame, and renders MP4 + GIF.",
+      "description": "Create repeatable web app demos from JSON steps or existing screen recordings with timestamp marks. Export local MP4, GIF and posters in landscape or portrait.",
       "category": "developer-tools",
       "tags": ["demo", "video", "gif", "playwright", "launch"]
     }
