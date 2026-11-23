@@ -3,8 +3,8 @@
 [English](README.md) · 简体中文
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
-[![Version](https://img.shields.io/badge/version-0.2.0-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.2.0)
+[![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
+[![Version](https://img.shields.io/badge/version-0.3.0-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.0)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 
 **把 Web 应用变成可重复生成的发布演示。**
@@ -57,7 +57,7 @@
 直接从本仓库安装 CLI：
 
 ```bash
-npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.2.0
+npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.0
 demo-reel setup
 demo-reel demo
 ```
@@ -84,7 +84,7 @@ node bin/demo-reel.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add gnawbit/demo-reel --skill demo-reel
+npx skills@1.9.0 add gnawbit/demo-reel@v0.3.0 --skill demo-reel
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
@@ -94,7 +94,7 @@ npx skills@1.9.0 add gnawbit/demo-reel --skill demo-reel
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install demo-reel --marketplace gnawbit/demo-reel
+claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.0"
 ```
 
 两种工作流安装方式任选其一；插件仍需先安装上述 demo-reel 运行环境。
@@ -196,19 +196,17 @@ demo/
 - 如果结果在屏幕别处，用 `"zoom": false` 拉回全景。
 - 字幕讲收益，不讲“点击按钮”。
 
-`main` 上的字幕会自动换行，并在需要时适度缩小字号。无法保持可读字号时，
+字幕会自动换行，并在需要时适度缩小字号。无法保持可读字号时，
 渲染会提示缩短文字或拆到多个步骤中；下一条字幕出现时，上一条会立即结束。
 
 ### 镜头移动
 
-`main` 上的点击缩放默认用 0.35 秒平滑过渡。在故事或录屏标记配置顶层设置
+点击缩放默认用 0.35 秒平滑过渡。在故事或录屏标记配置顶层设置
 `"zoomDuration": 0.5`，或用 `render --config demo/record.json --zoom-duration 0.5`
 覆盖。设为 `0` 可直接切换；步骤中的 `"zoom": false` 会拉回全景。
-连续点击会从当前镜头位置接续。此功能尚未包含在 `v0.2.0` 中。
+连续点击会从当前镜头位置接续。
 
 ### 封面
-
-此功能在 `main` 分支可用，尚未包含在 `v0.2.0` 发布版中。
 
 封面默认取接近片尾的一帧，展示操作结果。在故事或录屏标记配置的顶层设置
 `"posterAt": 4.5` 可以指定画面；已有时间线可用
@@ -252,7 +250,7 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 对象，包含 `schemaVersion: 1` 和已安装版本。诊断包含稳定的 `id`、`required`、
 `status`，失败时提供修复提示 `hint`。必需检查失败返回退出码 `1`；缺少字体仅警告，
 必需项通过时退出码仍为 `0`。Chromium 仅检查是否安装，不实际启动。
-这些命令已在 `main` 提供，`v0.2.0` 发布版尚不包含。
+JSON 工作流及配置校验需要 v0.3.0 或更新版本。
 
 录制前运行 `validate --config demo.json --json`，按随包提供的
 [JSON Schema](schemas/story.schema.json) 检查类型、动作、必需目标和未知字段。
@@ -260,8 +258,7 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 `/steps/0/action`）、`message` 和 `hint`；JSON 语法或文件读取错误使用 `error` 对象。
 预检不会启动浏览器，也不验证选择器、登录态或媒体文件是否可用。
 `record` 和 `render` 也会在改写输出文件前校验输入。编辑器补全可在配置中加入
-`"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/main/schemas/story.schema.json"`。
-这些校验功能需要当前 `main`。
+`"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.0/schemas/story.schema.json"`。
 
 常用参数：
 
@@ -319,7 +316,7 @@ node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
 | Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
 
 Northstar 是内置的虚构应用。三个[可运行示例](examples/README.md)分别展示
-README 动图、首次创建项目，以及重复生成发布素材。从 `main` 源码目录运行：
+README 动图、首次创建项目，以及重复生成发布素材。从源码目录运行（全局安装可将前缀替换为 `demo-reel`）：
 
 ```bash
 node bin/demo-reel.mjs demo --story readme --port 0 --out demo-readme

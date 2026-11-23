@@ -3,8 +3,8 @@
 English · [简体中文](README.zh-CN.md)
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
-[![Version](https://img.shields.io/badge/version-0.2.0-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.2.0)
+[![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
+[![Version](https://img.shields.io/badge/version-0.3.0-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.0)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/demo-reel?style=social)](https://github.com/gnawbit/demo-reel/stargazers)
 
@@ -60,7 +60,7 @@ edit and run again after a release.
 Install the CLI directly from this repository:
 
 ```bash
-npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.2.0
+npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.0
 demo-reel setup
 demo-reel demo
 ```
@@ -89,7 +89,7 @@ replace `node bin/demo-reel.mjs` with `demo-reel`.
 To add the agent workflow after setting up the CLI:
 
 ```bash
-npx skills@1.9.0 add gnawbit/demo-reel --skill demo-reel
+npx skills@1.9.0 add gnawbit/demo-reel@v0.3.0 --skill demo-reel
 ```
 
 Run this in the target project; add `--agent codex`, `--agent claude-code` or
@@ -100,7 +100,7 @@ or a source checkout. Keep the CLI and Skill on the same release.
 Claude Code users can install the plugin instead (CLI 2.1.292+):
 
 ```bash
-claude plugin install demo-reel --marketplace gnawbit/demo-reel
+claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.0"
 ```
 
 Install the workflow through one of these routes; the plugin still needs the
@@ -206,21 +206,19 @@ Tips:
 - Use `"zoom": false` when the interesting result is elsewhere on screen.
 - Captions state the benefit, not the UI label.
 
-On `main`, captions wrap to fit the frame and shrink modestly when needed.
+Captions wrap to fit the frame and shrink modestly when needed.
 If a caption cannot fit at a readable size, rendering asks you to shorten it
 or split it across steps. A new caption replaces the previous one immediately.
 
 ### Camera movement
 
-On `main`, click zooms ease between targets over 0.35 seconds. Set top-level
+Click zooms ease between targets over 0.35 seconds. Set top-level
 `"zoomDuration": 0.5` in a story or marks config, or override it with
 `render --config demo/record.json --zoom-duration 0.5`. Use `0` for immediate
 cuts and `"zoom": false` on a step to return to the full view. Rapid clicks
-continue from the current camera position. This is not in `v0.2.0`.
+continue from the current camera position.
 
 ### Posters
-
-Available on `main`; not included in the `v0.2.0` release.
 
 Posters use a frame near the end to show the result. Set `"posterAt": 4.5`
 at the top level of a story or recording-marks config to choose another frame.
@@ -266,7 +264,7 @@ stdout with `schemaVersion: 1` and the installed version. Diagnostic checks have
 stable `id`, `required`, `status` and recovery `hint` fields on failure. Exit code
 `1` means a required check failed; missing caption fonts are warnings (exit `0`
 if required checks pass). Chromium is checked for installation, not launched.
-These commands are available on `main`; the `v0.2.0` release predates them.
+JSON workflows and validation require v0.3.0 or newer.
 
 Before recording, run `validate --config demo.json --json`. It checks types,
 supported actions, required targets and unknown fields against the packaged
@@ -275,8 +273,8 @@ with a `code`, JSON Pointer `path` (for example `/steps/0/action`), `message` an
 `hint`. Invalid JSON and unreadable files use an `error` object. Validation
 does not open the browser or check selectors, login state or media files.
 `record` and `render` also validate their input before changing output files.
-For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/main/schemas/story.schema.json"`
-to the config. These validation features require current `main`.
+For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.0/schemas/story.schema.json"`
+to the config.
 
 Useful flags:
 
@@ -340,7 +338,7 @@ SPAs and authenticated pages.
 
 Northstar is a fictional bundled app. Try three [runnable recipes](examples/README.md)
 for a README GIF, first-project onboarding and repeatable release assets.
-The presets are available from a checkout of `main`:
+Run a preset from the source checkout (or use the installed `demo-reel` command):
 
 ```bash
 node bin/demo-reel.mjs demo --story readme --port 0 --out demo-readme

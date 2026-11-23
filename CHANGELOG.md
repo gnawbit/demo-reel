@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 — 2026-11-23
 
 - Shorten the Skill entrypoint with focused references; add client metadata, a plugin icon and verified installation guidance.
 - Add JSON results and artifact manifests for init, plan, record and render; report failed recording steps and require interactive manual login.

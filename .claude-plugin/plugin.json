@@ -1,7 +1,7 @@
 {
   "name": "demo-reel",
   "displayName": "demo-reel",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Create repeatable product demo videos, browser walkthroughs and README GIFs from web apps or existing recordings. Local MP4, GIF and poster export.",
   "author": {
     "name": "gnawbit",

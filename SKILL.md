@@ -4,6 +4,7 @@ description: Create repeatable product demo videos and README GIFs from a web ap
 license: MIT
 metadata:
   author: gnawbit
+  version: "0.3.0"
   repository: https://github.com/gnawbit/demo-reel
   compatibility: Node.js 20.9+, Chromium via demo-reel setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
 ---
