@@ -1,0 +1,55 @@
+name: Regenerate TodoMVC demo
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node bin/tabretake.mjs setup --with-deps
+      - uses: actions/checkout@v4
+        with:
+          repository: tastejs/todomvc
+          ref: ff43b02e59dfa604386bb382034b2cd07c2bcd8a
+          path: demo-todomvc
+          sparse-checkout: examples/javascript-es6
+          persist-credentials: false
+      - name: Start the app and wait for readiness
+        shell: bash
+        run: |
+          node bin/tabretake.mjs serve --dir "$GITHUB_WORKSPACE/demo-todomvc/examples/javascript-es6/dist" --port 4187 > "$RUNNER_TEMP/tabretake-server.log" 2>&1 &
+          node --input-type=module <<'JS'
+          import { setTimeout } from 'node:timers/promises';
+          let ready = false;
+          for (let attempt = 0; attempt < 30; attempt++) {
+            const response = await fetch('http://127.0.0.1:4187/', {signal: AbortSignal.timeout(1000)}).catch(() => null);
+            if (response?.ok) { ready = true; break; }
+            await setTimeout(1000);
+          }
+          if (!ready) throw new Error('TodoMVC did not become ready');
+          JS
+      - name: Record and render the story
+        run: |
+          node bin/tabretake.mjs validate --config site/todomvc/story.json --json
+          node bin/tabretake.mjs record --config site/todomvc/story.json --out demo-output --json
+          node bin/tabretake.mjs render --config demo-output/record.json --vertical --zoom 1 --json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: todomvc-demo
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            demo-output/*.mp4
+            demo-output/*.gif
+            demo-output/poster*.png

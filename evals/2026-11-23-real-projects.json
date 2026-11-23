@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-23",
+  "kind": "maintainer-run authenticated upstream application reproduction",
+  "platform": "Windows x64",
+  "runtimeCommit": "6c52869",
+  "externalAdoption": false,
+  "upstreamSourceModified": false,
+  "data": "Fictional tasks and private notes in isolated local SQLite instances",
+  "cases": [
+    {
+      "repository": "https://github.com/go-vikunja/vikunja",
+      "release": "v2.8.0",
+      "asset": "vikunja-v2.8.0-windows-4.0-amd64.exe-full.zip",
+      "sha256": "a65637c960b5c88fc3be3fa26a1a96626285e32a0d6abdefb869c8e3c26096db",
+      "story": "site/vikunja/story.json",
+      "flow": "Create a task, open Kanban, drag the task into Doing, verify the destination and focus on it",
+      "durationsSeconds": [9.007, 8.929],
+      "retakeChange": "Replace Draft launch announcement with Review launch checklist in values and targets"
+    },
+    {
+      "repository": "https://github.com/usememos/memos",
+      "release": "26.11.2",
+      "asset": "memos_26.11.2_windows_amd64.zip",
+      "sha256": "b7c8267e637db74c75f7caa00f60083c53d1f660a8c088e6f09eac1aa62eeb4f",
+      "story": "site/memos/story.json",
+      "flow": "Write a rich-text memo, save it, search for a phrase and focus on the result",
+      "durationsSeconds": [11.767, 11.11],
+      "retakeChange": "Replace check keyboard navigation with verify mobile layout in content and search targets"
+    }
+  ],
+  "verification": {
+    "preview": "Both full flows succeeded in headless preview",
+    "recording": "Two successful recordings per application using the same saved login state and step structure",
+    "rendering": "Every take produced landscape and portrait MP4, GIF and posters",
+    "decode": "All 16 MP4/GIF outputs passed complete FFmpeg decoding",
+    "visualReview": "Sampled midpoint frames and result posters inspected",
+    "tests": "56 repository tests passed"
+  },
+  "limitations": [
+    "The upstream apps were tested on Windows only; repository CI tests use controlled fixtures",
+    "Stories use English UI labels, disposable state and the pinned upstream versions",
+    "Vikunja drag uses a fixed 316-pixel offset at a 1280x800 viewport",
+    "Desktop text remains small in portrait; landscape can crop peripheral header content",
+    "App data persisted between takes; unique fictional values distinguish the retake",
+    "This verifies maintainer execution and repeatability, with external user adoption still unmeasured"
+  ]
+}

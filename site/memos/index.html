@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Memos walkthrough — TabRetake</title><meta name="description" content="Write in the real rich-text editor, save the memo, open Search, find it by a phrase, then focus the camera on the matching content.">
+<link rel="canonical" href="https://gnawbit.github.io/tabretake/memos/"><style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #070a12; color: #e9edf5; font: 17px/1.65 system-ui, sans-serif; }
+    main { width: min(820px, calc(100% - 40px)); margin: 36px auto 72px; }
+    a { color: #c9c2ff; text-underline-offset: 3px; }
+    nav, .note { color: #a4aec0; font-size: 14px; }
+    h1 { font-size: clamp(32px, 6vw, 48px); line-height: 1.15; letter-spacing: -1px; margin-top: 36px; }
+    h2 { font-size: 24px; margin-top: 36px; }
+    pre { padding: 18px; background: #0d121b; border: 1px solid #29344a; border-radius: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    code { font: 13px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
+    li { margin: 8px 0; }
+    .download { display: inline-block; padding: 10px 18px; background: #6c5ce7; color: white; border-radius: 10px; text-decoration: none; }
+    footer { border-top: 1px solid #29344a; margin-top: 40px; padding-top: 18px; }
+  </style></head>
+<body><main><nav><a href="../">TabRetake</a> / Memos</nav>
+<h1>Write a memo and find it again</h1><p>Write in the real rich-text editor, save the memo, open Search, find it by a phrase, then focus the camera on the matching content.</p>
+<p>Maintainer-run reproduction using the unmodified <a href="https://github.com/usememos/memos/releases/tag/26.11.2">Memos 26.11.2 official release</a> and fictional local data. Upstream development and branding belong to the project authors. External adoption is tracked separately.</p>
+<p><a class="download" href="story.json" download="memos-story.json">Download the story</a></p>
+<h2>Install TabRetake</h2><pre><code>npm install --global git+https://github.com/gnawbit/tabretake.git#main
+tabretake setup</code></pre>
+<h2>Start a local instance</h2><p>These Windows PowerShell commands were tested with the x64 official release. Run them in a new disposable directory. Other platforms can use the matching <a href="https://github.com/usememos/memos/releases/tag/26.11.2">upstream release</a>.</p>
+<pre><code>Invoke-WebRequest https://github.com/usememos/memos/releases/download/26.11.2/memos_26.11.2_windows_amd64.zip -OutFile app.zip
+if ((Get-FileHash app.zip -Algorithm SHA256).Hash.ToLower() -ne 'b7c8267e637db74c75f7caa00f60083c53d1f660a8c088e6f09eac1aa62eeb4f') { throw 'Checksum mismatch' }
+Expand-Archive app.zip -DestinationPath app
+Set-Location app
+New-Item -ItemType Directory -Force data
+./memos.exe --addr 127.0.0.1 --port 4189 --data ./data</code></pre><p>Create a local account, select English and dismiss the welcome guide before saving your login state. Use fictional memo content. The story preserves the default private visibility.</p>
+<h2>Record the story</h2><p>Keep the app running. Open a second terminal in your story directory. The login command opens a browser. Sign in, dismiss onboarding, then press Enter in the terminal to save auth.json locally.</p>
+<pre><code>tabretake plan --url http://127.0.0.1:4189 --login
+tabretake validate --config memos-story.json --json
+tabretake record --config memos-story.json --storage-state auth.json --out demo-memos --json
+tabretake render --config demo-memos/record.json --vertical --json</code></pre>
+<p>Keep auth.json local and add it to your project's ignore list. The story and application may create real entries in this disposable instance.</p>
+<h2>Preview and retake</h2><pre><code>tabretake preview --config memos-story.json --storage-state auth.json</code></pre>
+<p>Preview executes the same app changes. Remove the previously created demo entry before repeating the same story, or use a unique name consistently across its steps. Replace every occurrence of “check keyboard navigation” with “verify mobile layout” in a copy of the story. This updates both the memo content and the search phrase.</p>
+<h2>Observed result</h2><p>Windows verification on 2026-11-23 produced two takes lasting 11.8 and 11.1 seconds. Both were rendered into landscape and portrait MP4, GIF and posters. The second take reused the same step structure with new fictional content. The application and saved login state were reused.</p>
+<p class="note">Inspect your rendered output at its intended viewing size. The desktop layout retains small text in the portrait frame. The checked flow uses English UI labels and the pinned upstream version.</p>
+<footer><a href="../">All examples</a> · <a href="https://github.com/usememos/memos">Memos source</a> · <a href="https://github.com/gnawbit/tabretake">TabRetake source</a></footer>
+</main></body></html>
