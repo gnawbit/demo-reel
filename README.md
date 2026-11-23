@@ -1,20 +1,20 @@
-# demo-reel — repeatable web app demo videos
+# TabRetake — repeatable web app demo videos
 
 English · [简体中文](README.zh-CN.md)
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
-[![Version](https://img.shields.io/badge/version-0.3.3-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.3)
+[![Latest release](https://img.shields.io/github/v/release/gnawbit/tabretake?label=latest%20release&color=6c5ce7)](https://github.com/gnawbit/tabretake/releases/latest)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
-[![GitHub stars](https://img.shields.io/github/stars/gnawbit/demo-reel?style=social)](https://github.com/gnawbit/demo-reel/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/gnawbit/tabretake?style=social)](https://github.com/gnawbit/tabretake/stargazers)
 
 **Record your web app as a README GIF or portrait launch video.**
 
-<img src="docs/hero.gif" alt="demo-reel recording a SaaS dashboard, zooming into clicks and adding captions" width="100%">
+<img src="docs/hero.gif" alt="TabRetake recording a SaaS dashboard, zooming into clicks and adding captions" width="100%">
 
-[Project page](https://gnawbit.github.io/demo-reel/) · [Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
+[Project page](https://gnawbit.github.io/tabretake/) · [Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
 
-demo-reel is a local CLI and Agent Skill for repeatable browser walkthroughs.
+TabRetake is a local CLI and Agent Skill for repeatable browser walkthroughs.
 Describe a flow in editable JSON, or have your coding agent write it. It runs
 the steps in Chromium and exports landscape or portrait MP4, README GIFs and
 PNG posters with click zooms and captions. Works on Windows, macOS and Linux.
@@ -23,7 +23,7 @@ Keep the story with your code and re-run it when the UI changes.
 Already have a screen recording? Supply timestamp marks to
 [render the same outputs without browser automation](#use-an-existing-screen-recording).
 
-[Try the TodoMVC recipe](https://gnawbit.github.io/demo-reel/todomvc/): a pinned
+[Try the TodoMVC recipe](https://gnawbit.github.io/tabretake/todomvc/): a pinned
 upstream app, downloadable story and verified README GIF / 9:16 workflow.
 
 [Agent discovery and invocation checks](docs/agent-discovery.md) separate search
@@ -66,57 +66,57 @@ edit and run again after a release.
 
 ## Install
 
-Install the CLI directly from this repository:
+Install the renamed CLI from the `main` branch of this repository.
 
 ```bash
-npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.3
-demo-reel setup
-demo-reel demo
+npm install --global git+https://github.com/gnawbit/tabretake.git#main
+tabretake setup
+tabretake demo
 ```
 
-Requires Node 20.9+ and Git. Run `demo-reel` from your working directory;
+Requires Node 20.9+ and Git. Run `tabretake` from your working directory;
 the bundled demo writes its output to `./demo`. On Linux, use
-`demo-reel setup --with-deps` if browser system libraries are missing.
+`tabretake setup --with-deps` if browser system libraries are missing.
 ffmpeg and ffprobe are included as dependencies.
 
-The package identity is `@gnawbit/demo-reel`; distribution is currently through
-GitHub. The unscoped npm package `demo-reel` is a different project.
+GitHub distributes the CLI as `@gnawbit/tabretake`. If you installed
+`v0.3.3` or earlier, that release still uses `demo-reel` for the command and
+Skill. Existing JSON stories work with `tabretake`.
 
 For development, install from a checkout:
 
 ```bash
-git clone https://github.com/gnawbit/demo-reel
-cd demo-reel
+git clone https://github.com/gnawbit/tabretake
+cd tabretake
 npm ci
-node bin/demo-reel.mjs setup
-node bin/demo-reel.mjs doctor
+node bin/tabretake.mjs setup
+node bin/tabretake.mjs doctor
 ```
 
 The examples below use the source checkout. With the global installation,
-replace `node bin/demo-reel.mjs` with `demo-reel`.
+replace `node bin/tabretake.mjs` with `tabretake`.
 
 To add the agent workflow after setting up the CLI:
 
 ```bash
-npx skills@1.9.0 add gnawbit/demo-reel@v0.3.3 --skill demo-reel
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#main" --skill tabretake
 ```
 
 Run this in the target project; add `--agent codex`, `--agent claude-code` or
 `--agent cursor` to select a client. Skills CLI 1.9.0 needs Node 22.20+, while
-demo-reel itself needs Node 20.9+. Tell your agent whether to use the global CLI
-or a source checkout. Keep the CLI and Skill on the same release.
+TabRetake itself needs Node 20.9+. Tell your agent whether to use the global CLI
+or a source checkout. Install the CLI and Skill from the same revision.
 
 Claude Code users can install the plugin instead (CLI 2.1.292+):
 
 ```bash
-claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.3"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#main"
 ```
 
 Install the workflow through one of these routes; the plugin still needs the
-demo-reel runtime installed above. It is a Claude Code plugin, not a Cowork
+TabRetake runtime installed above. It is a Claude Code plugin, not a Cowork
 package or an MCP server. [Discovery checks and their limits](docs/agent-discovery.md)
 document what has actually been verified.
-The skill is also listed in the [Skills directory](https://skills.sh/gnawbit/demo-reel/demo-reel).
 Example requests:
 
 - "Make a README GIF showing the signup flow at http://localhost:3000."
@@ -130,14 +130,14 @@ the video and the moments to highlight instead.
 
 ```bash
 # 1. Check the environment
-node bin/demo-reel.mjs doctor
+node bin/tabretake.mjs doctor
 
 # 2. See it work on the bundled demo app
-node bin/demo-reel.mjs demo
+node bin/tabretake.mjs demo
 
 # 3. Use it on your own app
-node bin/demo-reel.mjs plan --url https://your-app.com
-node bin/demo-reel.mjs init --url https://your-app.com
+node bin/tabretake.mjs plan --url https://your-app.com
+node bin/tabretake.mjs init --url https://your-app.com
 ```
 
 Edit the generated `demo.json` to add your app's click/type steps, using
@@ -151,8 +151,8 @@ Use these to identify controls;
 This is a DOM inventory, not a complete accessibility tree.
 
 ```bash
-node bin/demo-reel.mjs record --config demo.json
-node bin/demo-reel.mjs render --config demo/record.json --vertical
+node bin/tabretake.mjs record --config demo.json
+node bin/tabretake.mjs render --config demo/record.json --vertical
 ```
 
 Output:
@@ -264,7 +264,7 @@ The 9:16 output can carry a custom hook and CTA:
 ```
 
 `titleLines` is capped at two lines. `watermark: false` removes the small
-demo-reel mark. Chinese text automatically uses a CJK font.
+TabRetake mark. Chinese text automatically uses a CJK font.
 
 From v0.3.2, portrait cards fit the source video's aspect ratio. For a mobile
 flow, inspect with `plan --viewport 390x844`, then record at the same viewport.
@@ -275,17 +275,17 @@ crop around focus points. Wide desktop recordings may still have small text.
 
 | Command | What it does |
 |---|---|
-| `demo-reel --version` | Print the installed CLI version |
-| `demo-reel capabilities --json` | List supported commands, flags and JSON support |
-| `demo-reel doctor [--json]` | Check Node, Chromium, ffmpeg, fonts |
-| `demo-reel setup` | Install the Chromium version used by this CLI |
-| `demo-reel init --url <url>` | Create an editable story file |
-| `demo-reel validate --config demo.json [--json]` | Validate a story, marks or recorded timeline without recording |
-| `demo-reel plan --url <url>` | Screenshot + list interactive elements |
-| `demo-reel record --config demo.json` | Record the story |
-| `demo-reel render --config demo/record.json` | Render MP4 + GIF |
-| `demo-reel serve` | Serve the bundled demo app |
-| `demo-reel demo` | Record + render the bundled demo |
+| `tabretake --version` | Print the installed CLI version |
+| `tabretake capabilities --json` | List supported commands, flags and JSON support |
+| `tabretake doctor [--json]` | Check Node, Chromium, ffmpeg, fonts |
+| `tabretake setup` | Install the Chromium version used by this CLI |
+| `tabretake init --url <url>` | Create an editable story file |
+| `tabretake validate --config demo.json [--json]` | Validate a story, marks or recorded timeline without recording |
+| `tabretake plan --url <url>` | Screenshot + list interactive elements |
+| `tabretake record --config demo.json` | Record the story |
+| `tabretake render --config demo/record.json` | Render MP4 + GIF |
+| `tabretake serve` | Serve the bundled demo app |
+| `tabretake demo` | Record + render the bundled demo |
 
 For agents, `capabilities --json` and `doctor --json` emit one JSON object on
 stdout with `schemaVersion: 1` and the installed version. Diagnostic checks have
@@ -306,7 +306,7 @@ with a `code`, JSON Pointer `path` (for example `/steps/0/action`), `message` an
 `hint`. Invalid JSON and unreadable files use an `error` object. Validation
 does not open the browser or check selectors, login state or media files.
 `record` and `render` also validate their input before changing output files.
-For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.3/schemas/story.schema.json"`
+For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json"`
 to the config.
 
 Useful flags:
@@ -349,7 +349,7 @@ step instead. Re-record to update old timelines; re-rendering preserves timing.
 ## Login and protected pages
 
 ```bash
-node bin/demo-reel.mjs record --config demo.json --login
+node bin/tabretake.mjs record --config demo.json --login
 ```
 
 A visible browser opens. Log in manually in an interactive terminal. The session
@@ -357,10 +357,10 @@ is saved to `auth.json` locally and used for this recording. On later runs, or
 after logging in with `plan --login`, pass it explicitly:
 
 ```bash
-node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
+node bin/tabretake.mjs record --config demo.json --storage-state auth.json
 ```
 
-Use an absolute state path when changing working directories. demo-reel never
+Use an absolute state path when changing working directories. TabRetake never
 asks for your password and never uploads cookies. Keep login state out of Git.
 
 ## How it works
@@ -384,12 +384,12 @@ SPAs and authenticated pages.
 
 Northstar is a fictional bundled app. Try three [runnable recipes](examples/README.md)
 for a README GIF, first-project onboarding and repeatable release assets.
-Run a preset from the source checkout (or use the installed `demo-reel` command):
+Run a preset from the source checkout (or use the installed `tabretake` command):
 
 ```bash
-node bin/demo-reel.mjs demo --story readme --port 0 --out demo-readme
-node bin/demo-reel.mjs demo --story onboarding --port 0 --out demo-onboarding
-node bin/demo-reel.mjs demo --story release --port 0 --out demo-release
+node bin/tabretake.mjs demo --story readme --port 0 --out demo-readme
+node bin/tabretake.mjs demo --story onboarding --port 0 --out demo-onboarding
+node bin/tabretake.mjs demo --story release --port 0 --out demo-release
 ```
 
 ## Use an existing screen recording
@@ -427,7 +427,7 @@ where to zoom in `marks`:
   Captions last up to 2.8 seconds, ending earlier at the next caption or video end.
 
 ```bash
-node bin/demo-reel.mjs render \
+node bin/tabretake.mjs render \
   --config story-video.json \
   --video recording.mp4 \
   --vertical
@@ -441,14 +441,14 @@ A minimal example lives at [examples/story-video.json](examples/story-video.json
 
 Different tools:
 
-| | Screen Studio | demo-reel |
+| | Screen Studio | TabRetake |
 |---|---|---|
 | Workflow | manual editing | a story file + one command |
 | Repeatable | no | yes |
 | Runs in CI | no | yes |
 | Price | paid | free, MIT |
 
-Use Screen Studio when you want frame-by-frame control. Use demo-reel when you
+Use Screen Studio when you want frame-by-frame control. Use TabRetake when you
 want a repeatable launch asset and a timeline you can commit.
 
 ## FAQ
@@ -469,7 +469,7 @@ Only with permission. Do not use it to scrape, bypass paywalls or evade
 anti-bot systems.
 
 **Do Chinese captions work?**
-Yes. demo-reel picks a CJK font automatically: Microsoft YaHei on Windows,
+Yes. TabRetake picks a CJK font automatically: Microsoft YaHei on Windows,
 PingFang on macOS, Noto Sans CJK on Linux. `doctor` checks it. If no CJK font is
 installed, run `doctor` to see what is missing.
 

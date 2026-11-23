@@ -20,8 +20,8 @@ checks still apply, and missing fonts need visual inspection of captions.
 ```
 
 ```bash
-demo-reel validate --config story-video.json --json
-demo-reel render --config story-video.json --video recording.mp4 --vertical --json
+tabretake validate --config story-video.json --json
+tabretake render --config story-video.json --video recording.mp4 --vertical --json
 ```
 
 `video` in the config is relative to the config file; `--video` is relative to

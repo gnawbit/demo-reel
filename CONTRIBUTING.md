@@ -1,22 +1,22 @@
 # Contributing
 
-Thanks for helping make demo-reel better. This project is small on purpose:
+Thanks for helping make TabRetake better. This project is small on purpose:
 a story file, a browser, a renderer.
 
 ## Development setup
 
 ```bash
-git clone https://github.com/gnawbit/demo-reel
-cd demo-reel
+git clone https://github.com/gnawbit/tabretake
+cd tabretake
 npm install
-node bin/demo-reel.mjs setup
-node bin/demo-reel.mjs doctor
+node bin/tabretake.mjs setup
+node bin/tabretake.mjs doctor
 ```
 
 ## Run the demo
 
 ```bash
-node bin/demo-reel.mjs demo
+node bin/tabretake.mjs demo
 ```
 
 This starts the bundled app, records `examples/story.json`, and renders
@@ -33,9 +33,9 @@ This starts the bundled app, records `examples/story.json`, and renders
 ## Testing before a PR
 
 ```bash
-node --check bin/demo-reel.mjs
+node --check bin/tabretake.mjs
 for f in scripts/*.mjs scripts/lib/*.mjs; do node --check "$f"; done
-node bin/demo-reel.mjs doctor
+node bin/tabretake.mjs doctor
 npm test
 ```
 

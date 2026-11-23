@@ -12,7 +12,7 @@ const exec = promisify(execFile);
 const root = fileURLToPath(new URL("../", import.meta.url));
 
 test("plan excludes password values from files and logs", { timeout: 30000 }, async (t) => {
-  const out = await mkdtemp(path.join(os.tmpdir(), "demo-reel-plan-"));
+  const out = await mkdtemp(path.join(os.tmpdir(), "tabretake-plan-"));
   t.after(() => rm(out, { recursive: true, force: true }));
 
   const secret = "dummy-password-for-regression";
@@ -29,7 +29,7 @@ test("plan excludes password values from files and logs", { timeout: 30000 }, as
 
   const outputPath = path.join(out, "plan.json");
   const { stdout, stderr } = await exec(process.execPath, [
-    "bin/demo-reel.mjs", "plan",
+    "bin/tabretake.mjs", "plan",
     "--url", `http://127.0.0.1:${server.address().port}`,
     "--out", outputPath,
   ], { cwd: root, windowsHide: true, timeout: 25000 });
@@ -47,7 +47,7 @@ test("plan excludes password values from files and logs", { timeout: 30000 }, as
 });
 
 test("plan reports form labels and native select choices", { timeout: 30000 }, async (t) => {
-  const out = await mkdtemp(path.join(os.tmpdir(), "demo-reel-plan-labels-"));
+  const out = await mkdtemp(path.join(os.tmpdir(), "tabretake-plan-labels-"));
   t.after(() => rm(out, { recursive: true, force: true }));
   const secret = "dummy-labelled-password-for-regression";
   const server = createServer((_req, res) => {
@@ -76,7 +76,7 @@ test("plan reports form labels and native select choices", { timeout: 30000 }, a
   t.after(() => new Promise((resolve) => server.close(resolve)));
   const outputPath = path.join(out, "plan.json");
   const { stdout, stderr } = await exec(process.execPath, [
-    "bin/demo-reel.mjs", "plan", "--json",
+    "bin/tabretake.mjs", "plan", "--json",
     "--url", `http://127.0.0.1:${server.address().port}`,
     "--out", outputPath,
   ], { cwd: root, windowsHide: true, timeout: 25000 });

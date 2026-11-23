@@ -9,13 +9,13 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
 const exec = promisify(execFile);
-const cli = fileURLToPath(new URL("../bin/demo-reel.mjs", import.meta.url));
+const cli = fileURLToPath(new URL("../bin/tabretake.mjs", import.meta.url));
 const run = (args, cwd) => exec(process.execPath, [cli, ...args], {
   cwd, windowsHide: true, timeout: 25000,
 });
 
 async function tempDir(t) {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-init-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-init-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   return dir;
 }

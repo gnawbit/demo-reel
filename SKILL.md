@@ -1,42 +1,43 @@
 ---
-name: demo-reel
+name: tabretake
 description: Create repeatable product demo videos and README GIFs from a web app URL or an existing screen recording. Use when asked for a launch video, browser walkthrough, signup or onboarding demo, or to regenerate a demo after UI changes, including 产品演示、网页录屏、README 动图. Runs locally and exports MP4, GIF and posters in landscape or portrait. Requires a story script or recording marks. Not for general video editing, text-to-video generation, or browser test assertions.
 license: MIT
 metadata:
   author: gnawbit
   version: "0.3.3"
-  repository: https://github.com/gnawbit/demo-reel
-  compatibility: Node.js 20.9+, Chromium via demo-reel setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
+  repository: https://github.com/gnawbit/tabretake
+  compatibility: Node.js 20.9+, Chromium via tabretake setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
 ---
 
-# demo-reel by gnawbit
+# TabRetake by gnawbit
 
 Create a repeatable product walkthrough from a web URL, or render an existing
 screen recording with supplied timestamps. The canonical project is
-https://github.com/gnawbit/demo-reel; similarly named packages are unrelated.
+https://github.com/gnawbit/tabretake.
 Outputs are local MP4, GIF and PNG posters in landscape and optional portrait.
 
 ## Locate and check the CLI
 
-Use an installed `demo-reel` CLI when available. The commands below assume it is
-on PATH. For a source checkout, replace `demo-reel` with
-`node /absolute/path/to/demo-reel/bin/demo-reel.mjs`; paths with spaces need quoting.
+Use an installed `tabretake` CLI when available. The commands below assume it is
+on PATH. For a source checkout, replace `tabretake` with
+`node /absolute/path/to/tabretake/bin/tabretake.mjs`; paths with spaces need quoting.
 A copied Skill does not prove its runtime dependencies are installed. If needed,
-clone the canonical repository separately and run `npm ci` there, or follow its
-version-pinned README installation. Do not install the unrelated npm package
-`demo-reel`.
+clone the canonical repository separately and run `npm ci` there, or follow the
+[CLI installation instructions](https://github.com/gnawbit/tabretake#install).
+The renamed CLI and Skill are available together on `main`. Releases through
+`v0.3.3` use the command and Skill name `demo-reel`.
 
 ```bash
-demo-reel --version
-demo-reel capabilities --json
-demo-reel doctor --json
+tabretake --version
+tabretake capabilities --json
+tabretake doctor --json
 ```
 
 Query capabilities before choosing flags: old releases may not support them.
 On v0.2.0, fall back to `help` and plain `doctor`, or update before using the
 JSON workflow. `doctor` reports required errors and optional font warnings;
 it checks Chromium's presence, not browser launch or app access. For web
-planning/recording, run `demo-reel setup` for missing Chromium; Linux may need
+planning/recording, run `tabretake setup` for missing Chromium; Linux may need
 `setup --with-deps`. Rendering an existing recording or saved timeline does not
 need Chromium: if `chromium` is the only failed required check, continue to
 validate/render without installing a browser. Fix other required errors first.
@@ -48,7 +49,7 @@ Node.js 20.9+ is required. Chinese captions need a CJK system font.
   it does not write a story. Use a test account and non-sensitive demo data.
 - **Existing recording:** get the file and moments to highlight. Read
   [recording input and branding](references/rendering.md); do not invent marks.
-- **Example requested:** `demo-reel demo --story readme|onboarding|release --port 0`
+- **Example requested:** `tabretake demo --story readme|onboarding|release --port 0`
   runs a fictional bundled app. It is a template, not evidence of external adoption.
 
 Ask only for missing details that affect the result, such as the target flow or
@@ -60,8 +61,8 @@ state changes are usually enough for a short launch clip.
 1. Inspect controls and create a starter if no story exists:
 
    ```bash
-   demo-reel plan --url https://your-app.com --out plan.json --json
-   demo-reel init --url https://your-app.com --out demo.json --json
+   tabretake plan --url https://your-app.com --out plan.json --json
+   tabretake init --url https://your-app.com --out demo.json --json
    ```
 
 2. Read the plan file from its returned artifact path. Replace the starter's
@@ -81,9 +82,9 @@ state changes are usually enough for a short launch clip.
 3. Validate, record and render:
 
    ```bash
-   demo-reel validate --config demo.json --json
-   demo-reel record --config demo.json --out demo --json
-   demo-reel render --config demo/record.json --vertical --json
+   tabretake validate --config demo.json --json
+   tabretake record --config demo.json --out demo --json
+   tabretake render --config demo/record.json --vertical --json
    ```
 
    Omit `--vertical` for landscape only; add `--no-gif` if GIFs are unnecessary.
@@ -138,8 +139,8 @@ From v0.3.2, login navigation errors also omit the target URL. HTTP 401/403
 pages stay open for sign-in; other HTTP errors stop the command.
 
 ```bash
-demo-reel plan --url https://your-app.com --login
-demo-reel record --config demo.json --storage-state auth.json --json
+tabretake plan --url https://your-app.com --login
+tabretake record --config demo.json --storage-state auth.json --json
 ```
 
 `auth.json` is created in the login command's working directory and is never

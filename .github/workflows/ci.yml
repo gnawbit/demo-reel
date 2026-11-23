@@ -32,7 +32,7 @@ jobs:
           done
 
       - name: CLI help
-        run: node bin/demo-reel.mjs help
+        run: node bin/tabretake.mjs help
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium

@@ -1,26 +1,26 @@
-# demo-reel — 可重复生成的 Web 应用演示
+# TabRetake — 可重复生成的 Web 应用演示
 
 [English](README.md) · 简体中文
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
-[![Version](https://img.shields.io/badge/version-0.3.3-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.3)
+[![最新发行版](https://img.shields.io/github/v/release/gnawbit/tabretake?label=latest%20release&color=6c5ce7)](https://github.com/gnawbit/tabretake/releases/latest)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 
 **把 Web 应用录成 README 动图或竖屏发布视频。**
 
-<img src="docs/hero.gif" alt="demo-reel 自动录屏、点击放大、加字幕" width="100%">
+<img src="docs/hero.gif" alt="TabRetake 自动录屏、点击放大、加字幕" width="100%">
 
-[项目页](https://gnawbit.github.io/demo-reel/) · [观看演示](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [路线图](#路线图)
+[项目页](https://gnawbit.github.io/tabretake/) · [观看演示](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [路线图](#路线图)
 
-demo-reel 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用可编辑 JSON
+TabRetake 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用可编辑 JSON
 描述操作流程，或让编程助手代写；在 Chromium 中执行步骤，添加点击放大和字幕，
 导出横屏或竖屏 MP4、README GIF 和 PNG 封面。支持 Windows、macOS 和 Linux。
 
 故事文件与代码一起保存，界面更新后即可重新生成演示。
 已有录屏也可配合时间标记渲染相同产物，无需浏览器自动化；详见[用已有录屏](#用已有录屏)。
 
-[TodoMVC 实例](https://gnawbit.github.io/demo-reel/todomvc/)提供固定版本的上游应用、
+[TodoMVC 实例](https://gnawbit.github.io/tabretake/todomvc/)提供固定版本的上游应用、
 可下载故事及实测的 README GIF / 9:16 制作流程。
 
 [Agent 发现与调用实测](docs/agent-discovery.md) 分别记录搜索可见性、Skill 选择
@@ -62,53 +62,54 @@ demo-reel 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用�
 
 ## 安装
 
-直接从本仓库安装 CLI：
+从本仓库的 `main` 分支安装更名后的 CLI。
 
 ```bash
-npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.3
-demo-reel setup
-demo-reel demo
+npm install --global git+https://github.com/gnawbit/tabretake.git#main
+tabretake setup
+tabretake demo
 ```
 
-要求 Node 20.9+ 和 Git。可以在工作目录运行 `demo-reel`，内置示例会将结果写入
-`./demo`。Linux 若缺少浏览器系统依赖，可用 `demo-reel setup --with-deps`。
+要求 Node 20.9+ 和 Git。可以在工作目录运行 `tabretake`，内置示例会将结果写入
+`./demo`。Linux 若缺少浏览器系统依赖，可用 `tabretake setup --with-deps`。
 ffmpeg/ffprobe 随依赖安装。
 
-包名为 `@gnawbit/demo-reel`，目前通过 GitHub 分发。
-npm 上不带作用域的 `demo-reel` 属于另一个项目。
+包名为 `@gnawbit/tabretake`，目前通过 GitHub 分发。
+`v0.3.3` 及更早版本的命令和 Skill 仍叫 `demo-reel`。
+安装新版后，现有 JSON 故事可以直接用 `tabretake` 运行。
 
 参与开发时，从源码安装：
 
 ```bash
-git clone https://github.com/gnawbit/demo-reel
-cd demo-reel
+git clone https://github.com/gnawbit/tabretake
+cd tabretake
 npm ci
-node bin/demo-reel.mjs setup
-node bin/demo-reel.mjs doctor
+node bin/tabretake.mjs setup
+node bin/tabretake.mjs doctor
 ```
 
-以下示例使用源码目录；全局安装后，将 `node bin/demo-reel.mjs` 替换为 `demo-reel` 即可。
+以下示例使用源码目录；全局安装后，将 `node bin/tabretake.mjs` 替换为 `tabretake` 即可。
 
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add gnawbit/demo-reel@v0.3.3 --skill demo-reel
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#main" --skill tabretake
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
-选择客户端。Skills CLI 1.9.0 需要 Node 22.20+，demo-reel 自身需要 Node 20.9+。
-将全局 CLI 或源码目录的位置告知编程助手，CLI 和 Skill 应使用同一发布版本。
+选择客户端。Skills CLI 1.9.0 需要 Node 22.20+，TabRetake 自身需要 Node 20.9+。
+将全局 CLI 或源码目录的位置告知编程助手，CLI 和 Skill 应从同一修订版本安装。
 
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.3"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#main"
 ```
 
-两种工作流安装方式任选其一；插件仍需先安装上述 demo-reel 运行环境。
+两种工作流安装方式任选其一；插件仍需先安装上述 TabRetake 运行环境。
 它是 Claude Code 插件，不是 Cowork 安装包或 MCP 服务。
 [发现与调用验证记录](docs/agent-discovery.md)区分了已经验证的能力和尚未测量的效果。
-也可在 [Skills 目录](https://skills.sh/gnawbit/demo-reel/demo-reel)查看此 Skill。例如：
+可这样向编程助手提问：
 
 - “把 http://localhost:3000 的注册流程做成 README 动图。”
 - “为我的 Web 应用制作带字幕的竖屏发布演示。”
@@ -120,14 +121,14 @@ claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.3"
 
 ```bash
 # 1. 检查环境
-node bin/demo-reel.mjs doctor
+node bin/tabretake.mjs doctor
 
 # 2. 跑一遍内置 demo
-node bin/demo-reel.mjs demo
+node bin/tabretake.mjs demo
 
 # 3. 录你自己的产品
-node bin/demo-reel.mjs plan --url https://your-app.com
-node bin/demo-reel.mjs init --url https://your-app.com
+node bin/tabretake.mjs plan --url https://your-app.com
+node bin/tabretake.mjs init --url https://your-app.com
 ```
 
 参考 `plan.json` 中的控件，在生成的 `demo.json` 中添加点击、输入等操作。
@@ -139,8 +140,8 @@ v0.3.3 起，`label` 来自 ARIA 引用或 HTML 标签；原生下拉框的 `opt
 `selector` 是建议使用的 CSS 定位器。这是 DOM 清单，不是完整的无障碍树。
 
 ```bash
-node bin/demo-reel.mjs record --config demo.json
-node bin/demo-reel.mjs render --config demo/record.json --vertical
+node bin/tabretake.mjs record --config demo.json
+node bin/tabretake.mjs render --config demo/record.json --vertical
 ```
 
 输出：
@@ -246,7 +247,7 @@ v0.3.3 及更早版本可能让部分匹配的按钮先于精确匹配的链接�
 }
 ```
 
-`titleLines` 最多两行；`watermark: false` 会去掉底部的小 demo-reel 水印。
+`titleLines` 最多两行；`watermark: false` 会去掉底部的小 TabRetake 水印。
 中文会自动用 CJK 字体。
 
 v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
@@ -258,17 +259,17 @@ v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
 
 | 命令 | 作用 |
 |---|---|
-| `demo-reel --version` | 输出已安装 CLI 的版本 |
-| `demo-reel capabilities --json` | 查询支持的命令、参数及 JSON 输出 |
-| `demo-reel doctor [--json]` | 检查 Node、Chromium、ffmpeg、字体 |
-| `demo-reel setup` | 安装与当前 CLI 匹配的 Chromium |
-| `demo-reel init --url <url>` | 创建可编辑的故事文件 |
-| `demo-reel validate --config demo.json [--json]` | 预检故事、录屏标记或录制时间线 |
-| `demo-reel plan --url <url>` | 截图 + 列出可交互元素 |
-| `demo-reel record --config demo.json` | 录制故事 |
-| `demo-reel render --config demo/record.json` | 渲染 MP4 + GIF |
-| `demo-reel serve` | 启动内置 demo 站点 |
-| `demo-reel demo` | 录制 + 渲染内置 demo |
+| `tabretake --version` | 输出已安装 CLI 的版本 |
+| `tabretake capabilities --json` | 查询支持的命令、参数及 JSON 输出 |
+| `tabretake doctor [--json]` | 检查 Node、Chromium、ffmpeg、字体 |
+| `tabretake setup` | 安装与当前 CLI 匹配的 Chromium |
+| `tabretake init --url <url>` | 创建可编辑的故事文件 |
+| `tabretake validate --config demo.json [--json]` | 预检故事、录屏标记或录制时间线 |
+| `tabretake plan --url <url>` | 截图 + 列出可交互元素 |
+| `tabretake record --config demo.json` | 录制故事 |
+| `tabretake render --config demo/record.json` | 渲染 MP4 + GIF |
+| `tabretake serve` | 启动内置 demo 站点 |
+| `tabretake demo` | 录制 + 渲染内置 demo |
 
 Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的单个 JSON
 对象，包含 `schemaVersion: 1` 和已安装版本。诊断包含稳定的 `id`、`required`、
@@ -286,7 +287,7 @@ JSON 工作流及配置校验需要 v0.3.0 或更新版本。
 `/steps/0/action`）、`message` 和 `hint`；JSON 语法或文件读取错误使用 `error` 对象。
 预检不会启动浏览器，也不验证选择器、登录态或媒体文件是否可用。
 `record` 和 `render` 也会在改写输出文件前校验输入。编辑器补全可在配置中加入
-`"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.3/schemas/story.schema.json"`。
+`"$schema": "https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json"`。
 
 常用参数：
 
@@ -325,17 +326,17 @@ v0.3.0 可用 `pause: 0` 加独立 `wait` 步骤代替。旧时间线需重新�
 ## 登录和受保护页面
 
 ```bash
-node bin/demo-reel.mjs record --config demo.json --login
+node bin/tabretake.mjs record --config demo.json --login
 ```
 
 请在可交互终端运行。浏览器打开后手动登录，登录态保存在本地 `auth.json`，
 供本次录制使用。后续运行，或先用 `plan --login` 登录后，必须显式传入：
 
 ```bash
-node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
+node bin/tabretake.mjs record --config demo.json --storage-state auth.json
 ```
 
-切换工作目录时请使用登录态文件的绝对路径。demo-reel 不会向你要密码，也不会
+切换工作目录时请使用登录态文件的绝对路径。TabRetake 不会向你要密码，也不会
 上传 cookie。不要将登录态提交到 Git。
 
 ## 工作原理
@@ -356,12 +357,12 @@ node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
 | Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
 
 Northstar 是内置的虚构应用。三个[可运行示例](examples/README.md)分别展示
-README 动图、首次创建项目，以及重复生成发布素材。从源码目录运行（全局安装可将前缀替换为 `demo-reel`）：
+README 动图、首次创建项目，以及重复生成发布素材。从源码目录运行（全局安装可将前缀替换为 `tabretake`）：
 
 ```bash
-node bin/demo-reel.mjs demo --story readme --port 0 --out demo-readme
-node bin/demo-reel.mjs demo --story onboarding --port 0 --out demo-onboarding
-node bin/demo-reel.mjs demo --story release --port 0 --out demo-release
+node bin/tabretake.mjs demo --story readme --port 0 --out demo-readme
+node bin/tabretake.mjs demo --story onboarding --port 0 --out demo-onboarding
+node bin/tabretake.mjs demo --story release --port 0 --out demo-release
 ```
 
 ## 用已有录屏
@@ -397,7 +398,7 @@ Screen Studio、QuickTime 或系统录屏录下来，再用 `marks` 描述哪里
 - 字幕最多显示 2.8 秒；下一条字幕出现或视频结束时会提前结束。
 
 ```bash
-node bin/demo-reel.mjs render \
+node bin/tabretake.mjs render \
   --config story-video.json \
   --video recording.mp4 \
   --vertical
@@ -409,14 +410,14 @@ node bin/demo-reel.mjs render \
 
 ## 和 Screen Studio 的区别
 
-| | Screen Studio | demo-reel |
+| | Screen Studio | TabRetake |
 |---|---|---|
 | 工作流 | 手动剪辑 | 故事文件 + 一条命令 |
 | 可重复 | 否 | 是 |
 | 能进 CI | 否 | 是 |
 | 价格 | 付费 | 免费，MIT |
 
-要逐帧精修，用 Screen Studio；要可重复、可提交、可自动化的发布素材，用 demo-reel。
+要逐帧精修，用 Screen Studio；要可重复、可提交、可自动化的发布素材，用 TabRetake。
 
 ## 常见问题
 
@@ -433,7 +434,7 @@ node bin/demo-reel.mjs render \
 只在获得授权时。不要用它抓取、绕过付费墙或规避反爬。
 
 **中文字幕能正常显示吗？**
-能。demo-reel 会自动选 CJK 字体：Windows 用微软雅黑，macOS 用苹方，
+能。TabRetake 会自动选 CJK 字体：Windows 用微软雅黑，macOS 用苹方，
 Linux 用 Noto Sans CJK。`doctor` 会检查。
 
 **输出可以商用吗？**

@@ -1,28 +1,28 @@
 import { version } from "./lib/metadata.mjs";
 
 const HELP = `
-demo-reel — turn any URL into a polished demo video and GIF.
+TabRetake — turn any URL into a polished demo video and GIF.
 
 Usage:
-  demo-reel setup   [--with-deps]
-  demo-reel --version
-  demo-reel capabilities [--json]
-  demo-reel doctor [--json]
-  demo-reel validate --config demo.json [--json]
-  demo-reel init    --url <url> [--out demo.json]
-  demo-reel plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
-  demo-reel record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
-  demo-reel render  --config demo.json [--out demo] [--video recording.mp4] [--vertical] [--no-gif]
-  demo-reel serve   [--port 4173] [--dir examples/site]
-  demo-reel demo    [--story readme|onboarding|release] [--out demo]
+  tabretake setup   [--with-deps]
+  tabretake --version
+  tabretake capabilities [--json]
+  tabretake doctor [--json]
+  tabretake validate --config demo.json [--json]
+  tabretake init    --url <url> [--out demo.json]
+  tabretake plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
+  tabretake record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
+  tabretake render  --config demo.json [--out demo] [--video recording.mp4] [--vertical] [--no-gif]
+  tabretake serve   [--port 4173] [--dir examples/site]
+  tabretake demo    [--story readme|onboarding|release] [--out demo]
 
 Examples:
-  demo-reel init --url https://your-app.com
-  demo-reel plan --url https://your-app.com
-  demo-reel record --config demo.json
-  demo-reel render --config demo.json
-  demo-reel serve
-  demo-reel record --config examples/story.json --out demo
+  tabretake init --url https://your-app.com
+  tabretake plan --url https://your-app.com
+  tabretake record --config demo.json
+  tabretake render --config demo.json
+  tabretake serve
+  tabretake record --config examples/story.json --out demo
 
 Options:
   --json              Machine-readable results for init, plan, record and render.

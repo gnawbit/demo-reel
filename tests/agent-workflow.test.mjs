@@ -9,10 +9,10 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
 const exec = promisify(execFile);
-const cli = fileURLToPath(new URL("../bin/demo-reel.mjs", import.meta.url));
+const cli = fileURLToPath(new URL("../bin/tabretake.mjs", import.meta.url));
 
 test("an agent can plan, initialize, record, render and recover through JSON", { timeout: 90000 }, async (t) => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-agent-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-agent-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   const server = createServer((_req, res) => {
     res.setHeader("Content-Type", "text/html");
@@ -81,7 +81,7 @@ test("an agent can plan, initialize, record, render and recover through JSON", {
 });
 
 test("action pauses leave time to read captions before the next interaction", { timeout: 30000 }, async (t) => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-caption-timing-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-caption-timing-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   const server = createServer((_req, res) => {
     res.setHeader("Content-Type", "text/html");

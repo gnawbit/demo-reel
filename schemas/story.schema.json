@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://raw.githubusercontent.com/gnawbit/demo-reel/main/schemas/story.schema.json",
-  "title": "demo-reel story, recording marks or recorded timeline",
+  "$id": "https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json",
+  "title": "TabRetake story, recording marks or recorded timeline",
   "oneOf": [
     {
       "$ref": "#/definitions/story"

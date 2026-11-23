@@ -8,7 +8,7 @@ import { createCaptionLayers } from "../scripts/lib/captions.mjs";
 import { findFont, findCjkFont } from "../scripts/lib/fonts.mjs";
 
 test("captions wrap within the portrait safe area and never overlap", async (t) => {
-  const assetsDir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-captions-"));
+  const assetsDir = await mkdtemp(path.join(os.tmpdir(), "tabretake-captions-"));
   t.after(() => rm(assetsDir, { recursive: true, force: true }));
   const options = {
     assetsDir, font: findFont(), cjkFont: findCjkFont(), durationSec: 4,

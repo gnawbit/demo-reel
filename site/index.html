@@ -3,23 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>demo-reel by gnawbit — repeatable web demos and README GIFs</title>
+    <title>TabRetake by gnawbit — repeatable web demos and README GIFs</title>
     <meta
       name="description"
       content="Create repeatable web app demos from editable JSON steps or existing screen recordings with timestamp marks. Local CLI and Agent Skill for README GIFs and 9:16 launch videos."
     />
-    <link rel="canonical" href="https://gnawbit.github.io/demo-reel/" />
-    <link rel="sitemap" type="application/xml" href="https://gnawbit.github.io/demo-reel/sitemap.xml" />
+    <link rel="canonical" href="https://gnawbit.github.io/tabretake/" />
+    <link rel="sitemap" type="application/xml" href="https://gnawbit.github.io/tabretake/sitemap.xml" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://gnawbit.github.io/demo-reel/" />
-    <meta property="og:title" content="demo-reel — repeatable web app demos and README GIFs" />
+    <meta property="og:url" content="https://gnawbit.github.io/tabretake/" />
+    <meta property="og:title" content="TabRetake — repeatable web app demos and README GIFs" />
     <meta property="og:description" content="Record JSON steps or render an existing screen recording with timestamp marks. Export local MP4, GIF and posters in 16:9 and 9:16." />
-    <meta property="og:image" content="https://raw.githubusercontent.com/gnawbit/demo-reel/main/docs/poster.png" />
-    <meta property="og:image:alt" content="A web app walkthrough rendered with demo-reel" />
+    <meta property="og:image" content="https://raw.githubusercontent.com/gnawbit/tabretake/main/docs/poster.png" />
+    <meta property="og:image:alt" content="A web app walkthrough rendered with TabRetake" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="demo-reel — repeatable web app demos and README GIFs" />
+    <meta name="twitter:title" content="TabRetake — repeatable web app demos and README GIFs" />
     <meta name="twitter:description" content="Record JSON steps or render an existing screen recording with timestamp marks. Export local MP4, GIF and posters in 16:9 and 9:16." />
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/gnawbit/demo-reel/main/docs/poster.png" />
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/gnawbit/tabretake/main/docs/poster.png" />
     <style>
       :root {
         --bg: #070a12;
@@ -128,11 +128,11 @@
   <body>
     <div class="wrap">
       <header>
-        <div class="brand"><div class="mark">D</div> demo-reel</div>
+        <div class="brand"><div class="mark">T</div> TabRetake</div>
         <nav>
-          <a href="https://github.com/gnawbit/demo-reel">GitHub</a>
-          <a href="https://github.com/gnawbit/demo-reel#install">Install</a>
-          <a href="https://github.com/gnawbit/demo-reel/blob/main/SKILL.md">Skill</a>
+          <a href="https://github.com/gnawbit/tabretake">GitHub</a>
+          <a href="https://github.com/gnawbit/tabretake#install">Install</a>
+          <a href="https://github.com/gnawbit/tabretake/blob/main/SKILL.md">Skill</a>
         </nav>
       </header>
 
@@ -140,34 +140,34 @@
         <div class="eyebrow">Agent skill for Claude Code · Codex · Cursor</div>
         <h1>Web app in.<br /><span>Repeatable demo out.</span></h1>
         <p class="sub">
-          demo-reel by gnawbit turns web app flows or existing screen recordings
+          TabRetake by gnawbit turns web app flows or existing screen recordings
           into README GIFs, MP4s and PNG posters in 16:9 and 9:16. Add click zooms
           and captions locally, then re-run editable JSON steps after UI changes.
         </p>
         <div class="install">
-          <code id="cli-commands">npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.3
-demo-reel capabilities --json
-demo-reel doctor --json</code>
+          <code id="cli-commands">npm install --global git+https://github.com/gnawbit/tabretake.git#main
+tabretake capabilities --json
+tabretake doctor --json</code>
           <button type="button" data-copy="cli-commands" aria-label="Copy CLI commands">Copy</button>
         </div>
         <p class="note">CLI: Node 20.9+ and Git. Windows, macOS and Linux.
           FFmpeg and ffprobe are included. Output videos have no audio.
-          <a href="https://github.com/gnawbit/demo-reel#install">Installation details</a>.
+          <a href="https://github.com/gnawbit/tabretake#install">Installation details</a>.
         </p>
         <div class="skill-install">
           <h2>Add the Agent Skill</h2>
           <div class="install">
-            <code id="skill-command">npx skills@1.9.0 add gnawbit/demo-reel@v0.3.3 --skill demo-reel</code>
+            <code id="skill-command">npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#main" --skill tabretake</code>
             <button type="button" data-copy="skill-command" aria-label="Copy Skill command">Copy</button>
           </div>
           <p class="note">Run in your target project after installing the CLI. Skills CLI needs Node 22.20+.
-            <a href="https://github.com/gnawbit/demo-reel#install">Client selection and Claude Code plugin</a>.
+            <a href="https://github.com/gnawbit/tabretake#install">Client selection and Claude Code plugin</a>.
           </p>
         </div>
         <div class="shot">
           <img
-            src="https://raw.githubusercontent.com/gnawbit/demo-reel/main/docs/hero.gif"
-            alt="demo-reel turning a SaaS dashboard into a captioned demo video"
+            src="https://raw.githubusercontent.com/gnawbit/tabretake/main/docs/hero.gif"
+            alt="TabRetake turning a SaaS dashboard into a captioned demo video"
           />
         </div>
       </section>
@@ -175,12 +175,12 @@ demo-reel doctor --json</code>
       <section class="workflows" aria-label="Choose your input">
         <div class="card">
           <h2>Web app URL + JSON steps</h2>
-          <p>Install Chromium with <code>demo-reel setup</code>, then rerun
+          <p>Install Chromium with <code>tabretake setup</code>, then rerun
             <code>doctor</code>. Use <code>plan</code> to inspect controls, write
             the requested flow, and run <code>record</code> followed by
             <code>render --vertical</code>.</p>
           <p>Keep the story with your app and update its steps when the UI changes.
-            <a href="https://github.com/gnawbit/demo-reel#quickstart">Record a web flow</a>.</p>
+            <a href="https://github.com/gnawbit/tabretake#quickstart">Record a web flow</a>.</p>
         </div>
         <div class="card">
           <h2>Existing recording + timestamp marks</h2>
@@ -189,7 +189,7 @@ demo-reel doctor --json</code>
             Timestamps come from you or video inspection.</p>
           <p>Rendering uses no Chromium. If the browser is the only failed
             <code>doctor</code> check, you can continue; fix other required errors first.
-            <a href="https://github.com/gnawbit/demo-reel#use-an-existing-screen-recording">Render an existing recording</a>.</p>
+            <a href="https://github.com/gnawbit/tabretake#use-an-existing-screen-recording">Render an existing recording</a>.</p>
         </div>
       </section>
 

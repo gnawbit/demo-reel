@@ -11,7 +11,7 @@ import { navigate } from "../scripts/lib/navigation.mjs";
 import { errorReport } from "../scripts/lib/report.mjs";
 
 const exec = promisify(execFile);
-const cli = fileURLToPath(new URL("../bin/demo-reel.mjs", import.meta.url));
+const cli = fileURLToPath(new URL("../bin/tabretake.mjs", import.meta.url));
 
 test("navigation failures redact URL credentials and suggest page recovery", async () => {
   const url = "https://fixture-user:fixture-password@example.test/?token=fixture-token";
@@ -54,7 +54,7 @@ test("login navigation permits authentication pages without accepting other erro
 });
 
 test("plan and record login failures redact URLs and close the browser", { timeout: 45000 }, async (t) => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-login-navigation-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-login-navigation-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   // Exercise the interactive CLI branch without requiring a desktop in CI.
   const preload = `
@@ -85,7 +85,7 @@ test("plan and record login failures redact URLs and close the browser", { timeo
 });
 
 test("plan and record reject error pages and retain navigation step locations", { timeout: 45000 }, async (t) => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-navigation-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-navigation-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   const server = createServer((req, res) => {
     res.statusCode = req.url.startsWith("/missing") ? 404 : req.url.startsWith("/private") ? 403 : 200;

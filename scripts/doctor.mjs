@@ -37,7 +37,7 @@ export async function diagnose({
       return (stdout || stderr).split("\n")[0].trim();
     });
   }
-  await check("chromium", true, "Run demo-reel setup (from source: node bin/demo-reel.mjs setup).", async () => {
+  await check("chromium", true, "Run tabretake setup (from source: node bin/tabretake.mjs setup).", async () => {
     const { chromium } = await load("playwright");
     const file = chromium.executablePath();
     if (!exists(file)) throw new Error("Chromium executable not found");
@@ -71,7 +71,7 @@ export async function doctor(argv = []) {
   const report = await diagnose();
   if (values.json) console.log(JSON.stringify(report));
   else {
-    console.log(`\ndemo-reel doctor (${version})\n`);
+    console.log(`\ntabretake doctor (${version})\n`);
     for (const check of report.checks) {
       console.log(`${check.status.toUpperCase().padEnd(7)} ${check.id.padEnd(14)} ${check.detail}`);
       if (check.hint) console.log(`        -> ${check.hint}`);

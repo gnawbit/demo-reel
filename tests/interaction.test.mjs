@@ -9,10 +9,10 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
 const exec = promisify(execFile);
-const cli = fileURLToPath(new URL("../bin/demo-reel.mjs", import.meta.url));
+const cli = fileURLToPath(new URL("../bin/tabretake.mjs", import.meta.url));
 
 test("record waits for clickable targets and rejects blocked clicks", { timeout: 30000 }, async (t) => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-click-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-click-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   const hits = [];
   const server = createServer((req, res) => {

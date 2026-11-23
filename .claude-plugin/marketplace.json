@@ -1,13 +1,13 @@
 {
-  "name": "demo-reel",
-  "description": "demo-reel by gnawbit: repeatable product demo videos and README GIFs.",
+  "name": "tabretake",
+  "description": "Create repeatable product demo videos and README GIFs with TabRetake by gnawbit.",
   "owner": {
     "name": "gnawbit",
     "url": "https://github.com/gnawbit"
   },
   "plugins": [
     {
-      "name": "demo-reel",
+      "name": "tabretake",
       "source": "./",
       "description": "Create repeatable web app demos from JSON steps or existing screen recordings with timestamp marks. Export local MP4, GIF and posters in landscape or portrait.",
       "category": "developer-tools",

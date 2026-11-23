@@ -42,5 +42,5 @@ body:
     attributes:
       label: Checks
       options:
-        - label: I ran `node bin/demo-reel.mjs doctor`
+        - label: I ran `node bin/tabretake.mjs doctor`
         - label: This is a page I own or have permission to record

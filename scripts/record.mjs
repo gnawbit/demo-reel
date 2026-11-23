@@ -296,7 +296,7 @@ export async function record(argv) {
   reporter.log(`\nRecorded ${events.length} interaction(s).`);
   reporter.log(`Video:   ${recordingPath}`);
   reporter.log(`Record:  ${recordPath}`);
-  reporter.log(`\nNext: demo-reel render --config ${path.relative(process.cwd(), recordPath)}`);
+  reporter.log(`\nNext: tabretake render --config ${path.relative(process.cwd(), recordPath)}`);
   reporter.log(`      (or pass the original --config path)\n`);
   await reporter.success({ duration: timelineDuration, eventCount: events.length, artifacts: [
     { kind: "video", path: recordingPath }, { kind: "timeline", path: recordPath }, ...screenshots,

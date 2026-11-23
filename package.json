@@ -1,10 +1,10 @@
 {
-  "name": "@gnawbit/demo-reel",
+  "name": "@gnawbit/tabretake",
   "version": "0.3.3",
   "description": "Create repeatable web app demos, README GIFs and 9:16 videos from editable JSON steps or existing screen recordings. Local CLI and Agent Skill for Claude Code, Codex and Cursor.",
   "type": "module",
   "bin": {
-    "demo-reel": "./bin/demo-reel.mjs"
+    "tabretake": "./bin/tabretake.mjs"
   },
   "files": [
     "bin/",
@@ -22,9 +22,9 @@
   ],
   "scripts": {
     "test": "node --test",
-    "doctor": "node bin/demo-reel.mjs doctor",
-    "serve": "node bin/demo-reel.mjs serve",
-    "demo": "node bin/demo-reel.mjs demo"
+    "doctor": "node bin/tabretake.mjs doctor",
+    "serve": "node bin/tabretake.mjs serve",
+    "demo": "node bin/tabretake.mjs demo"
   },
   "keywords": [
     "demo",
@@ -41,11 +41,11 @@
   "author": "gnawbit",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/gnawbit/demo-reel.git"
+    "url": "git+ssh://git@github.com/gnawbit/tabretake.git"
   },
-  "homepage": "https://gnawbit.github.io/demo-reel/",
+  "homepage": "https://gnawbit.github.io/tabretake/",
   "bugs": {
-    "url": "https://github.com/gnawbit/demo-reel/issues"
+    "url": "https://github.com/gnawbit/tabretake/issues"
   },
   "engines": {
     "node": ">=20.9.0"

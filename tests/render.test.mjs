@@ -10,10 +10,10 @@ import sharp from "sharp";
 import { ffmpeg } from "../scripts/lib/ffmpeg.mjs";
 
 const exec = promisify(execFile);
-const cli = fileURLToPath(new URL("../bin/demo-reel.mjs", import.meta.url));
+const cli = fileURLToPath(new URL("../bin/tabretake.mjs", import.meta.url));
 
 test("rendering preserves brightness, caption timing and valid poster selection", { timeout: 120000 }, async (t) => {
-  const temp = await mkdtemp(path.join(os.tmpdir(), "demo-reel-posters-"));
+  const temp = await mkdtemp(path.join(os.tmpdir(), "tabretake-posters-"));
   t.after(() => rm(temp, { recursive: true, force: true }));
   const source = path.join(temp, "source.mp4");
   await ffmpeg([
@@ -106,7 +106,7 @@ test("rendering preserves brightness, caption timing and valid poster selection"
 });
 
 test("portrait output retains narrow and wide source edges at overview zoom", { timeout: 120000 }, async (t) => {
-  const temp = await mkdtemp(path.join(os.tmpdir(), "demo-reel-portrait-fit-"));
+  const temp = await mkdtemp(path.join(os.tmpdir(), "tabretake-portrait-fit-"));
   t.after(() => rm(temp, { recursive: true, force: true }));
   for (const [name, size, boxes] of [
     ["phone", "360x640", "drawbox=x=0:y=0:w=iw:h=64:color=red:t=fill,drawbox=x=0:y=ih-64:w=iw:h=64:color=blue:t=fill"],

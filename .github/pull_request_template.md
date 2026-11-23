@@ -4,8 +4,8 @@
 
 ## How I tested
 
-- [ ] `node bin/demo-reel.mjs doctor`
-- [ ] `node bin/demo-reel.mjs demo`
+- [ ] `node bin/tabretake.mjs doctor`
+- [ ] `node bin/tabretake.mjs demo`
 - [ ] Tested on Windows / macOS / Linux (delete what does not apply)
 
 ## Screenshots or clips

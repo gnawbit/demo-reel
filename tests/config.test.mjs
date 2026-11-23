@@ -11,7 +11,7 @@ import { inspectConfig } from "../scripts/lib/config.mjs";
 const exec = promisify(execFile);
 const root = fileURLToPath(new URL("../", import.meta.url));
 const story = { url: "https://example.com", steps: [{ action: "click", text: "Create" }] };
-const run = (args, cwd) => exec(process.execPath, [path.join(root, "bin/demo-reel.mjs"), ...args], {
+const run = (args, cwd) => exec(process.execPath, [path.join(root, "bin/tabretake.mjs"), ...args], {
   cwd, windowsHide: true, timeout: 10000,
 });
 
@@ -52,7 +52,7 @@ test("validation identifies bad fields without coercing or echoing values", () =
 });
 
 test("invalid config fails before recording or rendering touches output", async (t) => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-validation-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-validation-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   const raw = path.join(dir, "output/raw");
   await mkdir(raw, { recursive: true });
@@ -71,7 +71,7 @@ test("invalid config fails before recording or rendering touches output", async 
 });
 
 test("validate JSON supports success, schema, syntax and file errors", async (t) => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-validation-json-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-validation-json-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   const file = path.join(dir, "story.json");
   const args = ["validate", "--config", file, "--json"];

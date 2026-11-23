@@ -1,14 +1,14 @@
 {
-  "name": "demo-reel",
-  "displayName": "demo-reel",
+  "name": "tabretake",
+  "displayName": "TabRetake",
   "version": "0.3.3",
   "description": "Create repeatable product demo videos, browser walkthroughs and README GIFs from web apps or existing recordings. Local MP4, GIF and poster export.",
   "author": {
     "name": "gnawbit",
     "url": "https://github.com/gnawbit"
   },
-  "homepage": "https://github.com/gnawbit/demo-reel",
-  "repository": "https://github.com/gnawbit/demo-reel",
+  "homepage": "https://github.com/gnawbit/tabretake",
+  "repository": "https://github.com/gnawbit/tabretake",
   "license": "MIT",
   "keywords": [
     "demo",
@@ -20,6 +20,6 @@
     "agent-skill"
   ],
   "icon": "./.claude-plugin/icon.png",
-  "documentationUrl": "https://github.com/gnawbit/demo-reel#install",
-  "supportUrl": "https://github.com/gnawbit/demo-reel/issues"
+  "documentationUrl": "https://github.com/gnawbit/tabretake#install",
+  "supportUrl": "https://github.com/gnawbit/tabretake/issues"
 }

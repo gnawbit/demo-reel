@@ -19,5 +19,5 @@ export async function setup(argv) {
       else reject(new Error(`Chromium setup failed (${signal || code})`));
     });
   });
-  console.log("Chromium is ready. Run demo-reel demo to make your first video.");
+  console.log("Chromium is ready. Run tabretake demo to make your first video.");
 }

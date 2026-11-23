@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Record a repeatable TodoMVC demo — demo-reel</title>
-  <meta name="description" content="Make a README GIF and 9:16 walkthrough of TodoMVC with editable JSON steps. A local, reproducible demo-reel recipe pinned to an upstream commit.">
-  <link rel="canonical" href="https://gnawbit.github.io/demo-reel/todomvc/">
-  <link rel="sitemap" type="application/xml" href="https://gnawbit.github.io/demo-reel/sitemap.xml">
+  <title>Record a repeatable TodoMVC demo — TabRetake</title>
+  <meta name="description" content="Make a README GIF and 9:16 walkthrough of TodoMVC with editable JSON steps. A local, reproducible TabRetake recipe pinned to an upstream commit.">
+  <link rel="canonical" href="https://gnawbit.github.io/tabretake/todomvc/">
+  <link rel="sitemap" type="application/xml" href="https://gnawbit.github.io/tabretake/sitemap.xml">
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; background: #070a12; color: #e9edf5; font: 17px/1.65 system-ui, sans-serif; }
@@ -24,7 +24,7 @@
 </head>
 <body>
 <main>
-  <nav><a href="../">demo-reel</a> / TodoMVC walkthrough</nav>
+  <nav><a href="../">TabRetake</a> / TodoMVC walkthrough</nav>
   <h1>A README GIF and portrait demo from a TodoMVC story</h1>
   <p>Add two tasks, complete the first, filter completed items, then return to the full list.
     Keep the steps as JSON and change the task text when you need a fresh walkthrough.</p>
@@ -35,10 +35,10 @@
 
   <h2>1. Install the CLI</h2>
   <p>Use Node.js 20.9+ and Git on Windows, macOS or Linux. FFmpeg and ffprobe are included.</p>
-  <pre><code>npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.3
-demo-reel setup
-demo-reel doctor --json</code></pre>
-  <p class="note">On Linux, use <code>demo-reel setup --with-deps</code> if Chromium system libraries are missing.
+  <pre><code>npm install --global git+https://github.com/gnawbit/tabretake.git#main
+tabretake setup
+tabretake doctor --json</code></pre>
+  <p class="note">On Linux, use <code>tabretake setup --with-deps</code> if Chromium system libraries are missing.
     To let an Agent author other flows, see <a href="../">Skill installation</a>.</p>
 
   <h2>2. Serve the pinned app</h2>
@@ -49,16 +49,16 @@ git -C demo-todomvc checkout --detach ff43b02e59dfa604386bb382034b2cd07c2bcd8a
 git -C demo-todomvc sparse-checkout set examples/javascript-es6</code></pre>
   <p>Start the server in one terminal. Replace the placeholder with your checkout's <strong>absolute path</strong>;
     <code>serve --dir</code> resolves relative paths from the CLI installation.</p>
-  <pre><code>demo-reel serve --dir "&lt;absolute path to demo-todomvc/examples/javascript-es6/dist&gt;" --port 4187</code></pre>
+  <pre><code>tabretake serve --dir "&lt;absolute path to demo-todomvc/examples/javascript-es6/dist&gt;" --port 4187</code></pre>
   <p class="note">The story uses <code>http://127.0.0.1:4187/</code>. If that port is occupied,
     change both the server port and the story's <code>url</code>.</p>
 
   <h2>3. Record and render</h2>
   <p>Save the download as <code>todomvc-story.json</code> in your working directory.
     In a second terminal:</p>
-  <pre><code>demo-reel validate --config todomvc-story.json --json
-demo-reel record --config todomvc-story.json --out demo-todomvc-output --json
-demo-reel render --config demo-todomvc-output/record.json --vertical --zoom 1 --json</code></pre>
+  <pre><code>tabretake validate --config todomvc-story.json --json
+tabretake record --config todomvc-story.json --out demo-todomvc-output --json
+tabretake render --config demo-todomvc-output/record.json --vertical --zoom 1 --json</code></pre>
   <p>The render returns paths to landscape and portrait MP4s, GIFs and PNG posters.
     The recording also saves screenshots of the added, completed, filtered and final states.</p>
 
@@ -70,6 +70,9 @@ demo-reel render --config demo-todomvc-output/record.json --vertical --zoom 1 --
     Changed task data or clicks require a new recording.</p>
   <p class="note">Verified on Windows with demo-reel v0.3.3 on 2026-11-23: two runs produced
     approximately 12.7-second videos after correcting the overlapping filter label.
+    To reproduce that version, change <code>#main</code> to <code>#v0.3.3</code>
+    in the install command, run the steps with <code>demo-reel</code>, and use the
+    <a href="https://raw.githubusercontent.com/gnawbit/tabretake/e3cab65/site/todomvc/story.json">original story</a>.
     Both runs passed complete media decoding and sampled-frame checks. An Agent followed
     the public instructions from a supplied project link; this does not measure automatic discovery.</p>
 
@@ -86,7 +89,7 @@ demo-reel render --config demo-todomvc-output/record.json --vertical --zoom 1 --
     <li>Output is silent. This example does not need login state or external services.</li>
   </ul>
   <footer class="note">
-    <a href="https://github.com/gnawbit/demo-reel">demo-reel source</a> ·
+    <a href="https://github.com/gnawbit/tabretake">TabRetake source</a> ·
     <a href="https://github.com/tastejs/todomvc/blob/ff43b02e59dfa604386bb382034b2cd07c2bcd8a/license.md">TodoMVC MIT license and authors</a>
   </footer>
 </main>

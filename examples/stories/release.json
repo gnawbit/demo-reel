@@ -8,7 +8,7 @@
     "badge": "RELEASE DEMO",
     "titleLines": ["一个故事文件", "更新发布演示"],
     "subtitle": "重复运行 · 本地生成",
-    "cta": "demo-reel",
+    "cta": "TabRetake",
     "watermark": false
   },
   "steps": [

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.3/schemas/story.schema.json",
+  "$schema": "https://raw.githubusercontent.com/gnawbit/tabretake/v0.3.3/schemas/story.schema.json",
   "url": "http://127.0.0.1:4187/",
   "displayUrl": "TodoMVC / JavaScript ES6",
   "viewport": {

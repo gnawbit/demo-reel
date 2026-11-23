@@ -1,8 +1,10 @@
 # Agent discovery and invocation
 
-Canonical source: [gnawbit/demo-reel](https://github.com/gnawbit/demo-reel).
-Use the full repository identity: other projects share the `demo-reel` name,
-and the unscoped npm package is unrelated.
+Install TabRetake from [gnawbit/tabretake](https://github.com/gnawbit/tabretake#install).
+The CLI, Agent Skill and Claude Code plugin on `main` are named `tabretake`.
+The checks below used the former name, `demo-reel`, through v0.3.3. Search
+positions, directory listings and installation results refer to the name and
+revision used in each check.
 
 ## What is supported
 
@@ -84,7 +86,7 @@ machine paths and recordings local; publish only redacted results.
 
 ## v0.3.1 follow-up on 2026-11-23
 
-The [published release](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.1)
+The [published release](https://github.com/gnawbit/tabretake/releases/tag/v0.3.1)
 passed 42 tests and three-platform CI. Reinstallation from the public tag
 verified the CLI, Codex Skill and Claude Code plugin. The CLI produced both
 video layouts, GIFs and posters; animated outputs decoded successfully.
@@ -155,7 +157,7 @@ diagnostic recovery and reuse within one controlled task, not external adoption.
 
 ## v0.3.3 release and entrypoint checks
 
-[v0.3.3](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.3) passed 49 tests
+[v0.3.3](https://github.com/gnawbit/tabretake/releases/tag/v0.3.3) passed 49 tests
 and three-platform CI. [Release checks](../evals/2026-11-23-v033.json) verified
 CLI installation and execution from the public tag, Codex/Cursor Skill files,
 and the Claude plugin. Claude's native initialization registered
@@ -169,7 +171,7 @@ media decoding and sampled-frame review. These are controlled invocation checks,
 not native automatic selection. Default zoom/caption placement and small desktop
 text in portrait still need case-specific visual review.
 
-The [project page](https://gnawbit.github.io/demo-reel/) is now published from
+The [project page](https://gnawbit.github.io/tabretake/) is published from
 `site/` with a canonical URL, sitemap and current installation instructions; the
 repository homepage links to it. Anonymous HTTP checks returned 200 and matched
 the reviewed source. This confirms a public entrypoint, not search indexing:
@@ -198,7 +200,7 @@ search channels rather than treating visibility as one score:
 The homepage now explains both input routes and separates CLI from Skill setup.
 A supplied-link Agent then used the unchanged upstream TodoMVC app to create
 two approximately 12.7-second walkthroughs, changing only one task value on the
-second run. The [reproducible recipe](https://gnawbit.github.io/demo-reel/todomvc/)
+second run. The [reproducible recipe](https://gnawbit.github.io/tabretake/todomvc/)
 includes the pinned app revision and a downloadable story. This is an internal
 trial on an external open-source project, not upstream adoption.
 

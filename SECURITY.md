@@ -2,19 +2,20 @@
 
 ## Supported versions
 
-The `main` branch is the supported version until the first tagged release.
+Security fixes target the `main` branch. Include the affected commit or release
+tag in your report.
 
 ## Reporting a vulnerability
 
 Please use GitHub's private vulnerability reporting:
 
-https://github.com/gnawbit/demo-reel/security/advisories/new
+https://github.com/gnawbit/tabretake/security/advisories/new
 
 Do not open a public issue for a vulnerability.
 
 ## What to protect
 
-demo-reel records real pages. Treat these as sensitive:
+TabRetake records real pages. Treat these as sensitive:
 
 - `auth.json` — Playwright storage state (cookies and localStorage)
 - `demo/recording.webm` and generated MP4/GIF files — may contain customer data

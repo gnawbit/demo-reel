@@ -258,7 +258,7 @@ function buildVerticalChrome(font, cjkFont, hostname, layout, vertical = {}, acc
 
   if (vertical.watermark !== false && layout.watermark) {
     filters.push(
-      `drawtext=fontfile='${fontPathForFilter(font)}':text='demo-reel':` +
+      `drawtext=fontfile='${fontPathForFilter(font)}':text='TabRetake':` +
         `fontsize=${layout.watermark.size}:fontcolor=0x5D6678:` +
         `x=(w-text_w)/2:y=${layout.watermark.y}`,
     );

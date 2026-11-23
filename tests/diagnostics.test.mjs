@@ -11,7 +11,7 @@ import { supportsNodeVersion, version } from "../scripts/lib/metadata.mjs";
 
 const exec = promisify(execFile);
 const root = fileURLToPath(new URL("../", import.meta.url));
-const run = (args, dir = root) => exec(process.execPath, [path.join(dir, "bin/demo-reel.mjs"), ...args], {
+const run = (args, dir = root) => exec(process.execPath, [path.join(dir, "bin/tabretake.mjs"), ...args], {
   cwd: os.tmpdir(), windowsHide: true, timeout: 20000,
 });
 
@@ -64,7 +64,7 @@ test("missing optional fonts warn; failed native binaries block readiness", asyn
 });
 
 test("an installation with no dependencies can still diagnose itself", async (t) => {
-  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-diagnostics-"));
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-diagnostics-"));
   t.after(() => rm(dir, { recursive: true, force: true }));
   for (const name of ["bin", "scripts", "package.json"]) {
     await cp(path.join(root, name), path.join(dir, name), { recursive: true });

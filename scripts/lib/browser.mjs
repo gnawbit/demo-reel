@@ -35,16 +35,16 @@ export async function newContext(browser, options) {
  */
 export async function installCursor(page) {
   await page.addInitScript(() => {
-    if (window.__demoReelCursorInstalled) return;
-    window.__demoReelCursorInstalled = true;
+    if (window.__tabretakeCursorInstalled) return;
+    window.__tabretakeCursorInstalled = true;
 
     const CSS = `
-      #__demo_reel_cursor {
+      #__tabretake_cursor {
         position: fixed; left: 0; top: 0; width: 22px; height: 22px;
         z-index: 2147483647; pointer-events: none; will-change: transform;
         filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
       }
-      #__demo_reel_ripple {
+      #__tabretake_ripple {
         position: fixed; width: 14px; height: 14px; border-radius: 50%;
         background: rgba(108,92,231,.35); border: 2px solid rgba(255,255,255,.9);
         z-index: 2147483646; pointer-events: none;
@@ -57,7 +57,7 @@ export async function installCursor(page) {
     document.documentElement.appendChild(style);
 
     const cursor = document.createElement("div");
-    cursor.id = "__demo_reel_cursor";
+    cursor.id = "__tabretake_cursor";
     cursor.innerHTML = `
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <path d="M4 2L20.5 12.2L12.6 13.7L9.1 21.2L4 2Z"
@@ -71,7 +71,7 @@ export async function installCursor(page) {
 
     const ripple = (x, y) => {
       const r = document.createElement("div");
-      r.id = "__demo_reel_ripple";
+      r.id = "__tabretake_ripple";
       r.style.left = `${x}px`;
       r.style.top = `${y}px`;
       document.documentElement.appendChild(r);

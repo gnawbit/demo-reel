@@ -19,7 +19,7 @@
   <rect width="1200" height="420" rx="24" fill="#0B0F17"/>
   <rect width="1200" height="420" rx="24" fill="url(#dots)"/>
 
-  <text x="40" y="54" fill="#E9EDF5" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">demo-reel pipeline</text>
+  <text x="40" y="54" fill="#E9EDF5" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">TabRetake pipeline</text>
   <text x="40" y="78" fill="#8A93A6" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13">story in, launch video out — all on your machine</text>
 
   <!-- demo.json -->

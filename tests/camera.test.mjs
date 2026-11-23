@@ -24,7 +24,7 @@ function marker(frames, index, width = 320, height = 180) {
 }
 
 test("camera eases into a click and back without cutting time", { timeout: 60000 }, async (t) => {
-  const temp = await mkdtemp(path.join(os.tmpdir(), "demo-reel-camera-"));
+  const temp = await mkdtemp(path.join(os.tmpdir(), "tabretake-camera-"));
   t.after(() => rm(temp, { recursive: true, force: true }));
   const input = path.join(temp, "input.png");
   await sharp(Buffer.from('<svg width="320" height="180"><rect width="320" height="180" fill="#444"/><rect x="240" y="80" width="20" height="20" fill="#00ff00"/></svg>'))
@@ -59,7 +59,7 @@ test("camera eases into a click and back without cutting time", { timeout: 60000
 });
 
 test("camera preserves shapes when the source aspect ratio differs", { timeout: 60000 }, async (t) => {
-  const temp = await mkdtemp(path.join(os.tmpdir(), "demo-reel-aspect-"));
+  const temp = await mkdtemp(path.join(os.tmpdir(), "tabretake-aspect-"));
   t.after(() => rm(temp, { recursive: true, force: true }));
   const input = path.join(temp, "input.png");
   await sharp(Buffer.from('<svg width="320" height="240"><rect width="320" height="240" fill="#444"/><rect x="150" y="110" width="20" height="20" fill="#00ff00"/></svg>'))
