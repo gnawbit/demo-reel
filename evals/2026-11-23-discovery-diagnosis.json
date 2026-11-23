@@ -1,0 +1,271 @@
+{
+  "date": "2026-11-23",
+  "limits": [
+    "Controlled task-word searches, not strict blind tests. Both search Agents confirmed that injected project instructions exposed the repository identity before searching.",
+    "Search channels and queries differ; these observations do not establish ranking gains, discovery rates or causal effects on Agent selection.",
+    "The TodoMVC task was given a public project URL. It verifies invocation on an external open-source app, not native routing or upstream adoption.",
+    "Delegated model identifiers were not exposed. Raw client logs, recordings, machine paths and account configuration remain local.",
+    "Complete media decoding verifies integrity; visual checks use sampled frames rather than every frame."
+  ],
+  "webSearch": {
+    "queries": [
+      "open source browser demo recorder editable steps GIF video CLI Playwright",
+      "open source product demo video generator agent portrait 9:16 existing recording",
+      "open source browser demo recorder \"9:16\" \"GIF\" \"local\"",
+      "webreel npm Node.js Windows requirements install"
+    ],
+    "demoReelFound": false,
+    "selected": "vercel-labs/webreel",
+    "executionAttempted": false,
+    "exactIdentityProbe": {
+      "query": "\"gnawbit/demo-reel\"",
+      "sourceReturned": "https://agentfieldnotes.ai/u/record-a-polished-product-demo-from-a-url-with-demo-reel",
+      "sourceDescribedVersion": "0.1.0"
+    },
+    "siteProbe": {
+      "query": "site:gnawbit.github.io/demo-reel",
+      "resultsReturned": false
+    },
+    "directOpenInResearchToolSucceeded": false
+  },
+  "skillsDirectory": {
+    "endpoint": "https://skills.sh/api/search",
+    "observedAt": "2026-11-23T06:19:32.819Z",
+    "queries": [
+      {
+        "query": "demo-reel",
+        "returned": 41,
+        "position": 5,
+        "reportedSearchType": "fuzzy"
+      },
+      {
+        "query": "README GIF",
+        "returned": 76,
+        "position": 41,
+        "reportedSearchType": "semantic"
+      },
+      {
+        "query": "product demo",
+        "returned": 100,
+        "position": null,
+        "reportedSearchType": "semantic"
+      },
+      {
+        "query": "screen recording",
+        "returned": 100,
+        "position": null,
+        "reportedSearchType": "semantic"
+      },
+      {
+        "query": "existing recording",
+        "returned": 100,
+        "position": null,
+        "reportedSearchType": "semantic"
+      },
+      {
+        "query": "browser walkthrough",
+        "returned": 100,
+        "position": null,
+        "reportedSearchType": "semantic"
+      },
+      {
+        "query": "repeatable demo",
+        "returned": 31,
+        "position": null,
+        "reportedSearchType": "semantic"
+      },
+      {
+        "query": "9:16",
+        "returned": 100,
+        "position": null,
+        "reportedSearchType": "fuzzy"
+      }
+    ],
+    "commonResultFields": [
+      "id",
+      "source",
+      "skillId",
+      "name",
+      "installs"
+    ],
+    "directoryDescriptionMatchesCurrentSkill": false,
+    "oldDescriptionRetained": true,
+    "caveat": "Positions apply only to each returned response. Counts of 100 do not establish the full index size or a documented API cap. Missing descriptions in response rows do not prove descriptions are not indexed."
+  },
+  "githubMetadata": {
+    "commit": "9c3d019",
+    "changed": "Repository About now matches the package description, including README GIF, 9:16 and existing screen recordings; homepage is the public project page.",
+    "scopedQueries": [
+      {
+        "query": "recordings user:gnawbit in:description",
+        "beforeCount": 0,
+        "afterCount": 1,
+        "foundBefore": false,
+        "foundAfter": true
+      },
+      {
+        "query": "README GIF user:gnawbit in:description",
+        "beforeCount": 0,
+        "afterCount": 1,
+        "foundBefore": false,
+        "foundAfter": true
+      }
+    ],
+    "caveat": "Owner-scoped description matching checks verify this metadata path only, not generic search rank."
+  },
+  "githubTaskSearch": {
+    "endpoint": "https://api.github.com/search/repositories",
+    "queries": [
+      {
+        "query": "browser demo gif cli in:readme",
+        "total": 18280,
+        "read": 20
+      },
+      {
+        "query": "\"screen recording\" \"9:16\" in:readme",
+        "total": 2223,
+        "read": 20
+      },
+      {
+        "query": "browser demo gif in:description",
+        "total": 26,
+        "read": 26
+      },
+      {
+        "query": "demo gif cli in:description",
+        "total": 20,
+        "read": 20,
+        "demoReelPosition": 10
+      }
+    ],
+    "defaultSort": true,
+    "selected": "gnawbit/demo-reel",
+    "publicDocsChecked": true,
+    "executionAttempted": false,
+    "strictBlind": false,
+    "identityVisibleFromProjectInstructions": true,
+    "observedCacheDifference": "The web tool showed v0.3.1 GitHub installation text; raw public README and tagged package metadata were verified at v0.3.3."
+  },
+  "crawlability": {
+    "status": 200,
+    "robotsMeta": [],
+    "xRobotsTag": null,
+    "hostRobotsStatus": 404,
+    "searchIndexingVerified": false
+  },
+  "externalTask": {
+    "app": "tastejs/todomvc JavaScript ES6",
+    "upstreamCommit": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+    "license": "MIT",
+    "sourceUnmodified": true,
+    "cliTag": "v0.3.3",
+    "cliCommit": "8429949859620db229299d7ae8c3ae0c2238e64a",
+    "task": "Add Draft release notes and Record walkthrough; complete Draft, filter Completed, return to All. Produce a README GIF, landscape and portrait videos, and posters. Change only the second task to Publish walkthrough and repeat.",
+    "firstRecordSucceeded": false,
+    "failureCode": "STEP_TIMEOUT",
+    "failureStep": "/steps/11",
+    "failureCause": "The earlier text=Completed click matched Clear completed and deleted the completed task. The subsequent waitFor exposed the wrong action.",
+    "recovery": "Replace only the click target with .filters a[href='#/completed']; validate and record again.",
+    "productRecoveryAttempts": 1,
+    "rounds": [
+      {
+        "round": 1,
+        "recordSucceeded": true,
+        "renderSucceeded": true,
+        "artifactCount": 6,
+        "media": [
+          {
+            "file": "demo-16x9.mp4",
+            "width": 1920,
+            "height": 1080,
+            "seconds": 12.7,
+            "decoded": true
+          },
+          {
+            "file": "demo-9x16.gif",
+            "width": 540,
+            "height": 960,
+            "seconds": 12.66,
+            "decoded": true
+          },
+          {
+            "file": "demo-9x16.mp4",
+            "width": 1080,
+            "height": 1920,
+            "seconds": 12.7,
+            "decoded": true
+          },
+          {
+            "file": "demo.gif",
+            "width": 960,
+            "height": 540,
+            "seconds": 12.74,
+            "decoded": true
+          }
+        ],
+        "sampledVisualChecksPassed": true
+      },
+      {
+        "round": 2,
+        "recordSucceeded": true,
+        "renderSucceeded": true,
+        "artifactCount": 6,
+        "media": [
+          {
+            "file": "demo-16x9.mp4",
+            "width": 1920,
+            "height": 1080,
+            "seconds": 12.767,
+            "decoded": true
+          },
+          {
+            "file": "demo-9x16.gif",
+            "width": 540,
+            "height": 960,
+            "seconds": 12.76,
+            "decoded": true
+          },
+          {
+            "file": "demo-9x16.mp4",
+            "width": 1080,
+            "height": 1920,
+            "seconds": 12.767,
+            "decoded": true
+          },
+          {
+            "file": "demo.gif",
+            "width": 960,
+            "height": 540,
+            "seconds": 12.79,
+            "decoded": true
+          }
+        ],
+        "sampledVisualChecksPassed": true
+      }
+    ],
+    "repeatChangedOnly": "/steps/3/value",
+    "visualLimits": [
+      "Sampled frames, not a frame-by-frame or real-time full playback review; full decode validates media integrity only.",
+      "Landscape uses a crop for this 640x560 input: top todos heading and part of footer are outside the frame; task names and filters remain complete.",
+      "Landscape captions overlap the app's nonessential footer instructions; main task content is unobstructed.",
+      "Source is upscaled and looks slightly soft; portrait filters are smaller than task names but readable.",
+      "No audio, matching documented product behavior.",
+      "No automatic zoom was evaluated; --zoom 1 and step zoom:false were chosen for reliable task visibility."
+    ],
+    "recipe": "https://gnawbit.github.io/demo-reel/todomvc/"
+  },
+  "fixedRetest": {
+    "commit": "ef1d3969633dbacd20d72fd49b8db80938e3ccd9",
+    "lockfileCommitVerified": true,
+    "originalFailingStoryUnchanged": true,
+    "storySha256": "5EFE4F7424EDB08ABD25C849310ADB07CE96AF5595C9EF37F375A84B09BFFCB3",
+    "textTargetRetained": "Completed",
+    "recordAndRenderSucceeded": true,
+    "taskWasNotDeleted": true,
+    "completedAndAllStatesInspected": true,
+    "landscapeAndPortraitMp4Decoded": true,
+    "videoSeconds": 12.7,
+    "fullRepositoryTestsPassed": 55,
+    "releaseCaveat": "The locator fix is on main after v0.3.3; the published tag is unchanged."
+  }
+}

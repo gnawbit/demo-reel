@@ -20,6 +20,13 @@ without a working server would misdescribe its interface.
 
 ## Evidence checked on 2026-11-23
 
+**Method correction:** omitting the project name from a delegated task does not
+make it a blind test. Two later search Agents confirmed that injected project
+instructions exposed the identity before searching. Earlier runs did not verify
+this isolation, so their recorded queries and outcomes remain useful observations,
+but do not establish discovery without brand knowledge. A fresh conversation
+alone is insufficient; inspect its starting context before claiming a blind test.
+
 | Check | Observation |
 |---|---|
 | `skills@1.9.0 add gnawbit/demo-reel --list` | Discovered one Skill named `demo-reel` |
@@ -35,7 +42,7 @@ labels, not measured accuracy. For actual routing results record the agent,
 model, version, prompt, whether the Skill was loaded, and whether output was
 successfully inspected.
 
-## Independent Agent smoke test on 2026-11-23
+## Delegated Agent smoke test on 2026-11-23
 
 Fresh delegated Agent contexts received tasks without naming demo-reel.
 The [sanitized results](../evals/2026-11-23-smoke.json) preserve prompts, queries,
@@ -68,9 +75,10 @@ directory indexes may lag; no ranking improvement has been measured. Re-run
 fresh searches after indexing and native-client cases when model access works.
 
 To repeat the evaluation, start a disposable local app, install the chosen tag's
-CLI and Skill outside the checkout, and use fresh Agent sessions. Keep discovery
-tasks unaware of the repository identity; for installed cases expose only normal
-Skill metadata and the task. Record actual Skill reads/tool calls, inspect the
+CLI and Skill outside the checkout, and use fresh Agent sessions. For blind
+discovery, verify that neither the task nor injected workspace instructions expose
+the repository identity. Otherwise label the search as controlled. For installed
+cases expose normal Skill metadata and the task. Record actual Skill reads/tool calls, inspect the
 outputs, and separate environment failures from product failures. Keep raw logs,
 machine paths and recordings local; publish only redacted results.
 
@@ -165,9 +173,42 @@ The [project page](https://gnawbit.github.io/demo-reel/) is now published from
 `site/` with a canonical URL, sitemap and current installation instructions; the
 repository homepage links to it. Anonymous HTTP checks returned 200 and matched
 the reviewed source. This confirms a public entrypoint, not search indexing:
-the web research tool could not open the new URL in this run, and a fresh
-unseeded search did not find demo-reel. The Skills directory also retained older
+the web research tool could not open the new URL in this run, and a delegated
+task-word search did not find demo-reel. The Skills directory also retained older
 Skill text during this review. No ranking or discovery improvement is claimed.
+
+## Discovery diagnosis and an external-project task
+
+[Detailed observations](../evals/2026-11-23-discovery-diagnosis.json) separate the
+search channels rather than treating visibility as one score:
+
+- Skills search returned the project at 5 for its name and 41 for `README GIF`;
+  six other task queries did not include it in their returned rows. The directory
+  still displayed an older description. This establishes limited observed recall,
+  not the service's ranking formula or the size of its complete index.
+- The project page returned 200 with no observed robots exclusion. A site-scoped
+  web query returned nothing; exact repository search returned a third-party page
+  describing v0.1.0. Indexing remains unverified.
+- Updating GitHub About to match the package description changed two owner-scoped
+  description queries from zero matches to one. A controlled Agent's generic
+  GitHub query `demo gif cli in:description` returned the project at 10 of 20 and
+  selected it after checking public docs. Project identity was visible in its
+  injected instructions, so this is not blind discovery or proof of a ranking gain.
+
+The homepage now explains both input routes and separates CLI from Skill setup.
+A supplied-link Agent then used the unchanged upstream TodoMVC app to create
+two approximately 12.7-second walkthroughs, changing only one task value on the
+second run. The [reproducible recipe](https://gnawbit.github.io/demo-reel/todomvc/)
+includes the pinned app revision and a downloadable story. This is an internal
+trial on an external open-source project, not upstream adoption.
+
+Its first recording exposed a real bug: `text: "Completed"` clicked
+“Clear completed” before the intended exact link. A scoped selector recovered
+v0.3.3. Commit `ef1d396` prefers exact controls, preserves partial control matching
+ahead of plain-text fallback, and keeps explicit roles scoped. The original failed
+story, unchanged by hash, then succeeded with a public install pinned to that
+commit. Both layouts decoded and passed sampled-frame review; 55 repository tests
+passed. This fix is not in the v0.3.3 tag.
 
 The [official description guide](https://agentskills.io/skill-creation/optimizing-descriptions)
 emphasizes relevant intent and positive/negative evaluation cases. It provides

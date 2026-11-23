@@ -4,7 +4,7 @@
   "cliVersion": "0.3.2",
   "limits": [
     "Small internal evaluation, not an accuracy, ranking or adoption measurement.",
-    "The discovery Agent received no repository identity and did not inspect the local checkout.",
+    "Method correction: the discovery task prompt omitted repository identity and the Agent did not inspect the checkout, but isolation from injected workspace instructions was not verified. This is not an established blind discovery test.",
     "The invocation Agent received Skill catalog metadata and an installed CLI path. This does not establish native client auto-discovery.",
     "The application and its Chinese form data were fictional, separate from the bundled examples.",
     "Delegated Agent model identifiers were not exposed. Raw logs, machine paths and recordings remain local.",

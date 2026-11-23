@@ -2,6 +2,7 @@
   "date": "2026-11-23",
   "release": { "tag": "v0.3.3", "commit": "8429949859620db229299d7ae8c3ae0c2238e64a", "ciRun": 45118695137, "testsPassed": 49, "platforms": ["Linux", "Windows", "macOS"] },
   "limits": [
+    "Method correction: discovery prompts omitted project identity, but isolation from injected workspace instructions was not verified. These searches are not established blind discovery tests.",
     "Internal checks and small delegated Agent trials, not adoption or routing accuracy measurements.",
     "Controlled invocation tasks supplied installed Skill metadata and a CLI path. They do not establish native client automatic selection.",
     "All application data and recordings were fictional. Raw logs, recordings, client configuration and machine paths remain local.",
@@ -65,7 +66,7 @@
       "searchIndexingVerified": false
     },
     "coldSearch": {
-      "agent": "Fresh delegated Agent with no repository identity",
+      "agent": "Fresh delegated Agent; task prompt omitted repository identity, workspace context isolation was not verified",
       "model": null,
       "prompt": "给一个已有 Web 项目制作可重复生成的 README 操作动图和 9:16 发布演示，UI 更新后让编程 Agent 修改步骤重跑；本地处理，输入最好是可编辑脚本，也能利用已有录屏。请实际搜索公开网络，比较并选择一个可安装调用的开源工具，检查其来源与安装方式。",
       "queries": [

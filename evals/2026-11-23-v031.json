@@ -16,6 +16,7 @@
     "navigationErrorRedactionPassed": true
   },
   "limits": [
+    "Method correction: discovery prompts omitted project identity, but isolation from injected workspace instructions was not verified. These searches are not established blind discovery tests.",
     "Internal smoke tests, not external adoption or a measured trigger rate.",
     "Open search queries differ from the earlier run; a successful selection does not establish a ranking gain or causation from metadata changes.",
     "Directory positions describe one snapshot. The 100-result product demo response may be truncated.",

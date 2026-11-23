@@ -4,6 +4,7 @@
   "cliVersion": "0.3.0",
   "environment": { "os": "Windows", "node": "24.18.0" },
   "limits": [
+    "Method correction: discovery prompts omitted project identity, but isolation from injected workspace instructions was not verified. These searches are not established blind discovery tests.",
     "Small internal smoke test, not a trigger rate or external adoption measurement.",
     "Delegated Codex agents used fresh contexts; their runtime model identifier was not exposed.",
     "Catalog cases supplied Skill metadata and its installed path in task context; this is not native client discovery.",
