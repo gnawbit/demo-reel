@@ -89,10 +89,24 @@ replace `node bin/demo-reel.mjs` with `demo-reel`.
 To add the agent workflow after setting up the CLI:
 
 ```bash
-npx skills add gnawbit/demo-reel
+npx skills@1.9.0 add gnawbit/demo-reel --skill demo-reel
 ```
 
-Tell your agent whether to use the global CLI or a source checkout.
+Run this in the target project; add `--agent codex`, `--agent claude-code` or
+`--agent cursor` to select a client. Skills CLI 1.9.0 needs Node 22.20+, while
+demo-reel itself needs Node 20.9+. Tell your agent whether to use the global CLI
+or a source checkout. Keep the CLI and Skill on the same release.
+
+Claude Code users can install the plugin instead (CLI 2.1.292+):
+
+```bash
+claude plugin install demo-reel --marketplace gnawbit/demo-reel
+```
+
+Install the workflow through one of these routes; the plugin still needs the
+demo-reel runtime installed above. It is a Claude Code plugin, not a Cowork
+package or an MCP server. [Discovery checks and their limits](docs/agent-discovery.md)
+document what has actually been verified.
 The skill is also listed in the [Skills directory](https://skills.sh/gnawbit/demo-reel/demo-reel).
 Example requests:
 

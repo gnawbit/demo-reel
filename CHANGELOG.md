@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Shorten the Skill entrypoint with focused references; add client metadata, a plugin icon and verified installation guidance.
 - Add JSON results and artifact manifests for init, plan, record and render; report failed recording steps and require interactive manual login.
 - Upgrade Sharp to 0.35.5 for patched image libraries; require Node.js 20.9 or newer.
 - Validate stories, marks and recorded timelines before execution; add a packaged JSON Schema and field-level JSON diagnostics.

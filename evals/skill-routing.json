@@ -1,14 +1,82 @@
 [
-  { "query": "Make a README GIF of the signup flow at http://localhost:3000.", "should_trigger": true },
-  { "query": "I finished my web app. Create a short portrait launch demo with captions.", "should_trigger": true },
-  { "query": "Use this screen recording and my timestamps to zoom into the important actions.", "should_trigger": true },
-  { "query": "把这个网站的创建项目流程做成演示视频。", "should_trigger": true },
-  { "query": "页面更新了，按之前的故事文件重新生成产品演示和封面。", "should_trigger": true },
-  { "query": "给我的开源 Web 项目制作一张能放在 README 里的操作动图。", "should_trigger": true },
-  { "query": "Write Playwright assertions for the signup flow. I do not need a demo video.", "should_trigger": false },
-  { "query": "Generate a cinematic video of a spaceship approaching a planet.", "should_trigger": false },
-  { "query": "Cut my holiday footage into a montage and replace the background music.", "should_trigger": false },
-  { "query": "给我的 README 添加安装说明和状态徽章。", "should_trigger": false },
-  { "query": "开发这个注册页面，交付 React 代码。", "should_trigger": false },
-  { "query": "帮我诊断 OBS 录屏没有声音的问题。", "should_trigger": false }
+  {
+    "query": "Make a README GIF of the signup flow at http://localhost:3000.",
+    "should_trigger": true
+  },
+  {
+    "query": "I finished my web app. Create a short portrait launch demo with captions.",
+    "should_trigger": true
+  },
+  {
+    "query": "Use this screen recording and my timestamps to zoom into the important actions.",
+    "should_trigger": true
+  },
+  {
+    "query": "把这个网站的创建项目流程做成演示视频。",
+    "should_trigger": true
+  },
+  {
+    "query": "页面更新了，按之前的故事文件重新生成产品演示和封面。",
+    "should_trigger": true
+  },
+  {
+    "query": "给我的开源 Web 项目制作一张能放在 README 里的操作动图。",
+    "should_trigger": true
+  },
+  {
+    "query": "Write Playwright assertions for the signup flow. I do not need a demo video.",
+    "should_trigger": false
+  },
+  {
+    "query": "Generate a cinematic video of a spaceship approaching a planet.",
+    "should_trigger": false
+  },
+  {
+    "query": "Cut my holiday footage into a montage and replace the background music.",
+    "should_trigger": false
+  },
+  {
+    "query": "给我的 README 添加安装说明和状态徽章。",
+    "should_trigger": false
+  },
+  {
+    "query": "开发这个注册页面，交付 React 代码。",
+    "should_trigger": false
+  },
+  {
+    "query": "帮我诊断 OBS 录屏没有声音的问题。",
+    "should_trigger": false
+  },
+  {
+    "query": "Our launch is tomorrow. Turn the saved onboarding story into a fresh portrait walkthrough and poster.",
+    "should_trigger": true
+  },
+  {
+    "query": "I have a local CRM at localhost:3000. Show creating a contact and its saved detail page in a short GIF.",
+    "should_trigger": true
+  },
+  {
+    "query": "给现有录屏按这三个时间点加缩放和短字幕，导出横屏与竖屏版本。",
+    "should_trigger": true
+  },
+  {
+    "query": "The UI changed; rerun the product tour and keep the outputs next to our release assets.",
+    "should_trigger": true
+  },
+  {
+    "query": "Write a Playwright login test and assert that the welcome screen is visible.",
+    "should_trigger": false
+  },
+  {
+    "query": "Build a demo dashboard in React; I only need source code, no recording.",
+    "should_trigger": false
+  },
+  {
+    "query": "把现有广告片换配音、加背景音乐并裁掉片尾。",
+    "should_trigger": false
+  },
+  {
+    "query": "Make a static screenshot of my app for the README, with no video or animation.",
+    "should_trigger": false
+  }
 ]

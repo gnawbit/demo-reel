@@ -1,0 +1,4 @@
+interface:
+  display_name: "demo-reel"
+  short_description: "Create repeatable web app demos and README GIFs"
+  default_prompt: "Use $demo-reel to turn my web app's main flow into a short demo video and README GIF."

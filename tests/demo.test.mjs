@@ -25,12 +25,17 @@ test("installed package sets up and renders a demo outside its checkout", { time
   const packed = await npm(["pack", "--json", "--pack-destination", temp], root);
   const [pkg] = JSON.parse(packed.stdout);
   assert.equal(pkg.name, "@gnawbit/demo-reel");
-  for (const required of ["bin/demo-reel.mjs", "scripts/setup.mjs", "schemas/story.schema.json", "examples/story.json", "examples/stories/readme.json", "examples/stories/release.json", "examples/site/index.html", "SKILL.md"]) {
+  for (const required of ["bin/demo-reel.mjs", "scripts/setup.mjs", "schemas/story.schema.json", "references/story.md", "references/rendering.md", "agents/openai.yaml", "examples/story.json", "examples/stories/readme.json", "examples/stories/release.json", "examples/site/index.html", "SKILL.md"]) {
     assert.ok(pkg.files.some((file) => file.path === required), `${required} must be packaged`);
   }
   assert.equal(pkg.files.some((file) => /^(?:\.serena|\.github|tests|demo|docs)\//.test(file.path)), false);
+  assert.equal(pkg.files.some((file) => /(?:^|\/)(?:AGENTS(?:\.local)?\.md|auth\.json|\.env(?:\..*)?)$/.test(file.path)), false);
   await npm(["install", "--no-audit", "--no-fund", "--package-lock=false", path.join(temp, pkg.filename)], consumer);
   const installedCli = path.join(consumer, "node_modules", "@gnawbit", "demo-reel", "bin", "demo-reel.mjs");
+  const installedVersion = await exec(process.execPath, [installedCli, "--version"], { cwd: consumer, windowsHide: true });
+  assert.equal(installedVersion.stdout.trim(), pkg.version);
+  const capabilities = await exec(process.execPath, [installedCli, "capabilities", "--json"], { cwd: consumer, windowsHide: true });
+  assert.equal(JSON.parse(capabilities.stdout).commands.render.json, true);
   const installedStory = path.join(consumer, "node_modules", "@gnawbit", "demo-reel", "examples", "story.json");
   const validation = await exec(process.execPath, [installedCli, "validate", "--config", installedStory, "--json"], {
     cwd: consumer, windowsHide: true,

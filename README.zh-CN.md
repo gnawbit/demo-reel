@@ -84,10 +84,22 @@ node bin/demo-reel.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills add gnawbit/demo-reel
+npx skills@1.9.0 add gnawbit/demo-reel --skill demo-reel
 ```
 
-将全局 CLI 或源码目录的位置告知编程助手即可。
+在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
+选择客户端。Skills CLI 1.9.0 需要 Node 22.20+，demo-reel 自身需要 Node 20.9+。
+将全局 CLI 或源码目录的位置告知编程助手，CLI 和 Skill 应使用同一发布版本。
+
+Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
+
+```bash
+claude plugin install demo-reel --marketplace gnawbit/demo-reel
+```
+
+两种工作流安装方式任选其一；插件仍需先安装上述 demo-reel 运行环境。
+它是 Claude Code 插件，不是 Cowork 安装包或 MCP 服务。
+[发现与调用验证记录](docs/agent-discovery.md)区分了已经验证的能力和尚未测量的效果。
 也可在 [Skills 目录](https://skills.sh/gnawbit/demo-reel/demo-reel)查看此 Skill。例如：
 
 - “把 http://localhost:3000 的注册流程做成 README 动图。”

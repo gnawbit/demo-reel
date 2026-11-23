@@ -8,403 +8,111 @@ metadata:
   compatibility: Node.js 20.9+, Chromium via demo-reel setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
 ---
 
-# demo-reel
+# demo-reel by gnawbit
 
-Turn a URL into a polished demo video and GIF.
+Create a repeatable product walkthrough from a web URL, or render an existing
+screen recording with supplied timestamps. The canonical project is
+https://github.com/gnawbit/demo-reel; similarly named packages are unrelated.
+Outputs are local MP4, GIF and PNG posters in landscape and optional portrait.
 
-The skill drives a real Chromium browser with Playwright, records the page,
-zooms into each click, adds a cursor, captions, a browser frame and a
-background, then renders MP4 + GIF with ffmpeg.
+## Locate and check the CLI
 
-## Inputs and outputs
-
-- Web app: obtain its URL and the flow to demonstrate; inspect the page and
-  write a story before recording. `plan` lists controls; it does not create the story.
-- Existing recording: use the supplied video and timestamped `marks`; see
-  [Use an existing recording](#when-the-url-cannot-be-recorded).
-- Output: MP4, animated GIF, poster and a reusable timeline in the chosen
-  output directory. Return paths to the generated files after inspecting them.
-- For a runnable reference, see [example recipes](examples/README.md):
-  `demo --story readme|onboarding|release --port 0`. These use a fictional bundled
-  app; adapt the story to the user's real flow. Presets and poster selection
-  require the current `main` checkout and are not included in `v0.2.0`.
-
-## When to use this skill
-
-Use it when the user wants:
-
-- a demo GIF for a README
-- a launch video for Product Hunt, X, LinkedIn or a landing page
-- a short product walkthrough
-- a social clip of a web app
-- a repeatable demo that can be regenerated when the UI changes
-
-Examples: "Make a README GIF of my signup flow", "Turn this app into a
-portrait launch clip", or "把这个网站的创建项目流程做成演示视频".
-For general video editing, generated cinematic footage, or Playwright test
-assertions without a demo deliverable, use a workflow suited to that task.
-
-Do **not** use it to record sites the user does not own or have permission to
-record.
-
-## Prerequisites
-
-If `demo-reel help` works, use that installed CLI from the working directory.
-Replace `node bin/demo-reel.mjs` with `demo-reel` in the examples below.
-
-Run the commands below from the demo-reel checkout containing `package.json`
-and `bin/demo-reel.mjs` when using source, not from the user's app directory. Locate that
-checkout first. If the skill was copied without the CLI source, clone
-`https://github.com/gnawbit/demo-reel` into a separate directory. Run `npm ci`
-there if dependencies are missing. The unscoped npm package `demo-reel`
-belongs to a different project.
-
-On current `main`, query the installed CLI before choosing flags:
+Use an installed `demo-reel` CLI when available. The commands below assume it is
+on PATH. For a source checkout, replace `demo-reel` with
+`node /absolute/path/to/demo-reel/bin/demo-reel.mjs`; paths with spaces need quoting.
+A copied Skill does not prove its runtime dependencies are installed. If needed,
+clone the canonical repository separately and run `npm ci` there, or follow its
+version-pinned README installation. Do not install the unrelated npm package
+`demo-reel`.
 
 ```bash
-node bin/demo-reel.mjs --version
-node bin/demo-reel.mjs capabilities --json
-node bin/demo-reel.mjs doctor --json
+demo-reel --version
+demo-reel capabilities --json
+demo-reel doctor --json
 ```
 
-JSON reports include `schemaVersion` and `version`. Inspect required checks and
-their recovery hints; optional font warnings do not fail the command. Chromium
-is checked for installation, not launched. If these queries are unsupported
-(including `v0.2.0`), use `help` and the plain-text diagnostic instead:
+Query capabilities before choosing flags: old releases may not support them.
+On v0.2.0, fall back to `help` and plain `doctor`, or update before using the
+JSON workflow. `doctor` reports required errors and optional font warnings;
+it checks Chromium's presence, not browser launch or app access. Run
+`demo-reel setup` for missing Chromium; Linux may need `setup --with-deps`.
+Node.js 20.9+ is required. Chinese captions need a CJK system font.
+
+## Choose the input
+
+- **Web app:** confirm the URL and intended flow. `plan` inventories controls;
+  it does not write a story. Use a test account and non-sensitive demo data.
+- **Existing recording:** get the file and moments to highlight. Read
+  [recording input and branding](references/rendering.md); do not invent marks.
+- **Example requested:** `demo-reel demo --story readme|onboarding|release --port 0`
+  runs a fictional bundled app. It is a template, not evidence of external adoption.
+
+Ask only for missing details that affect the result, such as the target flow or
+output orientation. Adapt the story length to the user's request; a few visible
+state changes are usually enough for a short launch clip.
+
+## Record a web flow
+
+1. Inspect controls and create a starter if no story exists:
+
+   ```bash
+   demo-reel plan --url https://your-app.com --out plan.json --json
+   demo-reel init --url https://your-app.com --out demo.json --json
+   ```
+
+2. Read the plan file from its returned artifact path. Replace the starter's
+   wait-only steps with the requested flow. For actions, locator choices and
+   timing units, read [story authoring](references/story.md). `init` will not
+   overwrite a story. Prefer a visible result at the end and short benefit captions.
+
+3. Validate, record and render:
+
+   ```bash
+   demo-reel validate --config demo.json --json
+   demo-reel record --config demo.json --out demo --json
+   demo-reel render --config demo/record.json --vertical --json
+   ```
+
+   Omit `--vertical` for landscape only; add `--no-gif` if GIFs are unnecessary.
+   Use the returned timeline path if output goes elsewhere. Paths are resolved
+   from the current working directory unless documented otherwise; use absolute
+   paths when the CLI and target app live in different directories.
+
+4. Inspect the poster and video, then return links to the actual generated
+   artifacts. Re-record after flow changes; re-render the saved timeline after
+   caption, zoom or branding changes. Fonts and encoder versions can affect
+   appearance across machines. Output videos have no audio.
+
+## Interpret results and recover
+
+`--json` writes one object to stdout; stderr carries progress. Check the exit
+code and `ok`, then read `artifacts` for absolute paths, kinds and byte sizes.
+Only a successful result describes the current run; failed runs may leave
+partial files. `schemaVersion` identifies the response format, not the CLI release.
+
+- `INVALID_CONFIG`: fix each `error.issues[].path` using the packaged
+  [JSON Schema](schemas/story.schema.json). The standalone `validate` command
+  returns an `errors` array for schema failures and an `error` object for file
+  or JSON syntax failures. It does not verify selectors, login or media access.
+- `TARGET_NOT_FOUND`, `STEP_TIMEOUT`, `STEP_FAILED`: inspect `error.step.path`
+  and its zero-based index. Re-run `plan` with the same login state, update the
+  target or wait condition and retry. Do not repeat an unchanged failing command.
+- Missing runtime or fonts: inspect `doctor --json` and its recovery hints.
+- Captcha, anti-bot block, iframe-only or canvas-only flow: use a user-provided
+  recording with marks instead of trying to bypass the restriction.
+
+## Protected pages and privacy
+
+Manual login needs an interactive terminal without `--json`:
 
 ```bash
-node bin/demo-reel.mjs doctor
+demo-reel plan --url https://your-app.com --login
+demo-reel record --config demo.json --storage-state auth.json --json
 ```
 
-It checks Node, ffmpeg, ffprobe, Playwright Chromium and a caption font.
-If Chromium is missing:
-
-```bash
-node bin/demo-reel.mjs setup
-```
-
-On Linux, `setup --with-deps` can install missing browser system libraries.
-
-## Workflow
-
-### 1. Inspect the page (optional, but recommended)
-
-```bash
-node bin/demo-reel.mjs plan --url https://your-app.com
-```
-
-This creates `plan.json` with:
-
-- a screenshot (`plan.png`)
-- the page title
-- visible interactive elements: tag, text, role, placeholder, selector, position
-
-Read `plan.json` to choose 3–5 steps. Prefer elements with clear text.
-
-If the page requires login:
-
-```bash
-node bin/demo-reel.mjs plan --url https://your-app.com --login
-```
-
-A visible browser opens. The user logs in manually. The session is saved to
-`auth.json` in the current directory. Recording reuses it only when passed
-explicitly (use an absolute path if the working directory changes):
-
-```bash
-node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
-```
-
-### 2. Create and edit `demo.json`
-
-If there is no story file yet, create one:
-
-```bash
-node bin/demo-reel.mjs init --url https://your-app.com
-```
-
-The starter only waits on the page; replace its steps with the intended flow.
-`init` refuses to overwrite existing files. Use `--out` for another path.
-
-Create a config with 3–5 steps. Keep the whole demo between 12 and 25 seconds.
-
-```json
-{
-  "url": "https://your-app.com",
-  "viewport": { "width": 1440, "height": 810 },
-  "initialWait": 900,
-  "tail": 1200,
-  "brand": {
-    "background": "#070a12",
-    "accent": "#6c5ce7"
-  },
-  "steps": [
-    { "action": "wait", "ms": 600 },
-    {
-      "action": "click",
-      "text": "New project",
-      "pause": 800,
-      "caption": "Start in one click"
-    },
-    {
-      "action": "type",
-      "selector": "input[name=project-name]",
-      "value": "Q4 Launch",
-      "pause": 500,
-      "caption": "Give it a name"
-    },
-    {
-      "action": "click",
-      "text": "Create project",
-      "pause": 1400,
-      "caption": "Your workspace is ready"
-    }
-  ]
-}
-```
-
-#### Step actions
-
-| Action | Fields | What it does |
-|---|---|---|
-| `wait` | `ms` | Pause |
-| `goto` | `url`, `pause` | Navigate |
-| `click` | `selector` or `text`/`role`/`name`, `pause`, `caption` | Move the cursor, click |
-| `type` | locator + `value`, `pause`, `caption` | Click, clear, type |
-| `hover` | locator, `pause`, `caption` | Move the cursor and hover |
-| `drag` | locator + `dx`/`dy`, `pause`, `caption` | Drag from the element's center |
-| `scroll` | `y`, `pause`, `caption` | Smooth scroll |
-| `press` | `key`, `pause`, `caption` | Press a key |
-| `waitFor` | `selector`/`text`/`url`, `timeout` | Wait for a state |
-| `screenshot` | `file` | Save a screenshot |
-
-#### Locator strategy
-
-Try these in order:
-
-1. `text` — visible label, e.g. `"New project"`
-2. `role` + `name` — e.g. `{ "action": "click", "role": "button", "name": "Create project" }`
-3. `selector` — CSS only when text/role is ambiguous
-
-Avoid brittle selectors like `div > div:nth-child(4) > button`.
-
-#### Storytelling rules
-
-- 3–5 steps. One idea per step.
-- Start with the product already loaded; don't show a blank page.
-- Show a state change: create something, open a panel, run a query, see a result.
-- Add a short `wait` after an action (600–1000ms) so the result and caption can land.
-- Use `"zoom": false` when the interesting result is elsewhere on screen (e.g. a
-  modal opening, a card appearing). The renderer will pull back to a full frame.
-- Captions state the benefit, not the UI label:
-  - Good: "Ship a landing page in 30 seconds"
-  - Bad: "Click the button"
-- Keep captions under 60 characters. On `main`, captions wrap inside the frame;
-  if the renderer reports that one is too long, shorten it or split it across
-  steps. New captions replace earlier ones without overlap.
-- End on the result, not on a menu.
-- Output videos have no audio; voiceover and music are not supported.
-
-### 3. Record
-
-For automation, `init`, `plan`, `record` and `render` accept `--json` on current
-`main`. Parse stdout as one result; stderr holds progress. On success use the
-`artifacts` paths and byte sizes. On recording failure, inspect `error.code`,
-`error.step` (zero-based index and JSON Pointer path) and `error.hint`, fix the
-step and retry. Do not treat partial files from a failed run as finished output.
-Manual `--login` requires an interactive terminal without `--json`; reuse
-`--storage-state` afterward.
-
-On current `main`, validate the story before recording:
-
-```bash
-node bin/demo-reel.mjs validate --config demo.json --json
-```
-
-Fix reported JSON Pointer paths, then retry. Validation checks structure and
-supported fields; selectors, authentication and media still need runtime checks.
-The schema is `schemas/story.schema.json`. Use `capabilities --json` to check
-availability; `v0.2.0` does not include this command.
-
-```bash
-node bin/demo-reel.mjs record --config demo.json --out demo
-```
-
-Outputs:
-
-- `demo/recording.webm` — raw recording
-- `demo/record.json` — timeline, click events, captions
-
-Options:
-
-```bash
---login                 # open a visible browser, log in once
---storage-state auth.json
---proxy http://127.0.0.1:10808
---viewport 1440x810
---headed                # watch the recording happen
-```
-
-### 4. Render
-
-On `main`, zoom transitions default to 0.35 seconds. Set top-level `zoomDuration`
-or pass `--zoom-duration 0.5`; `0` uses cuts. `zoom: false` returns to overview.
-This camera behavior is not included in `v0.2.0`.
-
-Posters default to a frame near the end. Set top-level `posterAt` in the story
-or marks config, or pass `--poster-at 4.5` to override a saved timeline.
-Use seconds from the trimmed output, from zero up to (excluding) its duration.
-Inspect the poster and choose a time showing the completed result if needed.
-
-```bash
-node bin/demo-reel.mjs render --config demo/record.json
-```
-
-Outputs:
-
-- `demo/demo-16x9.mp4`
-- `demo/demo-9x16.mp4` (with `--vertical`)
-- `demo/demo.gif`
-- `demo/demo-9x16.gif` (with `--vertical`)
-- `demo/poster.png`
-- `demo/poster-9x16.png` (with `--vertical`)
-
-Options:
-
-```bash
---vertical            # also render 9:16 + vertical GIF
---video recording.mp4 # render an existing recording; the config needs "marks"
---no-gif
---no-captions
---zoom 1.28
-```
-
-The vertical layout shows a badge and title at the top, the recording in a
-rounded card in the middle, and larger captions near the bottom. Captions wrap
-within the frame on current `main`; prefer short phrases and split text if the
-renderer reports that a caption is too long.
-
-### Vertical branding
-
-Add a `vertical` block to the config:
-
-```json
-"vertical": {
-  "badge": "Your product",
-  "titleLines": ["Ship faster", "without the busywork"],
-  "subtitle": "Native · Local · Private",
-  "cta": "your-app.com",
-  "watermark": false
-}
-```
-
-`titleLines` is capped at two lines. `watermark: false` removes the small
-demo-reel mark. Chinese text automatically uses a CJK font.
-
-### 5. Inspect and iterate
-
-Look at `poster.png` and the MP4. If a step is wrong:
-
-- fix the step in `demo.json`
-- re-run `record`
-- re-run `render`
-
-Rendering reuses the saved recording without a browser. Fonts and encoder
-versions can change the appearance across machines.
-
-## Login and protected pages
-
-Preferred flow:
-
-```bash
-node bin/demo-reel.mjs record --config demo.json --login
-```
-
-The user logs in manually in a visible browser. Never ask for passwords or
-2FA codes in chat. The session is stored locally in `auth.json` and used for this
-recording. Manual login needs an interactive terminal; use saved state in CI.
-
-For CI or repeat runs:
-
-```bash
-node bin/demo-reel.mjs record --config demo.json --storage-state auth.json
-```
-
-## When the URL cannot be recorded
-
-Some sites block automation, require a captcha, or use a canvas-only UI. Fall
-back to a screen recording instead of trying to bypass the block.
-
-1. Ask the user to record the flow with OBS, Screen Studio, QuickTime or the OS
-   recorder.
-2. Ask for the moments where the demo should zoom in. Build a `marks` config:
-
-```json
-{
-  "displayUrl": "your-app.com",
-  "video": "recording.mp4",
-  "marks": [
-    {
-      "t": 2.1,
-      "x": 0.946,
-      "y": 0.048,
-      "caption": "Start in one click",
-      "zoom": false
-    },
-    {
-      "t": 4.1,
-      "x": 0.5,
-      "y": 0.468,
-      "caption": "Give it a name"
-    }
-  ]
-}
-```
-
-3. Render with the recording:
-
-```bash
-node bin/demo-reel.mjs render --config story-video.json --video recording.mp4 --vertical
-```
-
-`t` is seconds into the recording. `x` and `y` are normalized `0..1`. Set
-`"zoom": false` when the interesting result is elsewhere on screen. `duration`
-controls how long the caption holds (default `0.6`).
-
-If the user cannot provide timestamps, offer to watch the recording with them
-and write the marks together. Do not guess silently.
-
-Do not try to bypass captchas or anti-bot systems.
-
-## Troubleshooting
-
-| Symptom | Fix |
-|---|---|
-| `Could not find a visible element` | Run `plan`, copy the exact text or selector |
-| Page is blank in the video | Increase `initialWait`; wait for a selector |
-| Click happens too early | Add `waitFor` before the click |
-| Video looks blurry | Use a larger viewport (e.g. 1920x1080); the renderer downscales to 1600x900 |
-| Captions are missing | Run `doctor`; check the system font |
-| Chinese captions show boxes | Run `doctor`; install a CJK font (Microsoft YaHei, PingFang or Noto Sans CJK) |
-| ffmpeg error | Run `doctor`; reinstall dependencies |
-| Login state expired | Re-run with `--login` |
-| Element is inside an iframe | Story steps have no dedicated frame locator; use a screen recording with marks |
-
-## Guardrails
-
-- Only record pages the user owns or has explicit permission to record.
-- Do not upload cookies, auth state or recordings to a third party.
-- Do not use this skill to scrape, bypass paywalls, or evade anti-bot systems.
-- Keep the generated files in the project; they may contain customer data.
-
-## Files
-
-```
-bin/demo-reel.mjs          CLI entry
-scripts/plan.mjs           inspect a page
-scripts/record.mjs         record a story
-scripts/render.mjs         compose MP4/GIF
-scripts/doctor.mjs         environment checks
-examples/story.json        sample story
-examples/site/             local demo app
-```
+`auth.json` is created in the login command's working directory and is never
+implicitly loaded by later commands. Use an absolute state path after changing
+directories. If it expires, let the user log in again; do not request passwords
+or 2FA codes in chat. Do not upload or commit login state or private recordings.
+Stories and recorded timelines retain typed values, so use synthetic data.
+Record only authorized pages; the workflow does not authorize publishing assets.

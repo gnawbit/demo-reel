@@ -10,6 +10,8 @@
     "bin/",
     "scripts/",
     "schemas/",
+    "references/",
+    "agents/",
     "examples/site/",
     "examples/stories/",
     "examples/story.json",

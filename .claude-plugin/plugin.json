@@ -18,5 +18,8 @@
     "ffmpeg",
     "product-launch",
     "agent-skill"
-  ]
+  ],
+  "icon": "./.claude-plugin/icon.png",
+  "documentationUrl": "https://github.com/gnawbit/demo-reel#install",
+  "supportUrl": "https://github.com/gnawbit/demo-reel/issues"
 }
