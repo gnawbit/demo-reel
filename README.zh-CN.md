@@ -1,4 +1,4 @@
-# demo-reel
+# demo-reel — 可重复生成的 Web 应用演示
 
 [English](README.md) · 简体中文
 
@@ -7,16 +7,20 @@
 [![Version](https://img.shields.io/badge/version-0.3.0-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.0)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 
-**把 Web 应用变成可重复生成的发布演示。**
+**把 Web 应用录成 README 动图或竖屏发布视频。**
 
 <img src="docs/hero.gif" alt="demo-reel 自动录屏、点击放大、加字幕" width="100%">
 
 [观看演示](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [路线图](#路线图)
 
-用 JSON 描述操作流程，或让编程助手代写。demo-reel 在真实浏览器中执行，
-添加点击放大、光标、字幕和浏览器边框，生成 MP4 + GIF。录制与渲染均在本机完成。
+demo-reel 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用可编辑 JSON
+描述操作流程，或让编程助手代写；在 Chromium 中执行步骤，添加点击放大和字幕，
+导出横屏或竖屏 MP4、README GIF 和 PNG 封面。支持 Windows、macOS 和 Linux。
 
 故事文件与代码一起保存，界面更新后即可重新生成演示。
+
+[Agent 发现与调用实测](docs/agent-discovery.md) 分别记录搜索可见性、Skill 选择
+和产物成功情况，不将这些测试当作外部采用。
 
 > 支持 Claude Code、Codex、Cursor，以及任何支持
 > [Agent Skills](https://agentskills.io) 的 agent。

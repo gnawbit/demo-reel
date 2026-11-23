@@ -35,6 +35,45 @@ labels, not measured accuracy. For actual routing results record the agent,
 model, version, prompt, whether the Skill was loaded, and whether output was
 successfully inspected.
 
+## Independent Agent smoke test on 2026-11-23
+
+Fresh delegated Agent contexts received tasks without naming demo-reel.
+The [sanitized results](../evals/2026-11-23-smoke.json) preserve prompts, queries,
+conditions and observed outcomes against v0.3.0:
+
+| Condition | Observed result |
+|---|---|
+| Open web selection, repeatable README GIF + portrait demo | Did not find demo-reel; selected another project |
+| Skills directory selection | Found demo-reel at position 40 for `README GIF` in this run; preferred another candidate |
+| Skill metadata supplied with an installed CLI | Loaded the Skill, authored a story from `plan`, recorded and rendered MP4/GIF/poster |
+| Same metadata, Playwright assertions only | Wrote a test without loading the Skill or invoking the CLI |
+| Native Claude Code 2.1.317 plugin | Registered the Skill; model service was unreachable before any Skill invocation, so routing remains unmeasured |
+
+The positive case used the fictional bundled app, not an external customer's
+project. Its first render exposed delayed captions: the Agent recovered by
+moving action pauses into separate waits and re-recording. The recovered
+12.5-second MP4 and GIF passed frame inspection and complete decoding. This is
+one controlled success and one negative control, not an accuracy percentage.
+Supplying catalog metadata does not verify native client auto-discovery.
+
+The test also exposed unhelpful navigation diagnostics while resolving local
+test-environment access. `main` now distinguishes page access from dependency
+failures, rejects HTTP error pages and avoids echoing URLs in navigation errors.
+Caption timing was fixed separately and checked with the Agent's original story.
+The v0.3.0 tag remains unchanged; these fixes are on `main`.
+
+Public entrypoints now state the concrete inputs and outputs earlier: editable
+JSON steps, local browser recording, README GIFs and portrait demos. Search and
+directory indexes may lag; no ranking improvement has been measured. Re-run
+fresh searches after indexing and native-client cases when model access works.
+
+To repeat the evaluation, start a disposable local app, install the chosen tag's
+CLI and Skill outside the checkout, and use fresh Agent sessions. Keep discovery
+tasks unaware of the repository identity; for installed cases expose only normal
+Skill metadata and the task. Record actual Skill reads/tool calls, inspect the
+outputs, and separate environment failures from product failures. Keep raw logs,
+machine paths and recordings local; publish only redacted results.
+
 The [official description guide](https://agentskills.io/skill-creation/optimizing-descriptions)
 emphasizes relevant intent and positive/negative evaluation cases. It provides
 no universal ranking multiplier or promised discovery rate. Directory presence,

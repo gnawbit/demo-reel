@@ -1,4 +1,4 @@
-# demo-reel
+# demo-reel — repeatable web app demo videos
 
 English · [简体中文](README.zh-CN.md)
 
@@ -8,17 +8,21 @@ English · [简体中文](README.zh-CN.md)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/demo-reel?style=social)](https://github.com/gnawbit/demo-reel/stargazers)
 
-**Turn your web app into a repeatable launch demo.**
+**Record your web app as a README GIF or portrait launch video.**
 
 <img src="docs/hero.gif" alt="demo-reel recording a SaaS dashboard, zooming into clicks and adding captions" width="100%">
 
 [Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
 
-Describe a flow in JSON, or have your coding agent write it. demo-reel runs it
-in a real browser and renders MP4 + GIF with click zooms, a cursor, captions
-and a browser frame. Recording and rendering run locally.
+demo-reel is a local CLI and Agent Skill for repeatable browser walkthroughs.
+Describe a flow in editable JSON, or have your coding agent write it. It runs
+the steps in Chromium and exports landscape or portrait MP4, README GIFs and
+PNG posters with click zooms and captions. Works on Windows, macOS and Linux.
 
 Keep the story with your code and re-run it when the UI changes.
+
+[Agent discovery and invocation checks](docs/agent-discovery.md) separate search
+visibility, Skill selection and successful output; they are not adoption metrics.
 
 > Works with Claude Code, Codex, Cursor and any agent that supports
 > [Agent Skills](https://agentskills.io).

@@ -1,0 +1,89 @@
+{
+  "date": "2026-11-23",
+  "baseline": "e86d4c06ba2fca7e76d07d5a0c488e1d862306fa",
+  "cliVersion": "0.3.0",
+  "environment": { "os": "Windows", "node": "24.18.0" },
+  "limits": [
+    "Small internal smoke test, not a trigger rate or external adoption measurement.",
+    "Delegated Codex agents used fresh contexts; their runtime model identifier was not exposed.",
+    "Catalog cases supplied Skill metadata and its installed path in task context; this is not native client discovery.",
+    "Local browser-cache and localhost isolation were corrected before execution.",
+    "Prompts below omit harness boundaries and replace machine-specific locations with placeholders. Raw logs and recordings remain local."
+  ],
+  "cases": [
+    {
+      "id": "web-discovery",
+      "agent": "Codex delegated agent",
+      "model": null,
+      "prompt": "我有一个本地 Web 应用，需要把注册后创建项目的流程做成可重复生成的 README GIF 和竖屏发布视频，希望可以让编程 Agent 在 UI 更新后重新生成，要求本地处理、可编辑步骤、尽量轻量。请实际搜索公开网络，比较并选择一个可实际安装调用的工具。",
+      "searchQueries": [
+        "open source CLI generate demo video GIF from playwright editable script local portrait README AI agent",
+        "local web app automated demo recording CLI story yaml vertical video gif",
+        "reshoot demo CLI github portrait gif install",
+        "site:github.com/pesuto-dev/demotale portrait viewport",
+        "site:github.com/mumit/reshoot pip install portrait",
+        "site:github.com/mumit/reshoot vertical render",
+        "site:github.com/pesuto-dev/demotale viewport"
+      ],
+      "demoReelFound": false,
+      "selected": "mumit/reshoot",
+      "executionAttempted": false
+    },
+    {
+      "id": "directory-discovery",
+      "agent": "Codex delegated agent",
+      "model": null,
+      "prompt": "把本地 Web 应用注册后创建项目的流程做成可重复制作的 README GIF 和竖屏产品演示，UI 更新后由编程 Agent 重跑。本地处理，可编辑步骤，轻量。请优先通过 Skills 目录搜索任务相关 Skill。",
+      "directoryCli": "skills@1.9.0",
+      "telemetryDisabled": true,
+      "searchQueries": ["product demo", "README GIF", "repeatable browser demo"],
+      "demoReelFound": true,
+      "observedMatch": { "query": "README GIF", "position": 40, "identity": "gnawbit/demo-reel@demo-reel" },
+      "selectedForTrial": "vercel-labs/webreel",
+      "executionAttempted": false
+    },
+    {
+      "id": "catalog-web-demo",
+      "agent": "Codex delegated agent",
+      "model": null,
+      "prompt": "把 <local-app-url> 的创建项目流程制作成可重复生成的短 README GIF、横屏演示视频和封面；新建项目名称用 Launch Notes，字幕中文，重要操作适当缩放。请实际生成并检查产物。",
+      "skillLoaded": true,
+      "commands": ["--version", "capabilities --json", "doctor --json", "plan --json", "init --json", "validate --json", "record --json", "render --json"],
+      "sourceInspectionNeeded": false,
+      "firstRenderProducedArtifacts": true,
+      "firstRenderPassedVisualReview": false,
+      "finding": "Action pauses delayed caption onset; the agent moved pauses into separate wait steps and recorded again.",
+      "recovered": true,
+      "outputs": ["1920x1080 MP4, 12.5 seconds", "960x540 GIF, 12.54 seconds", "PNG poster"],
+      "inspection": ["Video frames", "GIF frame", "Poster", "Complete MP4 and GIF decode"],
+      "artifactDeliverySucceeded": true
+    },
+    {
+      "id": "catalog-negative-assertions",
+      "agent": "Codex delegated agent",
+      "model": null,
+      "prompt": "写一份 Playwright 测试：访问 localhost:3000，填写 Name 和 Email（Alex Demo / alex@example.com），点击 Save，断言页面出现 Contact saved 和 Alex Demo。只写测试，不录视频、不生成动画、不安装依赖。",
+      "skillLoaded": false,
+      "cliInvoked": false,
+      "testFileWritten": true,
+      "assertionsExecuted": false
+    },
+    {
+      "id": "native-plugin-routing",
+      "agent": "Claude Code",
+      "agentVersion": "2.1.317",
+      "model": null,
+      "pluginRegistered": true,
+      "prompt": "Write a Playwright test for the local contact form. Fill Alex Demo and alex@example.com, save, and assert the confirmation and submitted name. Deliver only contact.spec.mjs; no video, animation or dependency installation.",
+      "modelResponseReceived": false,
+      "skillLoaded": null,
+      "cliInvoked": null,
+      "outcome": "blocked",
+      "reason": "The configured model service could not be reached; one network retry ended at the 180-second limit. No positive case was started."
+    }
+  ],
+  "fixes": [
+    { "commit": "83d7892", "change": "Classify navigation and HTTP failures without echoing target URLs." },
+    { "commit": "c25c154", "change": "Start captions before action pauses; original agent story re-recorded and visually inspected." }
+  ]
+}

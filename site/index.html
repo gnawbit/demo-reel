@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>demo-reel — URL in, launch video out</title>
+    <title>demo-reel by gnawbit — repeatable web demos and README GIFs</title>
     <meta
       name="description"
-      content="An agent skill that turns any URL into a polished demo video and GIF."
+      content="Record repeatable web app demos, README GIFs and portrait launch videos from editable JSON steps. Local CLI and Agent Skill for Windows, macOS and Linux."
     />
     <style>
       :root {
@@ -63,12 +63,13 @@
       }
       .install {
         display: inline-flex; align-items: center; gap: 12px;
+        max-width: 100%; box-sizing: border-box;
         margin-top: 26px; padding: 12px 18px; border-radius: 12px;
         background: #0d121b; border: 1px solid var(--line);
         font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
         font-size: 13.5px;
       }
-      .install code { color: #c9c2ff; }
+      .install code { color: #c9c2ff; overflow-wrap: anywhere; min-width: 0; text-align: left; }
       .install button {
         border: 0; background: rgba(255,255,255,.06); color: var(--muted);
         border-radius: 7px; padding: 5px 9px; cursor: pointer; font: inherit;
@@ -116,16 +117,19 @@
 
       <section class="hero">
         <div class="eyebrow">Agent skill for Claude Code · Codex · Cursor</div>
-        <h1>URL in.<br /><span>Launch video out.</span></h1>
+        <h1>Web app in.<br /><span>Repeatable demo out.</span></h1>
         <p class="sub">
-          demo-reel opens your product in a real browser, zooms into every click,
-          adds a cursor, captions and a browser frame, then renders a launch-ready
-          MP4 + GIF.
+          demo-reel by gnawbit records editable JSON steps in Chromium and exports
+          README GIFs, landscape or portrait MP4s and PNG posters. Add click zooms
+          and captions locally, then re-run the story after UI changes.
         </p>
         <div class="install">
-          <code>npx skills add gnawbit/demo-reel</code>
-          <button onclick="navigator.clipboard.writeText('npx skills add gnawbit/demo-reel'); this.textContent='Copied'">Copy</button>
+          <code>npx skills@1.9.0 add gnawbit/demo-reel@v0.3.0 --skill demo-reel</code>
+          <button onclick="navigator.clipboard.writeText('npx skills@1.9.0 add gnawbit/demo-reel@v0.3.0 --skill demo-reel'); this.textContent='Copied'">Copy</button>
         </div>
+        <p class="sub">The Skill needs the CLI runtime.
+          <a href="https://github.com/gnawbit/demo-reel#install">Install both and check Node requirements.</a>
+        </p>
         <div class="shot">
           <img
             src="https://raw.githubusercontent.com/gnawbit/demo-reel/main/docs/hero.gif"
