@@ -35,8 +35,11 @@ demo-reel doctor --json
 Query capabilities before choosing flags: old releases may not support them.
 On v0.2.0, fall back to `help` and plain `doctor`, or update before using the
 JSON workflow. `doctor` reports required errors and optional font warnings;
-it checks Chromium's presence, not browser launch or app access. Run
-`demo-reel setup` for missing Chromium; Linux may need `setup --with-deps`.
+it checks Chromium's presence, not browser launch or app access. For web
+planning/recording, run `demo-reel setup` for missing Chromium; Linux may need
+`setup --with-deps`. Rendering an existing recording or saved timeline does not
+need Chromium: if `chromium` is the only failed required check, continue to
+validate/render without installing a browser. Fix other required errors first.
 Node.js 20.9+ is required. Chinese captions need a CJK system font.
 
 ## Choose the input

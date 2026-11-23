@@ -4,6 +4,10 @@ For a site that cannot be automated, or a desktop/mobile demonstration, use an
 existing screen recording. Obtain timestamps from the user or inspect the video;
 do not silently guess the moments to highlight.
 
+Rendering uses FFmpeg, ffprobe and Sharp; it does not launch Chromium. A missing
+browser in `doctor --json` alone does not block this workflow. Other required
+checks still apply, and missing fonts need visual inspection of captions.
+
 ```json
 {
   "displayUrl": "your-app.com",

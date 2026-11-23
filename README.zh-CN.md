@@ -256,6 +256,10 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 必需项通过时退出码仍为 `0`。Chromium 仅检查是否安装，不实际启动。
 JSON 工作流及配置校验需要 v0.3.0 或更新版本。
 
+`doctor` 检查整个工具链。渲染现有录屏或已保存的时间线不需要 Chromium；
+若唯一失败的必需项是 `chromium`，可跳过浏览器安装，继续 `validate` 和
+`render`，其他必需项错误仍需先修复。网页规划和录制仍需要 Chromium。
+
 录制前运行 `validate --config demo.json --json`，按随包提供的
 [JSON Schema](schemas/story.schema.json) 检查类型、动作、必需目标和未知字段。
 失败返回退出码 `1`，错误包含 `code`、JSON Pointer 路径 `path`（如

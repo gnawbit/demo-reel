@@ -270,6 +270,11 @@ stable `id`, `required`, `status` and recovery `hint` fields on failure. Exit co
 if required checks pass). Chromium is checked for installation, not launched.
 JSON workflows and validation require v0.3.0 or newer.
 
+`doctor` checks the whole toolkit. Rendering an existing recording or saved
+timeline does not need Chromium. If `chromium` is the only failed required
+check, skip browser setup and continue with `validate` and `render`; fix other
+required errors first. Browser planning and recording still require Chromium.
+
 Before recording, run `validate --config demo.json --json`. It checks types,
 supported actions, required targets and unknown fields against the packaged
 [JSON Schema](schemas/story.schema.json). Failures return exit `1` and errors
