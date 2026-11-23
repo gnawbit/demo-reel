@@ -21,9 +21,9 @@
         "local web app automated demo recording CLI story yaml vertical video gif",
         "reshoot demo CLI github portrait gif install",
         "site:github.com/pesuto-dev/demotale portrait viewport",
-        "site:github.com/mumit/reshoot pip install portrait",
-        "site:github.com/mumit/reshoot vertical render",
-        "site:github.com/pesuto-dev/demotale viewport"
+        "site:github.com/mumit/reshoot \"pip install\" \"portrait\"",
+        "site:github.com/mumit/reshoot \"vertical\" \"render\"",
+        "site:github.com/pesuto-dev/demotale \"viewport\""
       ],
       "demoReelFound": false,
       "selected": "mumit/reshoot",
