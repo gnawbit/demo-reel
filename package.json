@@ -1,6 +1,6 @@
 {
   "name": "@gnawbit/demo-reel",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Record repeatable web app demos, README GIFs and portrait launch videos from editable JSON steps. Local CLI and Agent Skill for Claude Code, Codex and Cursor.",
   "type": "module",
   "bin": {
