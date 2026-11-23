@@ -20,6 +20,9 @@ demo-reel 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用�
 故事文件与代码一起保存，界面更新后即可重新生成演示。
 已有录屏也可配合时间标记渲染相同产物，无需浏览器自动化；详见[用已有录屏](#用已有录屏)。
 
+[TodoMVC 实例](https://gnawbit.github.io/demo-reel/todomvc/)提供固定版本的上游应用、
+可下载故事及实测的 README GIF / 9:16 制作流程。
+
 [Agent 发现与调用实测](docs/agent-discovery.md) 分别记录搜索可见性、Skill 选择
 和产物成功情况，不将这些测试当作外部采用。
 

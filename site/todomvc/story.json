@@ -1,0 +1,122 @@
+{
+  "$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.3/schemas/story.schema.json",
+  "url": "http://127.0.0.1:4187/",
+  "displayUrl": "TodoMVC / JavaScript ES6",
+  "viewport": {
+    "width": 640,
+    "height": 560
+  },
+  "initialWait": 600,
+  "tail": 1300,
+  "brand": {
+    "background": "#101827",
+    "accent": "#b83f45"
+  },
+  "vertical": {
+    "badge": "TodoMVC",
+    "titleLines": [
+      "Plan. Complete.",
+      "Keep moving."
+    ],
+    "subtitle": "A repeatable release checklist",
+    "cta": "JavaScript ES6 · MIT",
+    "watermark": false
+  },
+  "steps": [
+    {
+      "action": "type",
+      "selector": "input.new-todo",
+      "value": "Draft release notes",
+      "pause": 0,
+      "zoom": false
+    },
+    {
+      "action": "press",
+      "key": "Enter",
+      "pause": 750,
+      "caption": "Capture the next release",
+      "zoom": false
+    },
+    {
+      "action": "waitFor",
+      "selector": ".todo-list li[data-id='1'] label",
+      "pause": 0
+    },
+    {
+      "action": "type",
+      "selector": "input.new-todo",
+      "value": "Record walkthrough",
+      "pause": 0,
+      "zoom": false
+    },
+    {
+      "action": "press",
+      "key": "Enter",
+      "pause": 950,
+      "caption": "Keep the next action visible",
+      "zoom": false
+    },
+    {
+      "action": "waitFor",
+      "selector": ".todo-list li[data-id='2'] label",
+      "pause": 0
+    },
+    {
+      "action": "screenshot",
+      "file": "01-added.png"
+    },
+    {
+      "action": "click",
+      "selector": ".todo-list li[data-id='1'] input.toggle",
+      "pause": 1500,
+      "caption": "One task complete",
+      "zoom": false
+    },
+    {
+      "action": "waitFor",
+      "selector": ".todo-list li[data-id='1'].completed input.toggle:checked",
+      "pause": 0
+    },
+    {
+      "action": "screenshot",
+      "file": "02-completed.png"
+    },
+    {
+      "action": "click",
+      "pause": 1700,
+      "caption": "Review what is done",
+      "zoom": false,
+      "selector": ".filters a[href='#/completed']"
+    },
+    {
+      "action": "waitFor",
+      "selector": ".filters a.selected[href='#/completed']",
+      "pause": 0
+    },
+    {
+      "action": "screenshot",
+      "file": "03-filtered.png"
+    },
+    {
+      "action": "click",
+      "selector": ".filters a[href='#/']",
+      "pause": 1900,
+      "caption": "Return to the full checklist",
+      "zoom": false
+    },
+    {
+      "action": "waitFor",
+      "selector": ".filters a.selected[href='#/']",
+      "pause": 0
+    },
+    {
+      "action": "waitFor",
+      "selector": ".todo-list li[data-id='2']:not(.completed) label",
+      "pause": 0
+    },
+    {
+      "action": "screenshot",
+      "file": "04-final.png"
+    }
+  ]
+}

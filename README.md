@@ -23,6 +23,9 @@ Keep the story with your code and re-run it when the UI changes.
 Already have a screen recording? Supply timestamp marks to
 [render the same outputs without browser automation](#use-an-existing-screen-recording).
 
+[Try the TodoMVC recipe](https://gnawbit.github.io/demo-reel/todomvc/): a pinned
+upstream app, downloadable story and verified README GIF / 9:16 workflow.
+
 [Agent discovery and invocation checks](docs/agent-discovery.md) separate search
 visibility, Skill selection and successful output; they are not adoption metrics.
 
