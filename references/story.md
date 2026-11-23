@@ -43,7 +43,7 @@ An editable story:
 | `screenshot` | `file`, relative to the output directory |
 
 Locator fields are `selector`, `role` + `name` (or `text`), `name`, or `text`.
-An explicit selector is tried first. On `main` (not yet released), a supplied
+An explicit selector is tried first. From v0.4.0, a supplied
 role restricts name matching to that role, exact before partial. Without a role,
 try exact button/link candidates, partial button/link candidates, then plain text
 (exact before partial). This keeps noninteractive headings behind controls. Each candidate

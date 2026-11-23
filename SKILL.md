@@ -4,7 +4,7 @@ description: Create repeatable product demo videos and README GIFs from a web ap
 license: MIT
 metadata:
   author: gnawbit
-  version: "0.3.3"
+  version: "0.4.0"
   repository: https://github.com/gnawbit/tabretake
   compatibility: Node.js 20.9+, Chromium via tabretake setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
 ---
@@ -30,7 +30,7 @@ on PATH. For a source checkout, replace `tabretake` with
 A copied Skill does not prove its runtime dependencies are installed. If needed,
 clone the canonical repository separately and run `npm ci` there, or follow the
 [CLI installation instructions](https://github.com/gnawbit/tabretake#install).
-The renamed CLI and Skill are available together on `main`. Releases through
+The renamed CLI and Skill are available together in v0.4.0. Releases through
 `v0.3.3` use the command and Skill name `demo-reel`.
 
 ```bash
@@ -82,7 +82,7 @@ state changes are usually enough for a short launch clip.
    use `selector` when needed.
    On v0.3.3 and earlier, use a scoped selector for overlapping labels: a
    “Clear completed” button can match `text: "Completed"` before that exact link.
-   `main` (not yet released) prefers exact button/link labels and respects an explicit role;
+   v0.4.0 prefers exact button/link labels and respects an explicit role;
    see [locator behavior](references/story.md) before relying on this change.
 
 3. Validate, record and render:

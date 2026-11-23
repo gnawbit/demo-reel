@@ -66,10 +66,10 @@ edit and run again after a release.
 
 ## Install
 
-Install the renamed CLI from the `main` branch of this repository.
+Install the CLI from the v0.4.0 release of this repository.
 
 ```bash
-npm install --global git+https://github.com/gnawbit/tabretake.git#main
+npm install --global git+https://github.com/gnawbit/tabretake.git#v0.4.0
 tabretake setup
 tabretake demo
 ```
@@ -99,7 +99,7 @@ replace `node bin/tabretake.mjs` with `tabretake`.
 To add the agent workflow after setting up the CLI:
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#main" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.0" --skill tabretake
 ```
 
 Run this in the target project; add `--agent codex`, `--agent claude-code` or
@@ -110,7 +110,7 @@ or a source checkout. Install the CLI and Skill from the same revision.
 Claude Code users can install the plugin instead (CLI 2.1.292+):
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#main"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.0"
 ```
 
 Install the workflow through one of these routes; the plugin still needs the
@@ -235,7 +235,7 @@ Set step `timeout` in milliseconds (default 20,000); blocked clicks return
 `STEP_TIMEOUT`. v0.3.2 and earlier do not reliably wait for clickable targets.
 
 Locator fields are `selector`, `role` + `name` (or `text`), `name`, or `text`.
-An explicit `selector` is tried first. On `main` (not yet released), label
+An explicit `selector` is tried first. From v0.4.0, label
 matching tries exact buttons/links, then partial buttons/links, then plain text
 (exact before partial). An explicit `role` restricts matching to that role,
 with exact names first.

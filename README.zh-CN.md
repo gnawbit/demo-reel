@@ -62,10 +62,10 @@ TabRetake 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用�
 
 ## 安装
 
-从本仓库的 `main` 分支安装更名后的 CLI。
+从本仓库的 v0.4.0 正式标签安装 CLI。
 
 ```bash
-npm install --global git+https://github.com/gnawbit/tabretake.git#main
+npm install --global git+https://github.com/gnawbit/tabretake.git#v0.4.0
 tabretake setup
 tabretake demo
 ```
@@ -93,7 +93,7 @@ node bin/tabretake.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#main" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.0" --skill tabretake
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
@@ -103,7 +103,7 @@ npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#main" --skill tab
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#main"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.0"
 ```
 
 两种工作流安装方式任选其一；插件仍需先安装上述 TabRetake 运行环境。
@@ -220,7 +220,7 @@ v0.3.3 起，`click` 会等待目标启用且不被遮挡。步骤 `timeout`
 没有这项可靠的可点击等待。
 
 定位字段为 `selector`、`role` + `name`（或 `text`）、`name` 或 `text`。
-显式 `selector` 优先。在 `main`（尚未发布）中，先精确匹配按钮与链接，再部分匹配
+显式 `selector` 优先。从 v0.4.0 起，先精确匹配按钮与链接，再部分匹配
 按钮与链接，最后尝试普通文字（先精确后部分）。指定 `role` 时只在该角色中匹配，
 名称同样先精确后部分。
 每个候选取首个可见元素。标签重复或重叠时，使用限定范围的 CSS 选择器。

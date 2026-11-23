@@ -1,7 +1,7 @@
 {
   "name": "tabretake",
   "displayName": "TabRetake",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Create repeatable product demo videos, browser walkthroughs and README GIFs from web apps or existing recordings. Local MP4, GIF and poster export.",
   "author": {
     "name": "gnawbit",
