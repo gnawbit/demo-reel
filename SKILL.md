@@ -82,6 +82,10 @@ state changes are usually enough for a short launch clip.
    from the current working directory unless documented otherwise; use absolute
    paths when the CLI and target app live in different directories.
 
+   From v0.3.2, portrait cards fit the source aspect ratio. For a mobile flow,
+   inspect and record at a narrow viewport (for example `390x844`); use
+   `--zoom 1` to preserve the full viewport. Wide desktop text may still be small.
+
 4. Inspect the poster and video, then return links to the actual generated
    artifacts. Re-record after flow changes; re-render the saved timeline after
    caption, zoom or branding changes. Fonts and encoder versions can affect

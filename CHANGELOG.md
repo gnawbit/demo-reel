@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Redact target URLs from manual login navigation failures while keeping HTTP 401/403 pages available for sign-in.
+- Fit portrait cards to the source aspect ratio so mobile and ultrawide recordings retain their edges at overview zoom.
 
 ## 0.3.1 — 2026-11-23
 

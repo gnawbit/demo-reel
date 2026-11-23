@@ -247,6 +247,11 @@ The 9:16 output can carry a custom hook and CTA:
 `titleLines` is capped at two lines. `watermark: false` removes the small
 demo-reel mark. Chinese text automatically uses a CJK font.
 
+From v0.3.2, portrait cards fit the source video's aspect ratio. For a mobile
+flow, inspect with `plan --viewport 390x844`, then record at the same viewport.
+Render with `--vertical --zoom 1` to keep the full page in view; larger zooms
+crop around focus points. Wide desktop recordings may still have small text.
+
 ## Commands
 
 | Command | What it does |

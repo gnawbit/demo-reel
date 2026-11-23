@@ -42,6 +42,22 @@ const LAYOUTS = {
   },
 };
 
+function verticalLayout(videoW, videoH) {
+  const layout = LAYOUTS.vertical;
+  // Fit the source between branding and captions instead of cropping a phone
+  // recording into the landscape card. Keep the existing 16:9 card geometry.
+  const fit = Math.min(layout.content.w / videoW, 900 / videoH);
+  const w = Math.max(2, Math.floor(videoW * fit / 2) * 2);
+  const h = Math.max(2, Math.floor(videoH * fit / 2) * 2);
+  const x = (layout.width - w) / 2;
+  const y = layout.content.y + (layout.content.h - h) / 2;
+  return {
+    ...layout,
+    content: { x, y, w, h },
+    frame: { ...layout.frame, x: x - 16, y: y - 16, w: w + 32, h: h + 32 },
+  };
+}
+
 function hexToRgb(hex) {
   const clean = String(hex || "#070A12").replace("#", "");
   const full =
@@ -511,7 +527,7 @@ export async function render(argv) {
   }
 
   const layouts = [LAYOUTS.landscape];
-  if (values.vertical) layouts.push(LAYOUTS.vertical);
+  if (values.vertical) layouts.push(verticalLayout(videoW, videoH));
 
   let last = null;
   const artifacts = [];

@@ -234,6 +234,11 @@ demo/
 `titleLines` 最多两行；`watermark: false` 会去掉底部的小 demo-reel 水印。
 中文会自动用 CJK 字体。
 
+v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
+`plan --viewport 390x844` 检查布局，再用相同 viewport 录制。
+渲染时加 `--vertical --zoom 1` 保留完整视口；更大的缩放会围绕焦点裁切。
+宽屏桌面录屏中的细字仍可能偏小。
+
 ## 命令
 
 | 命令 | 作用 |

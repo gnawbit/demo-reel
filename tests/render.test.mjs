@@ -104,3 +104,47 @@ test("rendering preserves brightness, caption timing and valid poster selection"
     assert.deepEqual(await readFile(path.join(out, "demo-16x9.mp4")), before);
   });
 });
+
+test("portrait output retains narrow and wide source edges at overview zoom", { timeout: 120000 }, async (t) => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), "demo-reel-portrait-fit-"));
+  t.after(() => rm(temp, { recursive: true, force: true }));
+  for (const [name, size, boxes] of [
+    ["phone", "360x640", "drawbox=x=0:y=0:w=iw:h=64:color=red:t=fill,drawbox=x=0:y=ih-64:w=iw:h=64:color=blue:t=fill"],
+    ["wide", "640x180", "drawbox=x=0:y=0:w=64:h=ih:color=red:t=fill,drawbox=x=iw-64:y=0:w=64:h=ih:color=blue:t=fill"],
+  ]) {
+    await t.test(name, async () => {
+      const source = path.join(temp, `${name}.mp4`);
+      await ffmpeg([
+        "-f", "lavfi", "-i", `color=c=white:s=${size}:r=30:d=0.3`,
+        "-vf", boxes, "-c:v", "libx264", "-pix_fmt", "yuv420p", source,
+      ]);
+      const config = path.join(temp, `${name}.json`);
+      await writeFile(config, JSON.stringify({ video: source, marks: [
+        { t: 0, x: 0.8, y: 0.8, duration: 0 },
+      ] }));
+      const out = path.join(temp, name);
+      await exec(process.execPath, [
+        cli, "render", "--config", config, "--out", out, "--vertical",
+        "--zoom", "1", "--no-gif", "--no-captions",
+      ], { windowsHide: true, timeout: 60000 });
+      const { data, info } = await sharp(path.join(out, "poster-9x16.png"))
+        .removeAlpha().raw().toBuffer({ resolveWithObject: true });
+      assert.equal(info.width, 1080);
+      assert.equal(info.height, 1920);
+      const colors = { red: [], blue: [] };
+      for (let y = 400; y < 1400; y++) {
+        for (let x = 20; x < 1060; x++) {
+          const i = (y * info.width + x) * info.channels;
+          if (data[i] > 200 && data[i + 1] < 40 && data[i + 2] < 40) colors.red.push([x, y]);
+          if (data[i + 2] > 200 && data[i] < 40 && data[i + 1] < 40) colors.blue.push([x, y]);
+        }
+      }
+      for (const [color, points] of Object.entries(colors)) {
+        assert.ok(points.length > 10000, `${name} must retain its ${color} edge band`);
+      }
+      const axis = name === "phone" ? 1 : 0;
+      const mean = (points) => points.reduce((sum, point) => sum + point[axis], 0) / points.length;
+      assert.ok(mean(colors.blue) - mean(colors.red) > 700, `${name} must show both distant source edges`);
+    });
+  }
+});

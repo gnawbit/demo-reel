@@ -43,6 +43,13 @@ story will not update a saved timeline. Re-record for changed browser actions.
 - `--vertical` adds portrait outputs; `--no-gif` skips GIFs; `--no-captions`
   suppresses captions and font-based portrait text.
 
+Portrait cards fit the source video's aspect ratio between the title and captions.
+For a responsive mobile UI, record with a narrow viewport such as `390x844`;
+inspect the page with `plan --viewport 390x844` before recording at that size.
+Use `--zoom 1` to retain the full viewport. Larger zoom values intentionally crop
+around each focus point. A wide desktop recording still has small text in a
+portrait card; re-record a focused flow at a suitable viewport when needed.
+
 Branding belongs at the top of a story/marks config, or inside a timeline's `config`:
 
 ```json
