@@ -73,6 +73,10 @@ state changes are usually enough for a short launch clip.
    fields; use the plan screenshot and existing control metadata instead.
    The plan's `name` is an HTML attribute, not necessarily an accessible name;
    use `selector` when needed.
+   On v0.3.3 and earlier, use a scoped selector for overlapping labels: a
+   “Clear completed” button can match `text: "Completed"` before that exact link.
+   `main` (not yet released) prefers exact button/link labels and respects an explicit role;
+   see [locator behavior](references/story.md) before relying on this change.
 
 3. Validate, record and render:
 

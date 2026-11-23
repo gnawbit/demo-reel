@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Prefer exact button/link labels before partial controls and plain text, and keep explicit roles scoped, so a “Completed” link is not mistaken for a “Clear completed” button.
+
 ## 0.3.3 — 2026-11-23
 
 - Wait for click targets to become actionable and report blocked clicks as step timeouts instead of successful recordings.

@@ -209,11 +209,15 @@ From v0.3.3, `click` waits for an enabled, unobstructed target.
 Set step `timeout` in milliseconds (default 20,000); blocked clicks return
 `STEP_TIMEOUT`. v0.3.2 and earlier do not reliably wait for clickable targets.
 
-Locators, in order of preference:
-
-1. `text` — visible label
-2. `role` + `name` — accessible role
-3. `selector` — CSS, only when needed
+Locator fields are `selector`, `role` + `name` (or `text`), `name`, or `text`.
+An explicit `selector` is tried first. On `main` (not yet released), label
+matching tries exact buttons/links, then partial buttons/links, then plain text
+(exact before partial). An explicit `role` restricts matching to that role,
+with exact names first.
+Each candidate keeps the first visible match. Use a scoped selector when labels
+repeat or overlap. On v0.3.3 and earlier, a partial button label can beat an
+exact link label: use `selector: "a[href='#/completed']"` instead of just
+`text: "Completed"` when a “Clear completed” button is also present.
 
 Tips:
 

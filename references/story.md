@@ -41,10 +41,17 @@ An editable story:
 | `waitFor` | `selector`, `text` or `url`; optional `timeout`, `pause` |
 | `screenshot` | `file`, relative to the output directory |
 
-Locator fields are `selector`, `role` + `name`, `name`, or `text`. Prefer clear
-accessible labels or stable selectors. Matching is partial and selects the first
-visible match; use a scoped selector when labels repeat. Story steps do not have
-a dedicated iframe locator. `type` clears the field before typing.
+Locator fields are `selector`, `role` + `name` (or `text`), `name`, or `text`.
+An explicit selector is tried first. On `main` (not yet released), a supplied
+role restricts name matching to that role, exact before partial. Without a role,
+try exact button/link candidates, partial button/link candidates, then plain text
+(exact before partial). This keeps noninteractive headings behind controls. Each candidate
+selects its first visible match; hidden exact matches do not block a visible
+partial match. Use a scoped selector when labels repeat or overlap.
+On v0.3.3 and earlier, partial buttons may beat exact links: use a selector such
+as `a[href='#/completed']` for “Completed” beside a “Clear completed” button.
+Story steps do not have a dedicated iframe locator. `type` clears the field
+before typing.
 
 From v0.3.3, `click` waits for an enabled, unobstructed target;
 its optional `timeout` is in milliseconds (default 20,000). Persistent blocking

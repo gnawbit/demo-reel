@@ -97,20 +97,21 @@ export async function resolveLocator(page, step) {
   if (step.selector) candidates.push(page.locator(step.selector));
 
   if (step.role) {
-    candidates.push(
-      page.getByRole(step.role, { name: step.name || step.text, exact: false }),
-    );
-  }
-
-  if (step.name) {
-    candidates.push(page.getByRole("button", { name: step.name, exact: false }));
-    candidates.push(page.getByRole("link", { name: step.name, exact: false }));
-  }
-
-  if (step.text) {
-    candidates.push(page.getByRole("button", { name: step.text, exact: false }));
-    candidates.push(page.getByRole("link", { name: step.text, exact: false }));
-    candidates.push(page.getByText(step.text, { exact: false }));
+    for (const exact of [true, false]) {
+      candidates.push(page.getByRole(step.role, { name: step.name || step.text, exact }));
+    }
+  } else {
+    const names = [...new Set([step.name, step.text].filter(Boolean))];
+    // Prefer exact controls, then partial controls, before plain-text fallback.
+    for (const exact of [true, false]) {
+      for (const name of names) {
+        candidates.push(page.getByRole("button", { name, exact }));
+        candidates.push(page.getByRole("link", { name, exact }));
+      }
+    }
+    for (const exact of [true, false]) {
+      for (const name of names) candidates.push(page.getByText(name, { exact }));
+    }
   }
 
   for (const locator of candidates) {
