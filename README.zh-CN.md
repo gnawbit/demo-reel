@@ -130,6 +130,10 @@ node bin/demo-reel.mjs init --url https://your-app.com
 初始模板只停留在页面上，不会自动编排流程，也不会覆盖已有故事文件。
 可用 `--out stories/demo.json` 指定其他路径。
 
+`main` 上尚未发布的控件清单改进：`label` 来自 ARIA 引用或 HTML 标签；原生下拉框的 `options`
+包含 `label`、`value` 和 `disabled`，方便识别控件与选项。`name` 仍是 HTML 属性，
+`selector` 是建议使用的 CSS 定位器。这是 DOM 清单，不是完整的无障碍树。
+
 ```bash
 node bin/demo-reel.mjs record --config demo.json
 node bin/demo-reel.mjs render --config demo/record.json --vertical

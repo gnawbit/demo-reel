@@ -83,6 +83,27 @@ export async function plan(argv) {
         return parts.join(" > ");
       }
 
+      function normalizeText(value) {
+        return (value || "").replace(/\s+/g, " ").trim();
+      }
+
+      function labelText(node) {
+        if (!node) return "";
+        const copy = node.cloneNode(true);
+        copy.querySelectorAll("input, textarea, select, button, script, style")
+          .forEach((control) => control.remove());
+        return normalizeText(copy.textContent);
+      }
+
+      function controlLabel(el) {
+        const referenced = (el.getAttribute("aria-labelledby") || "")
+          .split(/\s+/).filter(Boolean)
+          .map((id) => labelText(document.getElementById(id))).filter(Boolean)
+          .join(" ");
+        return referenced || normalizeText(el.getAttribute("aria-label")) ||
+          [...(el.labels || [])].map(labelText).filter(Boolean).join(" ");
+      }
+
       const nodes = [
         ...document.querySelectorAll(
           "a, button, input, textarea, select, [role=button], [role=link], [role=tab]",
@@ -100,8 +121,9 @@ export async function plan(argv) {
             style.display !== "none" &&
             Number(style.opacity || 1) > 0.05;
 
+          const label = controlLabel(el);
           const text = (
-            el.innerText ||
+            label || el.innerText ||
             (el.type === "password" ? "" : el.value) ||
             el.getAttribute("aria-label") ||
             el.getAttribute("placeholder") ||
@@ -117,8 +139,17 @@ export async function plan(argv) {
             type: el.getAttribute("type") || "",
             role: el.getAttribute("role") || "",
             text,
+            label,
             name: el.getAttribute("name") || "",
             placeholder: el.getAttribute("placeholder") || "",
+            ...(el.tagName === "SELECT" ? {
+              options: [...el.options].map((option) => ({
+                label: normalizeText(option.label),
+                value: option.value,
+                disabled: el.matches(":disabled") || option.disabled ||
+                  Boolean(option.closest("optgroup")?.disabled),
+              })),
+            } : {}),
             x: Math.round(rect.x),
             y: Math.round(rect.y),
             width: Math.round(rect.width),

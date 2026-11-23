@@ -68,6 +68,11 @@ state changes are usually enough for a short launch clip.
    wait-only steps with the requested flow. For actions, locator choices and
    timing units, read [story authoring](references/story.md). `init` will not
    overwrite a story. Prefer a visible result at the end and short benefit captions.
+   When present, use `label` to identify form controls and native select `options`
+   to inspect their labels, values and disabled states. Older versions omit these
+   fields; use the plan screenshot and existing control metadata instead.
+   The plan's `name` is an HTML attribute, not necessarily an accessible name;
+   use `selector` when needed.
 
 3. Validate, record and render:
 

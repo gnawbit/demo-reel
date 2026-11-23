@@ -1,6 +1,13 @@
 # Story authoring
 
-Use `plan` output to select controls for the requested flow. An editable story:
+Use `plan` output to select controls for the requested flow. When present, `label`
+resolves ARIA references and HTML labels; native select `options` provide labels,
+values and disabled states. Older versions omit these fields; use the plan
+screenshot and existing control metadata instead. The plan's `name` remains the
+HTML attribute, not a computed accessible name. This DOM inventory is not a complete accessibility
+tree. Use the supplied `selector` when the intended locator is uncertain.
+
+An editable story:
 
 ```json
 {

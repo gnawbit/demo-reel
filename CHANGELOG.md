@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Include form labels and native select options in page plans so Agents can identify controls without guessing from field values.
+
 ## 0.3.2 — 2026-11-23
 
 - Redact target URLs from manual login navigation failures while keeping HTTP 401/403 pages available for sign-in.

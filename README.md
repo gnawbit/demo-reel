@@ -139,6 +139,12 @@ Edit the generated `demo.json` to add your app's click/type steps, using
 `plan.json` to find controls. The starter only waits on the page and will not
 overwrite an existing story. Use `--out stories/demo.json` for another path.
 
+On `main` (not yet released), plans include a `label` from ARIA references or
+HTML labels and native select `options` with `label`, `value` and `disabled`.
+Use these to identify controls;
+`name` remains the HTML attribute and `selector` is the suggested CSS locator.
+This is a DOM inventory, not a complete accessibility tree.
+
 ```bash
 node bin/demo-reel.mjs record --config demo.json
 node bin/demo-reel.mjs render --config demo/record.json --vertical
