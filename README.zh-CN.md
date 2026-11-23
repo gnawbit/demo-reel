@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
-[![Version](https://img.shields.io/badge/version-0.3.2-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.2)
+[![Version](https://img.shields.io/badge/version-0.3.3-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.3)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 
 **把 Web 应用录成 README 动图或竖屏发布视频。**
@@ -61,7 +61,7 @@ demo-reel 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用�
 直接从本仓库安装 CLI：
 
 ```bash
-npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.2
+npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.3
 demo-reel setup
 demo-reel demo
 ```
@@ -88,7 +88,7 @@ node bin/demo-reel.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add gnawbit/demo-reel@v0.3.2 --skill demo-reel
+npx skills@1.9.0 add gnawbit/demo-reel@v0.3.3 --skill demo-reel
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
@@ -98,7 +98,7 @@ npx skills@1.9.0 add gnawbit/demo-reel@v0.3.2 --skill demo-reel
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.2"
+claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.3"
 ```
 
 两种工作流安装方式任选其一；插件仍需先安装上述 demo-reel 运行环境。
@@ -130,7 +130,7 @@ node bin/demo-reel.mjs init --url https://your-app.com
 初始模板只停留在页面上，不会自动编排流程，也不会覆盖已有故事文件。
 可用 `--out stories/demo.json` 指定其他路径。
 
-`main` 上尚未发布的控件清单改进：`label` 来自 ARIA 引用或 HTML 标签；原生下拉框的 `options`
+v0.3.3 起，`label` 来自 ARIA 引用或 HTML 标签；原生下拉框的 `options`
 包含 `label`、`value` 和 `disabled`，方便识别控件与选项。`name` 仍是 HTML 属性，
 `selector` 是建议使用的 CSS 定位器。这是 DOM 清单，不是完整的无障碍树。
 
@@ -191,7 +191,7 @@ demo/
 
 动作：`wait`、`goto`、`click`、`type`、`hover`、`drag`、`scroll`、`press`、`waitFor`、`screenshot`。
 
-`main`（尚未发布）中的 `click` 会等待目标启用且不被遮挡。步骤 `timeout`
+v0.3.3 起，`click` 会等待目标启用且不被遮挡。步骤 `timeout`
 使用毫秒，默认 20,000；持续阻挡会返回 `STEP_TIMEOUT`。v0.3.2 及更早版本
 没有这项可靠的可点击等待。
 
@@ -279,7 +279,7 @@ JSON 工作流及配置校验需要 v0.3.0 或更新版本。
 `/steps/0/action`）、`message` 和 `hint`；JSON 语法或文件读取错误使用 `error` 对象。
 预检不会启动浏览器，也不验证选择器、登录态或媒体文件是否可用。
 `record` 和 `render` 也会在改写输出文件前校验输入。编辑器补全可在配置中加入
-`"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.2/schemas/story.schema.json"`。
+`"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.3/schemas/story.schema.json"`。
 
 常用参数：
 

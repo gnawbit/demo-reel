@@ -4,7 +4,7 @@ description: Create repeatable product demo videos and README GIFs from a web ap
 license: MIT
 metadata:
   author: gnawbit
-  version: "0.3.2"
+  version: "0.3.3"
   repository: https://github.com/gnawbit/demo-reel
   compatibility: Node.js 20.9+, Chromium via demo-reel setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
 ---
@@ -68,7 +68,7 @@ state changes are usually enough for a short launch clip.
    wait-only steps with the requested flow. For actions, locator choices and
    timing units, read [story authoring](references/story.md). `init` will not
    overwrite a story. Prefer a visible result at the end and short benefit captions.
-   When present, use `label` to identify form controls and native select `options`
+   From v0.3.3, use `label` to identify form controls and native select `options`
    to inspect their labels, values and disabled states. Older versions omit these
    fields; use the plan screenshot and existing control metadata instead.
    The plan's `name` is an HTML attribute, not necessarily an accessible name;
@@ -114,7 +114,7 @@ partial files. `schemaVersion` identifies the response format, not the CLI relea
 - `TARGET_NOT_FOUND`, `STEP_TIMEOUT`, `STEP_FAILED`: inspect `error.step.path`
   and its zero-based index. Re-run `plan` with the same login state, update the
   target or wait condition and retry. Do not repeat an unchanged failing command.
-  On `main` (not yet released), `click` also waits for an enabled, unobstructed
+  From v0.3.3, `click` also waits for an enabled, unobstructed
   target using step `timeout` (milliseconds; default 20,000). v0.3.2 and earlier
   do not reliably wait for clickable targets; inspect the resulting page.
 - `PAGE_UNREACHABLE`: check the URL, local app server and browser network/proxy

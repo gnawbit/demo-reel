@@ -132,7 +132,7 @@ Chinese project-creation form and another fresh public-search Agent:
 
 Maintainer checks alongside this trial found two product issues: page plans
 omitted associated form labels, and coordinate clicks could report success for
-disabled or covered buttons. Fixes on `main` add form labels/select options and
+disabled or covered buttons. Fixes in v0.3.3 add form labels/select options and
 wait for click actionability, with failed steps reported as `STEP_TIMEOUT`.
 These are CLI regression findings, not measured LLM routing failures. They are
 not included in v0.3.2; the original tagged evaluation remains reproducible.

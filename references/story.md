@@ -1,6 +1,6 @@
 # Story authoring
 
-Use `plan` output to select controls for the requested flow. When present, `label`
+Use `plan` output to select controls for the requested flow. From v0.3.3, `label`
 resolves ARIA references and HTML labels; native select `options` provide labels,
 values and disabled states. Older versions omit these fields; use the plan
 screenshot and existing control metadata instead. The plan's `name` remains the
@@ -46,7 +46,7 @@ accessible labels or stable selectors. Matching is partial and selects the first
 visible match; use a scoped selector when labels repeat. Story steps do not have
 a dedicated iframe locator. `type` clears the field before typing.
 
-On `main` (not yet released), `click` waits for an enabled, unobstructed target;
+From v0.3.3, `click` waits for an enabled, unobstructed target;
 its optional `timeout` is in milliseconds (default 20,000). Persistent blocking
 returns `STEP_TIMEOUT`. v0.3.2 and earlier do not reliably wait for clickable
 targets. A successful click does not prove the app finished processing it;

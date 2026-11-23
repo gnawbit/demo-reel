@@ -4,7 +4,7 @@ English · [简体中文](README.zh-CN.md)
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
-[![Version](https://img.shields.io/badge/version-0.3.2-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.2)
+[![Version](https://img.shields.io/badge/version-0.3.3-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.3)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/demo-reel?style=social)](https://github.com/gnawbit/demo-reel/stargazers)
 
@@ -64,7 +64,7 @@ edit and run again after a release.
 Install the CLI directly from this repository:
 
 ```bash
-npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.2
+npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.3
 demo-reel setup
 demo-reel demo
 ```
@@ -93,7 +93,7 @@ replace `node bin/demo-reel.mjs` with `demo-reel`.
 To add the agent workflow after setting up the CLI:
 
 ```bash
-npx skills@1.9.0 add gnawbit/demo-reel@v0.3.2 --skill demo-reel
+npx skills@1.9.0 add gnawbit/demo-reel@v0.3.3 --skill demo-reel
 ```
 
 Run this in the target project; add `--agent codex`, `--agent claude-code` or
@@ -104,7 +104,7 @@ or a source checkout. Keep the CLI and Skill on the same release.
 Claude Code users can install the plugin instead (CLI 2.1.292+):
 
 ```bash
-claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.2"
+claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.3"
 ```
 
 Install the workflow through one of these routes; the plugin still needs the
@@ -139,7 +139,7 @@ Edit the generated `demo.json` to add your app's click/type steps, using
 `plan.json` to find controls. The starter only waits on the page and will not
 overwrite an existing story. Use `--out stories/demo.json` for another path.
 
-On `main` (not yet released), plans include a `label` from ARIA references or
+From v0.3.3, plans include a `label` from ARIA references or
 HTML labels and native select `options` with `label`, `value` and `disabled`.
 Use these to identify controls;
 `name` remains the HTML attribute and `selector` is the suggested CSS locator.
@@ -203,7 +203,7 @@ demo/
 Actions: `wait`, `goto`, `click`, `type`, `hover`, `drag`, `scroll`, `press`,
 `waitFor`, `screenshot`.
 
-On `main` (not yet released), `click` waits for an enabled, unobstructed target.
+From v0.3.3, `click` waits for an enabled, unobstructed target.
 Set step `timeout` in milliseconds (default 20,000); blocked clicks return
 `STEP_TIMEOUT`. v0.3.2 and earlier do not reliably wait for clickable targets.
 
@@ -297,7 +297,7 @@ with a `code`, JSON Pointer `path` (for example `/steps/0/action`), `message` an
 `hint`. Invalid JSON and unreadable files use an `error` object. Validation
 does not open the browser or check selectors, login state or media files.
 `record` and `render` also validate their input before changing output files.
-For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.2/schemas/story.schema.json"`
+For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.3/schemas/story.schema.json"`
 to the config.
 
 Useful flags:
