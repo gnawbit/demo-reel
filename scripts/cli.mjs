@@ -12,6 +12,7 @@ Usage:
   tabretake init    --url <url> [--out demo.json]
   tabretake plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
   tabretake record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
+  tabretake preview --config demo.json [--headless] [--json]
   tabretake render  --config demo.json [--out demo] [--video recording.mp4] [--vertical] [--no-gif]
   tabretake serve   [--port 4173] [--dir examples/site]
   tabretake demo    [--story readme|onboarding|release] [--out demo]
@@ -47,6 +48,10 @@ export async function main(argv) {
   }
 
   switch (command) {
+    case "preview": {
+      const { record } = await import("./record.mjs");
+      return record(rest, "preview");
+    }
     case "validate": {
       const { validate } = await import("./validate.mjs");
       return validate(rest);

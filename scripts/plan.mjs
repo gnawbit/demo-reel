@@ -106,7 +106,7 @@ export async function plan(argv) {
 
       const nodes = [
         ...document.querySelectorAll(
-          "a, button, input, textarea, select, [role=button], [role=link], [role=tab]",
+          'a, button, input, textarea, select, [role=button], [role=link], [role=tab], [role=textbox], [contenteditable="true"], [contenteditable=""], [contenteditable="plaintext-only"]',
         ),
       ];
 

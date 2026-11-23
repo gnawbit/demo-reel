@@ -159,6 +159,25 @@ demo/
 
 ## 故事文件
 
+### 预览与聚焦
+
+录制前运行 `tabretake preview --config demo.json`，可在可见浏览器中执行故事并查看步骤进度。
+预览会实际点击和修改应用数据，请使用演示数据并在录制前重置。
+已有录制会保留，只有显式 `screenshot` 步骤写出截图。
+自动化可加 `--headless --json`，登录后流程可加 `--storage-state auth.json`。
+
+操作后先等待结果出现，再把镜头聚焦到结果元素。
+聚焦坐标在目标滚入视口后测量，在 `pause` 期间保持；后续布局变化后可再加一个聚焦步骤。
+
+```json
+[
+  { "action": "waitFor", "selector": "#result" },
+  { "action": "focus", "selector": "#result", "caption": "结果已生成", "pause": 1200 }
+]
+```
+
+预览检查浏览器操作，缩放和字幕效果需要检查实际渲染成片。
+
 ```json
 {
   "url": "https://your-app.com",
@@ -194,7 +213,7 @@ demo/
 }
 ```
 
-动作：`wait`、`goto`、`click`、`type`、`hover`、`drag`、`scroll`、`press`、`waitFor`、`screenshot`。
+动作：`wait`、`goto`、`click`、`type`、`hover`、`focus`、`drag`、`scroll`、`press`、`waitFor`、`screenshot`。
 
 v0.3.3 起，`click` 会等待目标启用且不被遮挡。步骤 `timeout`
 使用毫秒，默认 20,000；持续阻挡会返回 `STEP_TIMEOUT`。v0.3.2 及更早版本
@@ -267,6 +286,7 @@ v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
 | `tabretake validate --config demo.json [--json]` | 预检故事、录屏标记或录制时间线 |
 | `tabretake plan --url <url>` | 截图 + 列出可交互元素 |
 | `tabretake record --config demo.json` | 录制故事 |
+| `tabretake preview --config demo.json` | 在可见浏览器中执行步骤，提前检查故事 |
 | `tabretake render --config demo/record.json` | 渲染 MP4 + GIF |
 | `tabretake serve` | 启动内置 demo 站点 |
 | `tabretake demo` | 录制 + 渲染内置 demo |
@@ -351,6 +371,16 @@ node bin/tabretake.mjs record --config demo.json --storage-state auth.json
 因为驱动的是真实浏览器，React、Vue、Svelte、纯 HTML、SPA 和登录后的页面都能录。
 
 ## 示例
+
+真实开源应用案例包括 [Vikunja](https://gnawbit.github.io/tabretake/vikunja/) 的任务创建与看板拖拽，
+以及 [Memos](https://gnawbit.github.io/tabretake/memos/) 的富文本笔记与搜索。
+案例固定上游原版发行包，提供故事下载、本机搭建和重复录制方法。
+
+[手动演示工作流](.github/workflows/demo.yml) 会启动固定版本的 TodoMVC、等待服务就绪、
+录制故事并上传 MP4、GIF 和封面附件。在自己的 fork 中选择
+**Actions → Regenerate TodoMVC demo → Run workflow** 即可运行。
+接入自己的应用时，替换应用检出与启动命令、就绪检测地址和故事文件。
+使用可重置的演示数据，并在发布前检查成片。
 
 | 示例 | 故事 | 输出 |
 |---|---|---|

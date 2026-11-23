@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add story preview with step progress, JSON diagnostics and recording preservation, plus an explicit focus action for result elements.
+- Include rich-text editors and ARIA textboxes in page plans.
+
 - Rename the project to TabRetake. Install from `gnawbit/tabretake` on `main` and use `tabretake` for the CLI, Agent Skill and Claude Code plugin. Stories and saved timelines can be reused. Tags through v0.3.3 use `demo-reel`.
 - Prefer exact button/link labels before partial controls and plain text, and keep explicit roles scoped, so a “Completed” link is not mistaken for a “Clear completed” button.
 

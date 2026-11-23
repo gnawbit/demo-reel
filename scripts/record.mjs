@@ -23,10 +23,11 @@ function parseViewport(value, fallback = { width: 1440, height: 810 }) {
   return { width, height };
 }
 
-export async function record(argv) {
-  const { values } = parseCommand("record", argv);
+export async function record(argv, command = "record") {
+  const preview = command === "preview";
+  const { values } = parseCommand(command, argv);
   requireInteractiveLogin(values);
-  const reporter = createReporter("record", values.json);
+  const reporter = createReporter(command, values.json);
   const screenshots = [];
 
   if (!values.config && !values.url) {
@@ -53,9 +54,11 @@ export async function record(argv) {
 
   const outDir = path.resolve(values.out || config.out || "demo");
   const rawDir = path.join(outDir, "raw");
-  await mkdir(rawDir, { recursive: true });
-  await rm(rawDir, { recursive: true, force: true });
-  await mkdir(rawDir, { recursive: true });
+  if (!preview) {
+    await mkdir(rawDir, { recursive: true });
+    await rm(rawDir, { recursive: true, force: true });
+    await mkdir(rawDir, { recursive: true });
+  }
 
   let storageState = values["storage-state"];
   if (values.login) {
@@ -67,7 +70,7 @@ export async function record(argv) {
   }
 
   const browser = await launchBrowser({
-    headless: !values.headed,
+    headless: preview ? values.headless : !values.headed,
     proxy: values.proxy,
   });
 
@@ -80,7 +83,7 @@ export async function record(argv) {
     const videoStartedAt = Date.now();
     const context = await newContext(browser, {
       viewport,
-      videoDir: rawDir,
+      videoDir: preview ? undefined : rawDir,
       storageState,
     });
     const page = await context.newPage();
@@ -97,6 +100,7 @@ export async function record(argv) {
     videoOffset = Math.max(0, (startedAt - videoStartedAt) / 1000);
 
     for (const [index, step] of steps.entries()) {
+      if (preview) reporter.log(`Step ${index + 1}/${steps.length}: ${step.action}`);
       const t = Date.now() - startedAt;
 
       try {
@@ -162,6 +166,24 @@ export async function record(argv) {
               label: step.text || step.selector || "",
             });
             await page.waitForTimeout(Number(step.pause ?? 500));
+            break;
+          }
+
+          case "focus": {
+            const locator = await resolveLocator(page, step);
+            await locator.scrollIntoViewIfNeeded({ timeout: Number(step.timeout ?? 20000) });
+            const box = await locator.boundingBox();
+            if (!box || box.width <= 0 || box.height <= 0) {
+              throw commandError("TARGET_NOT_FOUND", "The focus target has no visible area.");
+            }
+            const focusedAt = Date.now() - startedAt;
+            events.push({
+              t: focusedAt, tEnd: focusedAt, action: "focus",
+              x: box.x + box.width / 2, y: box.y + box.height / 2,
+              zoom: step.zoom !== false, caption: step.caption || "",
+              label: step.text || step.name || step.selector || "",
+            });
+            await page.waitForTimeout(Number(step.pause ?? 700));
             break;
           }
 
@@ -242,6 +264,7 @@ export async function record(argv) {
 
           case "screenshot": {
             const file = path.join(outDir, step.file || `shot-${Date.now()}.png`);
+            await mkdir(path.dirname(file), { recursive: true });
             await page.screenshot({ path: file });
             screenshots.push({ kind: "screenshot", path: file });
             reporter.log(`Screenshot: ${file}`);
@@ -271,9 +294,15 @@ export async function record(argv) {
     await context.close();
 
     videoPath = video ? await video.path() : null;
-    if (!videoPath) throw new Error("Playwright did not produce a video");
+    if (!preview && !videoPath) throw new Error("Playwright did not produce a video");
   } finally {
     await browser.close();
+  }
+
+  if (preview) {
+    reporter.log(`Preview completed ${steps.length} step(s).`);
+    await reporter.success({ duration: timelineDuration, stepCount: steps.length, artifacts: screenshots });
+    return;
   }
 
   const recordingPath = path.join(outDir, "recording.webm");

@@ -11,6 +11,12 @@ metadata:
 
 # TabRetake by gnawbit
 
+Use `tabretake preview --config story.json --headless --json` to check steps
+before recording. It executes real app changes; reset demo data before a retake.
+It preserves recordings and writes only explicitly requested screenshots.
+After `waitFor`, use a `focus` step with a selector, caption and pause to frame a
+result instead of the last clicked control. Inspect the rendered clip for framing.
+
 Create a repeatable product walkthrough from a web URL, or render an existing
 screen recording with supplied timestamps. The canonical project is
 https://github.com/gnawbit/tabretake.

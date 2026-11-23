@@ -34,6 +34,7 @@ An editable story:
 | `wait` | `ms` |
 | `goto` | `url`, `pause` |
 | `click`, `hover` | locator, `pause`, `caption`, `zoom` |
+| `focus` | locator, `pause`, `caption`, `zoom`; measure the target after scrolling into view |
 | `type` | locator, `value`, `pause`, `caption`, `zoom` |
 | `drag` | locator, `dx`, `dy`, `steps`, `pause`, `caption`, `zoom` |
 | `scroll` | `y`, `pause`, `caption`, `zoom` |
@@ -60,6 +61,11 @@ targets. A successful click does not prove the app finished processing it;
 continue to use `waitFor` for the expected result.
 
 Use `waitFor` for a visible result before the next interaction. Give captions
+and focus targets explicit pauses. `focus` frames the target without clicking it;
+add another focus step after the layout changes. Use `preview --config story.json`
+to execute steps before recording. Preview performs actual app changes, so reset
+demo data before a retake. It preserves recordings and writes explicit screenshots.
+Use rendered output to check camera framing. Give captions
 time to be read; they begin after the interaction and replace the previous
 caption. In v0.3.1 or newer, an action's `pause` provides reading time
 after its caption starts. With older releases, set `pause: 0` and add a separate

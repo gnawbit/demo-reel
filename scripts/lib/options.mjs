@@ -55,6 +55,11 @@ export const commandOptions = {
   validate: { config: { type: "string" }, json: { type: "boolean", default: false } },
 };
 
+commandOptions.preview = {
+  ...commandOptions.record,
+  headless: { type: "boolean", default: false },
+};
+
 export function parseCommand(command, argv) {
   return parseArgs({ args: argv, options: commandOptions[command], strict: true, allowPositionals: false });
 }

@@ -22,7 +22,9 @@ test("plan excludes password values from files and logs", { timeout: 30000 }, as
       <input id="password" type="password" value="${secret}" aria-label="Account password">
       <input id="confirmation" type="PASSWORD" value="${secret}" placeholder="Confirm password">
       <input id="unlabelled" type="password" value="${secret}">
-      <input id="project" value="Release demo">`);
+      <input id="project" value="Release demo">
+      <div id="rich-editor" contenteditable="true" role="textbox" aria-label="Memo">Draft</div>
+      <div id="plain-editor" contenteditable="plaintext-only">Plain draft</div>`);
   });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   t.after(() => new Promise((resolve) => server.close(resolve)));
@@ -44,6 +46,9 @@ test("plan excludes password values from files and logs", { timeout: 30000 }, as
   assert.equal(label("confirmation"), "Confirm password");
   assert.equal(label("unlabelled"), "");
   assert.equal(label("project"), "Release demo");
+  assert.equal(label("rich-editor"), "Memo");
+  assert.equal(elements.filter((el) => el.selector === "#rich-editor").length, 1);
+  assert.equal(label("plain-editor"), "Plain draft");
 });
 
 test("plan reports form labels and native select choices", { timeout: 30000 }, async (t) => {

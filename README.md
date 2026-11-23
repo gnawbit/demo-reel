@@ -170,6 +170,28 @@ demo/
 
 ## The story file
 
+### Preview and focus
+
+Run `tabretake preview --config demo.json` to execute the story in a visible
+browser before recording. Preview performs the actual clicks and edits against
+your app. Use disposable demo data and reset it before recording. It reports
+each step, preserves existing recordings, and writes only explicit `screenshot`
+steps. Add `--headless --json` for automation and `--storage-state auth.json`
+for authenticated flows.
+
+After an action reveals a result, wait for it and focus the camera on it.
+The target is measured after scrolling into view. A focus step holds that
+position for its `pause`; add another focus step after subsequent layout changes.
+
+```json
+[
+  { "action": "waitFor", "selector": "#result" },
+  { "action": "focus", "selector": "#result", "caption": "Ready to share", "pause": 1200 }
+]
+```
+
+Preview checks browser actions. Use a rendered clip to check zooms and captions.
+
 ```json
 {
   "url": "https://your-app.com",
@@ -205,7 +227,7 @@ demo/
 }
 ```
 
-Actions: `wait`, `goto`, `click`, `type`, `hover`, `drag`, `scroll`, `press`,
+Actions: `wait`, `goto`, `click`, `type`, `hover`, `focus`, `drag`, `scroll`, `press`,
 `waitFor`, `screenshot`.
 
 From v0.3.3, `click` waits for an enabled, unobstructed target.
@@ -283,6 +305,7 @@ crop around focus points. Wide desktop recordings may still have small text.
 | `tabretake validate --config demo.json [--json]` | Validate a story, marks or recorded timeline without recording |
 | `tabretake plan --url <url>` | Screenshot + list interactive elements |
 | `tabretake record --config demo.json` | Record the story |
+| `tabretake preview --config demo.json` | Execute steps in a visible browser before recording |
 | `tabretake render --config demo/record.json` | Render MP4 + GIF |
 | `tabretake serve` | Serve the bundled demo app |
 | `tabretake demo` | Record + render the bundled demo |
@@ -377,6 +400,17 @@ Because it drives a real browser, it works with React, Vue, Svelte, plain HTML,
 SPAs and authenticated pages.
 
 ## Examples
+
+Reproduce authenticated flows in [Vikunja](https://gnawbit.github.io/tabretake/vikunja/)
+(task creation and Kanban drag) and [Memos](https://gnawbit.github.io/tabretake/memos/)
+(rich-text notes and search). Both recipes pin unmodified upstream releases and
+include downloadable stories, local setup and retake instructions.
+
+The [manual demo workflow](.github/workflows/demo.yml) starts a pinned TodoMVC
+build, waits for it, records the story and uploads MP4, GIF and poster artifacts.
+Run **Actions → Regenerate TodoMVC demo → Run workflow** in your fork.
+For your own app, replace its checkout/start command, readiness URL and story.
+Keep demo data disposable. Review the generated assets before publishing them.
 
 | Example | Story | Output |
 |---|---|---|
