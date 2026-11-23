@@ -145,6 +145,30 @@ those two selectors. Both recordings and renders then succeeded; final videos
 and GIF passed complete decoding and sampled-frame checks. This verifies
 diagnostic recovery and reuse within one controlled task, not external adoption.
 
+## v0.3.3 release and entrypoint checks
+
+[v0.3.3](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.3) passed 49 tests
+and three-platform CI. [Release checks](../evals/2026-11-23-v033.json) verified
+CLI installation and execution from the public tag, Codex/Cursor Skill files,
+and the Claude plugin. Claude's native initialization registered
+`demo-reel:demo-reel` at version 0.3.3. One explicit native call per client still
+failed before tool use: Codex with `model_not_found`, Claude with HTTP 401.
+
+Two fresh delegated Agents loaded the installed Skill files. One recorded a
+Chinese project-creation flow; the other rendered an existing timeline into six
+artifacts. Both succeeded on their first product execution and passed complete
+media decoding and sampled-frame review. These are controlled invocation checks,
+not native automatic selection. Default zoom/caption placement and small desktop
+text in portrait still need case-specific visual review.
+
+The [project page](https://gnawbit.github.io/demo-reel/) is now published from
+`site/` with a canonical URL, sitemap and current installation instructions; the
+repository homepage links to it. Anonymous HTTP checks returned 200 and matched
+the reviewed source. This confirms a public entrypoint, not search indexing:
+the web research tool could not open the new URL in this run, and a fresh
+unseeded search did not find demo-reel. The Skills directory also retained older
+Skill text during this review. No ranking or discovery improvement is claimed.
+
 The [official description guide](https://agentskills.io/skill-creation/optimizing-descriptions)
 emphasizes relevant intent and positive/negative evaluation cases. It provides
 no universal ranking multiplier or promised discovery rate. Directory presence,

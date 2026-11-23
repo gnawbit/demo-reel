@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-23",
+  "release": { "tag": "v0.3.3", "commit": "8429949859620db229299d7ae8c3ae0c2238e64a", "ciRun": 45118695137, "testsPassed": 49, "platforms": ["Linux", "Windows", "macOS"] },
+  "limits": [
+    "Internal checks and small delegated Agent trials, not adoption or routing accuracy measurements.",
+    "Controlled invocation tasks supplied installed Skill metadata and a CLI path. They do not establish native client automatic selection.",
+    "All application data and recordings were fictional. Raw logs, recordings, client configuration and machine paths remain local.",
+    "Prompts below omit harness instructions and replace local inputs with placeholders. Delegated model identifiers were not exposed.",
+    "Visual inspection used sampled frames. Complete media decoding does not establish readability at every playback size."
+  ],
+  "installation": {
+    "cli": { "source": "Public v0.3.3 Git tag", "version": "0.3.3", "planLabelsVerified": true, "blockedClickRejected": true, "artifactCount": 6, "allAnimatedOutputsDecoded": true },
+    "skills": { "installer": "skills@1.9.0", "targets": ["codex", "cursor"], "layout": "Universal project Skill directory", "version": "0.3.3", "referencesAndSchemaPresent": true, "telemetryDisabled": true, "cursorNativeLoadVerified": false },
+    "plugin": { "client": "Claude Code 2.1.317", "version": "0.3.3", "sourceCommitMatchesRelease": true, "manifestAndDirectoryValidationPassed": true, "registeredCommand": "demo-reel:demo-reel", "nativeInitRegistrationObserved": true }
+  },
+  "nativeInvocation": [
+    { "client": "Codex CLI", "version": "0.164.0", "explicitSkillRequest": true, "attempts": 1, "modelResponseReceived": false, "toolCalls": 0, "cliCalls": 0, "reason": "model_not_found" },
+    { "client": "Claude Code", "version": "2.1.317", "explicitSkillRequest": true, "attempts": 1, "modelResponseReceived": false, "toolCalls": 0, "cliCalls": 0, "reason": "authentication_failed", "httpStatus": 401, "timeoutSeconds": 30 }
+  ],
+  "controlledInvocation": [
+    {
+      "id": "installed-codex-skill",
+      "agent": "Fresh delegated Agent",
+      "model": null,
+      "prompt": "把 <local-app-url> 的创建项目流程做成约 10 秒的 README GIF、横屏 MP4 和封面，数据使用‘夏季发布’、负责人‘小周’、可见范围‘公开’，中文短字幕，实际生成并检查。",
+      "skillRead": true,
+      "sourceInspectionNeeded": false,
+      "commands": ["--version", "capabilities --json", "doctor --json", "plan --json", "init --json", "validate --json", "record --json", "render --json"],
+      "firstPlanRecordRenderSucceeded": true,
+      "durationSeconds": 10.16,
+      "deliverables": ["1920x1080 MP4", "960x540 GIF", "PNG poster"],
+      "completeDecodingPassed": true,
+      "sampledFramesConfirmedRequestedState": true,
+      "helperRecovery": "A frame-extraction helper initially constructed its output path incorrectly. Correcting the helper succeeded without changing the story, runtime or generated media.",
+      "visualLimits": ["Default zoom briefly cropped the top brand mark.", "An early caption overlapped a lower button, while the active field and final state remained visible."]
+    },
+    {
+      "id": "installed-plugin-skill",
+      "agent": "Fresh delegated Agent",
+      "model": null,
+      "prompt": "已有授权虚构录屏的时间线 <record.json>，请保持故事内容，用它生成横屏和竖屏 MP4、GIF 与封面，检查产物可读、媒体可完整解码，不重新录屏。",
+      "skillRead": true,
+      "commands": ["--version", "capabilities --json", "doctor --json", "validate --json", "render --vertical --json"],
+      "firstRenderSucceeded": true,
+      "artifactCount": 6,
+      "completeDecodingPassed": true,
+      "sampledFramesConfirmedRequestedState": true,
+      "sourceTimelineChanged": false,
+      "visualLimits": ["Wide desktop content becomes small in portrait, especially the GIF.", "No physical-phone readability test was performed."]
+    }
+  ],
+  "discovery": {
+    "entrypoint": {
+      "url": "https://gnawbit.github.io/demo-reel/",
+      "commit": "7e827a76970ab75bdce9a48d05ef9e4c4bb49e53",
+      "deploymentRun": 45120070314,
+      "anonymousHttpStatus": 200,
+      "deployedHtmlMatchesReviewedSource": true,
+      "sitemapStatus": 200,
+      "installTag": "v0.3.3",
+      "artifactFiles": ["index.html", "sitemap.xml"],
+      "repositoryHomepageUpdated": true,
+      "webResearchToolCouldOpenPage": false,
+      "webResearchToolResult": "The research tool reported the new URL as inaccessible in this run, despite direct HTTP verification succeeding.",
+      "searchIndexingVerified": false
+    },
+    "coldSearch": {
+      "agent": "Fresh delegated Agent with no repository identity",
+      "model": null,
+      "prompt": "给一个已有 Web 项目制作可重复生成的 README 操作动图和 9:16 发布演示，UI 更新后让编程 Agent 修改步骤重跑；本地处理，输入最好是可编辑脚本，也能利用已有录屏。请实际搜索公开网络，比较并选择一个可安装调用的开源工具，检查其来源与安装方式。",
+      "queries": [
+        "open source generate product demo video from script web app gif vertical local",
+        "open source browser automation record demo video editable script import existing recording CLI",
+        "github local CLI demo video GIF \"9:16\" \"existing recording\"",
+        "open source editable script browser demo video import recording vertical GIF"
+      ],
+      "demoReelFound": false,
+      "demoReelRead": false,
+      "selected": "shreyaskarnik/argo",
+      "executionAttempted": false
+    },
+    "rankingChangeMeasured": false
+  }
+}
