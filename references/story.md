@@ -41,7 +41,7 @@ a dedicated iframe locator. `type` clears the field before typing.
 
 Use `waitFor` for a visible result before the next interaction. Give captions
 time to be read; they begin after the interaction and replace the previous
-caption. On `main` (after v0.3.0), an action's `pause` provides reading time
+caption. In v0.3.1 or newer, an action's `pause` provides reading time
 after its caption starts. With older releases, set `pause: 0` and add a separate
 `wait` step to avoid delaying the caption. Re-record older stories to get the
 new timing; saved timelines keep their original timestamps.

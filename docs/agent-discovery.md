@@ -60,7 +60,7 @@ The test also exposed unhelpful navigation diagnostics while resolving local
 test-environment access. `main` now distinguishes page access from dependency
 failures, rejects HTTP error pages and avoids echoing URLs in navigation errors.
 Caption timing was fixed separately and checked with the Agent's original story.
-The v0.3.0 tag remains unchanged; these fixes are on `main`.
+The v0.3.0 tag remains unchanged; these fixes are included in v0.3.1.
 
 Public entrypoints now state the concrete inputs and outputs earlier: editable
 JSON steps, local browser recording, README GIFs and portrait demos. Search and

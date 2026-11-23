@@ -4,7 +4,7 @@ description: Create repeatable product demo videos and README GIFs from a web ap
 license: MIT
 metadata:
   author: gnawbit
-  version: "0.3.0"
+  version: "0.3.1"
   repository: https://github.com/gnawbit/demo-reel
   compatibility: Node.js 20.9+, Chromium via demo-reel setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
 ---
@@ -84,7 +84,7 @@ state changes are usually enough for a short launch clip.
    caption, zoom or branding changes. Fonts and encoder versions can affect
    appearance across machines. Output videos have no audio.
 
-For caption reading time, use action `pause` on versions after v0.3.0; on v0.3.0
+For caption reading time, use action `pause` on v0.3.1 or newer; on v0.3.0
 use `pause: 0` followed by `wait`. Older recordings need to be recorded again
 to adopt the corrected caption timing; re-rendering preserves their timestamps.
 
@@ -104,7 +104,7 @@ partial files. `schemaVersion` identifies the response format, not the CLI relea
   target or wait condition and retry. Do not repeat an unchanged failing command.
 - `PAGE_UNREACHABLE`: check the URL, local app server and browser network/proxy
   access. `PAGE_HTTP_ERROR`: inspect `error.status`; fix the route/server or use
-  authorized login state for 401/403. These codes are available after v0.3.0;
+  authorized login state for 401/403. These codes are available in v0.3.1 or newer;
   older versions may return `COMMAND_FAILED`. Dependency checks do not prove
   page access, and an HTTP error page is not a completed demo.
 - Missing runtime or fonts: inspect `doctor --json` and its recovery hints.

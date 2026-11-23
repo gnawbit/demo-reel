@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
-[![Version](https://img.shields.io/badge/version-0.3.0-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.0)
+[![Version](https://img.shields.io/badge/version-0.3.1-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.1)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 
 **把 Web 应用录成 README 动图或竖屏发布视频。**
@@ -61,7 +61,7 @@ demo-reel 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用�
 直接从本仓库安装 CLI：
 
 ```bash
-npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.0
+npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.1
 demo-reel setup
 demo-reel demo
 ```
@@ -88,7 +88,7 @@ node bin/demo-reel.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add gnawbit/demo-reel@v0.3.0 --skill demo-reel
+npx skills@1.9.0 add gnawbit/demo-reel@v0.3.1 --skill demo-reel
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
@@ -98,7 +98,7 @@ npx skills@1.9.0 add gnawbit/demo-reel@v0.3.0 --skill demo-reel
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.0"
+claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.1"
 ```
 
 两种工作流安装方式任选其一；插件仍需先安装上述 demo-reel 运行环境。
@@ -262,7 +262,7 @@ JSON 工作流及配置校验需要 v0.3.0 或更新版本。
 `/steps/0/action`）、`message` 和 `hint`；JSON 语法或文件读取错误使用 `error` 对象。
 预检不会启动浏览器，也不验证选择器、登录态或媒体文件是否可用。
 `record` 和 `render` 也会在改写输出文件前校验输入。编辑器补全可在配置中加入
-`"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.0/schemas/story.schema.json"`。
+`"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.1/schemas/story.schema.json"`。
 
 常用参数：
 
@@ -273,12 +273,12 @@ JSON 工作流及配置校验需要 v0.3.0 或更新版本。
 手动 `--login` 需在交互终端运行且不带 `--json`，自动调用使用 `--storage-state`。
 失败可能留下部分文件；应以本次成功结果的产物清单确认输出。
 
-`main`（v0.3.0 之后）将页面导航失败报告为 `PAGE_UNREACHABLE`，提示检查
+v0.3.1 起将页面导航失败报告为 `PAGE_UNREACHABLE`，提示检查
 URL、服务和网络；HTTP 4xx/5xx 返回 `PAGE_HTTP_ERROR` 与 `error.status`，
 避免把错误页录成成功演示。这类错误不回显目标 URL 中的凭据或查询参数。
 `doctor` 只检查依赖，不能证明目标应用可访问。
 
-`main` 也已修正字幕时序：动作完成即显示字幕，随后 `pause` 留出阅读时间。
+v0.3.1 起已修正字幕时序：动作完成即显示字幕，随后 `pause` 留出阅读时间。
 v0.3.0 可用 `pause: 0` 加独立 `wait` 步骤代替。旧时间线需重新录制才能获得
 新时序，仅重新渲染会保留原时间戳。
 

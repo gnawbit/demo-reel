@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 — 2026-11-23
+
+- Start captions before action pauses so the pause provides reading time. Re-record older stories to adopt the corrected timestamps.
+- Distinguish unreachable pages from HTTP errors, preserve failed navigation step locations and avoid echoing target URLs in these errors.
+- Clarify public discovery and installation entrypoints; record independent Agent smoke tests with their limitations.
+
 ## 0.3.0 — 2026-11-23
 
 - Shorten the Skill entrypoint with focused references; add client metadata, a plugin icon and verified installation guidance.

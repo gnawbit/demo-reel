@@ -4,7 +4,7 @@ English · [简体中文](README.zh-CN.md)
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
-[![Version](https://img.shields.io/badge/version-0.3.0-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.0)
+[![Version](https://img.shields.io/badge/version-0.3.1-6c5ce7)](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.1)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/demo-reel?style=social)](https://github.com/gnawbit/demo-reel/stargazers)
 
@@ -64,7 +64,7 @@ edit and run again after a release.
 Install the CLI directly from this repository:
 
 ```bash
-npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.0
+npm install --global git+https://github.com/gnawbit/demo-reel.git#v0.3.1
 demo-reel setup
 demo-reel demo
 ```
@@ -93,7 +93,7 @@ replace `node bin/demo-reel.mjs` with `demo-reel`.
 To add the agent workflow after setting up the CLI:
 
 ```bash
-npx skills@1.9.0 add gnawbit/demo-reel@v0.3.0 --skill demo-reel
+npx skills@1.9.0 add gnawbit/demo-reel@v0.3.1 --skill demo-reel
 ```
 
 Run this in the target project; add `--agent codex`, `--agent claude-code` or
@@ -104,7 +104,7 @@ or a source checkout. Keep the CLI and Skill on the same release.
 Claude Code users can install the plugin instead (CLI 2.1.292+):
 
 ```bash
-claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.0"
+claude plugin install demo-reel --marketplace "gnawbit/demo-reel#v0.3.1"
 ```
 
 Install the workflow through one of these routes; the plugin still needs the
@@ -277,7 +277,7 @@ with a `code`, JSON Pointer `path` (for example `/steps/0/action`), `message` an
 `hint`. Invalid JSON and unreadable files use an `error` object. Validation
 does not open the browser or check selectors, login state or media files.
 `record` and `render` also validate their input before changing output files.
-For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.0/schemas/story.schema.json"`
+For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/demo-reel/v0.3.1/schemas/story.schema.json"`
 to the config.
 
 Useful flags:
@@ -291,13 +291,13 @@ Run manual `--login` in an interactive terminal without `--json`, then reuse
 `--storage-state` in automation. Failed runs may leave partial files; only a
 successful result's artifact list confirms the current run's outputs.
 
-On `main` (after v0.3.0), navigation failures return `PAGE_UNREACHABLE` with
+In v0.3.1 or newer, navigation failures return `PAGE_UNREACHABLE` with
 URL/server/network checks, or `PAGE_HTTP_ERROR` with `error.status` for HTTP
 4xx/5xx. Error pages are not recorded as successful demos. These errors omit
 the target URL so credentials and query tokens are not echoed. `doctor` checks
 dependencies; it cannot establish that an app is reachable.
 
-Also on `main`, captions start when an action finishes, before its `pause`.
+In v0.3.1 or newer, captions start when an action finishes, before its `pause`.
 Use the pause as reading time. On v0.3.0, use `pause: 0` plus a separate `wait`
 step instead. Re-record to update old timelines; re-rendering preserves timing.
 
