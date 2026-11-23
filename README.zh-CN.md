@@ -33,7 +33,7 @@ demo-reel 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用�
 
 - README 顶部的一张 GIF
 - 官网 hero 区的一段视频
-- 发 X、小红书、Product Hunt 的短片
+- 用于产品发布和社交分享的短片
 - 新用户引导里的操作演示
 
 用故事文件记录演示流程，您或编程助手都可以编辑，并在发布新版本后重新生成素材。
@@ -50,7 +50,7 @@ demo-reel 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用�
 
 ### 输出格式
 
-| 16:9 — README / 官网 | 9:16 — 抖音 / 视频号 / 小红书 |
+| 16:9 — README / 官网 | 9:16 — 竖屏发布短片 |
 |---|---|
 | <img src="docs/poster.png" alt="16:9 演示封面" width="100%"> | <img src="docs/poster-9x16.png" alt="9:16 竖屏演示封面" width="100%"> |
 

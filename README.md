@@ -35,7 +35,7 @@ Every launch needs a demo:
 
 - a GIF at the top of the README
 - a hero video on the landing page
-- a clip for X, LinkedIn, Product Hunt
+- a clip for product launches and social sharing
 - a walkthrough for onboarding
 
 Keep these assets reproducible with a story file that you or your agent can
@@ -53,7 +53,7 @@ edit and run again after a release.
 
 ### Formats
 
-| 16:9 — README / landing page | 9:16 — Shorts / Reels / 小红书 |
+| 16:9 — README / landing page | 9:16 — portrait launch video |
 |---|---|
 | <img src="docs/poster.png" alt="16:9 demo poster" width="100%"> | <img src="docs/poster-9x16.png" alt="9:16 vertical demo poster" width="100%"> |
 
