@@ -112,6 +112,39 @@ Next evidence should come from a working native-client model/account combination
 and external projects. Search selection, directory position, internal artifact
 generation and outside adoption remain separate observations.
 
+## v0.3.2 follow-up on 2026-11-23
+
+The [next evaluation](../evals/2026-11-23-v032.json) used a separate fictional
+Chinese project-creation form and another fresh public-search Agent:
+
+- The open-web Agent did not find demo-reel and selected `vercel-labs/webreel`.
+  This differs from the previous single selection; neither run establishes
+  stable discovery or a change in ranking.
+- With catalog metadata and the public v0.3.2 CLI, a separate Agent created the
+  requested project, owner and public visibility. After correcting the browser
+  cache and local sandbox network setup, its first recordings and renders
+  succeeded. It adjusted landscape framing after inspection, then delivered a
+  README GIF, landscape and portrait MP4s, and posters. Final animated outputs
+  passed complete decoding; sampled frames showed the requested Chinese text.
+- One plain-response probe per native client still failed before inference:
+  Codex returned `model_not_found`; Claude returned HTTP 401. Native Skill
+  routing remains unmeasured. No global client settings were changed.
+
+Maintainer checks alongside this trial found two product issues: page plans
+omitted associated form labels, and coordinate clicks could report success for
+disabled or covered buttons. Fixes on `main` add form labels/select options and
+wait for click actionability, with failed steps reported as `STEP_TIMEOUT`.
+These are CLI regression findings, not measured LLM routing failures. They are
+not included in v0.3.2; the original tagged evaluation remains reproducible.
+
+For a controlled recovery case, the fixture changed both input IDs while
+retaining their labels. Using a public install pinned to `3893c3a`, the same
+Agent first ran its original story and received `TARGET_NOT_FOUND` at
+`/steps/0`. It re-ran `plan`, matched labels to new selectors and changed only
+those two selectors. Both recordings and renders then succeeded; final videos
+and GIF passed complete decoding and sampled-frame checks. This verifies
+diagnostic recovery and reuse within one controlled task, not external adoption.
+
 The [official description guide](https://agentskills.io/skill-creation/optimizing-descriptions)
 emphasizes relevant intent and positive/negative evaluation cases. It provides
 no universal ranking multiplier or promised discovery rate. Directory presence,

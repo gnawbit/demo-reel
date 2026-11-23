@@ -1,0 +1,98 @@
+{
+  "date": "2026-11-23",
+  "baseline": "43c66b81a8d370d3becd22e8713c10918ce98701",
+  "cliVersion": "0.3.2",
+  "limits": [
+    "Small internal evaluation, not an accuracy, ranking or adoption measurement.",
+    "The discovery Agent received no repository identity and did not inspect the local checkout.",
+    "The invocation Agent received Skill catalog metadata and an installed CLI path. This does not establish native client auto-discovery.",
+    "The application and its Chinese form data were fictional, separate from the bundled examples.",
+    "Delegated Agent model identifiers were not exposed. Raw logs, machine paths and recordings remain local.",
+    "Prompts omit harness boundaries and replace local URLs with placeholders. Visual inspection used sampled frames, not every frame."
+  ],
+  "cases": [
+    {
+      "id": "open-web-discovery",
+      "agent": "Codex delegated agent",
+      "model": null,
+      "prompt": "我有一个 Web 应用，要把创建项目的流程做成可重复制作的 README GIF 和竖屏发布视频；UI 改动后由编程 Agent 重跑。要求本地处理、可编辑步骤，尽量轻量。请实际搜索公开网络，比较并选一个可安装调用的开源工具，核实其安装方式与约束。",
+      "searchQueries": [
+        "open source web app demo recorder repeatable steps GIF vertical video local CLI",
+        "github browser demo recording yaml steps gif video playwright CLI",
+        "github demo recorder CLI \"portrait\" \"GIF\" \"local\"",
+        "github web demo video CLI \"9:16\" \"story\"",
+        "open source browser demo gif vertical video CLI local recording",
+        "\"demo\" \"README GIF\" \"vertical\"",
+        "\"demotale\" \"viewport\""
+      ],
+      "demoReelFound": false,
+      "demoReelRead": false,
+      "selected": "vercel-labs/webreel",
+      "executionAttempted": false
+    },
+    {
+      "id": "catalog-chinese-project-flow",
+      "agent": "Codex delegated agent",
+      "model": null,
+      "prompt": "把 <local-app-url> 的创建项目流程做成可重复生成的短演示，项目名用‘春季发布’，负责人‘小林’，可见范围‘公开’，中文短字幕，横屏 README GIF、竖屏视频和封面，实际生成并检查。",
+      "skillLoaded": true,
+      "sourceInspectionNeeded": false,
+      "commands": ["--version", "capabilities --json", "doctor --json", "plan --json", "init --json", "validate --json", "record --json", "render --json"],
+      "firstAttemptEndToEnd": false,
+      "environmentRecovery": "Configured the existing Chromium cache and moved the fixture and network commands into the same host context after sandbox loopback access failed.",
+      "firstConfiguredRecordingSucceeded": true,
+      "firstConfiguredRenderSucceeded": true,
+      "selectInteraction": "click, End, Enter selected the requested public option.",
+      "visualAdjustment": "The Agent changed the landscape viewport to 1280x720 and used overview zoom after noticing that the default zoom cropped the brand header. Portrait used a 390x844 viewport with overview zoom.",
+      "outputs": ["1920x1080 MP4", "960x540 GIF, 11.94 seconds, 517184 bytes", "1080x1920 MP4, 11.90 seconds", "Landscape and portrait PNG posters"],
+      "visualResult": "Sampled frames and posters showed the requested Chinese project name, owner, public visibility and captions without missing glyphs.",
+      "artifactDeliverySucceeded": true,
+      "completeDecodeSucceeded": true
+    },
+    {
+      "id": "saved-story-recovery",
+      "agent": "Same delegated Agent as the catalog case",
+      "model": null,
+      "publicInstallCommit": "3893c3adf9abbfbe3f301a4c0a1e4df8bfe281d3",
+      "releaseStatus": "Unreleased main; package version remains 0.3.2.",
+      "prompt": "页面仍为 <local-app-url>，但应用 UI 刚更新。请用你保存的故事重新生成同一中文演示（横屏 GIF、竖屏视频、封面），若遇失败按工具诊断恢复。",
+      "controlledChange": "The fixture renamed both input IDs while retaining their HTML labels. The Agent was not told the new selectors.",
+      "originalStoryAttempt": { "ok": false, "code": "TARGET_NOT_FOUND", "stepPath": "/steps/0", "action": "type" },
+      "recovery": "The Agent re-ran plan, matched the project and owner labels to their new selectors, and changed only those two selectors. It checked public visibility against the select options and retained the existing keyboard sequence.",
+      "sourceInspectionNeeded": false,
+      "validationSucceeded": true,
+      "recordingSucceeded": true,
+      "renderingSucceeded": true,
+      "outputs": ["Landscape MP4 and README GIF", "Portrait MP4", "Landscape and portrait PNG posters"],
+      "completeDecodeSucceeded": true,
+      "visualInspection": "Sampled frames and posters show the requested values, Chinese captions and complete page framing.",
+      "originalArtifactsPreserved": true
+    },
+    {
+      "id": "native-connectivity-prerequisite",
+      "prompt": "This is a connectivity check. Reply only NATIVE_PROBE_OK. Do not use tools, read files, modify settings or make any other external request.",
+      "attempts": [
+        { "agent": "Codex CLI", "version": "0.164.0", "modelResponseReceived": false, "toolCalls": 0, "reason": "model_not_found" },
+        { "agent": "Claude Code", "version": "2.1.317", "modelResponseReceived": false, "toolCalls": 0, "reason": "authentication_failed", "httpStatus": 401, "terminatedAfterSeconds": 45 }
+      ],
+      "routingMeasured": false,
+      "globalConfigurationChanged": false
+    }
+  ],
+  "productChecks": [
+    {
+      "id": "form-label-inventory",
+      "method": "Maintainer CLI reproduction against the same fictional application; not an independent Agent failure.",
+      "before": "Two empty inputs with HTML labels had empty text/name/placeholder fields; the select omitted its aria-labelledby label and structured options.",
+      "after": "The same page plan identifies the Chinese field labels and returns option label/value/disabled metadata.",
+      "fixCommit": "f1e2c2b"
+    },
+    {
+      "id": "click-actionability",
+      "method": "Maintainer CLI regression fixtures; not an LLM routing result.",
+      "before": "Disabled and covered buttons both returned ok:true with a click event, although the target click count was zero. The covered case clicked the overlay instead.",
+      "after": "Permanent blocking returns STEP_TIMEOUT with the failing step path and no actual click. Temporary blocking clears before a successful target click; the test also covers moved targets, navigation and target removal.",
+      "fixCommit": "3893c3a"
+    }
+  ]
+}
