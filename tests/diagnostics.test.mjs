@@ -28,7 +28,7 @@ test("version and capabilities work outside the checkout", async () => {
   assert.equal(result.version, version);
   assert.equal(result.schemaVersion, 1);
   assert.equal(result.commands.doctor.json, true);
-  assert.equal(result.commands.record.json, false);
+  assert.equal(result.commands.record.json, true);
   assert.equal(result.commands.render.options["zoom-duration"].type, "string");
 });
 

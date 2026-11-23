@@ -125,7 +125,7 @@ export async function resolveLocator(page, step) {
     }
   }
 
-  throw new Error(`Could not find a visible element for step: ${JSON.stringify(step)}`);
+  throw Object.assign(new Error("Could not find a visible element for this step."), { code: "TARGET_NOT_FOUND" });
 }
 
 export async function moveAndClick(page, locator, pause = 700) {

@@ -207,6 +207,14 @@ Avoid brittle selectors like `div > div:nth-child(4) > button`.
 
 ### 3. Record
 
+For automation, `init`, `plan`, `record` and `render` accept `--json` on current
+`main`. Parse stdout as one result; stderr holds progress. On success use the
+`artifacts` paths and byte sizes. On recording failure, inspect `error.code`,
+`error.step` (zero-based index and JSON Pointer path) and `error.hint`, fix the
+step and retry. Do not treat partial files from a failed run as finished output.
+Manual `--login` requires an interactive terminal without `--json`; reuse
+`--storage-state` afterward.
+
 On current `main`, validate the story before recording:
 
 ```bash

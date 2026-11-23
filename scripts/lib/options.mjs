@@ -3,10 +3,12 @@ import { parseArgs } from "node:util";
 export const commandOptions = {
   setup: { "with-deps": { type: "boolean", default: false } },
   init: {
+    json: { type: "boolean", default: false },
     url: { type: "string" },
     out: { type: "string", default: "demo.json" },
   },
   plan: {
+    json: { type: "boolean", default: false },
     url: { type: "string" },
     out: { type: "string", default: "plan.json" },
     login: { type: "boolean", default: false },
@@ -16,6 +18,7 @@ export const commandOptions = {
     headless: { type: "boolean", default: true },
   },
   record: {
+    json: { type: "boolean", default: false },
     config: { type: "string" },
     url: { type: "string" },
     out: { type: "string" },
@@ -27,6 +30,7 @@ export const commandOptions = {
     headed: { type: "boolean", default: false },
   },
   render: {
+    json: { type: "boolean", default: false },
     config: { type: "string" },
     video: { type: "string" },
     out: { type: "string" },

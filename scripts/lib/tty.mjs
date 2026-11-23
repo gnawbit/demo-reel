@@ -2,8 +2,7 @@ import readline from "node:readline";
 
 export function waitForEnter(message) {
   if (!process.stdin.isTTY) {
-    console.warn("Non-interactive terminal; skipping the manual login wait.");
-    return Promise.resolve();
+    throw new Error("Manual login requires an interactive terminal; pass --storage-state for automated runs.");
   }
 
   return new Promise((resolve) => {

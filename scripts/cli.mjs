@@ -25,6 +25,7 @@ Examples:
   demo-reel record --config examples/story.json --out demo
 
 Options:
+  --json              Machine-readable results for init, plan, record and render.
   --login             Open a visible browser so you can log in once.
   --storage-state     Reuse a saved Playwright storage state (cookies/localStorage).
   --proxy             Proxy server, e.g. http://127.0.0.1:10808

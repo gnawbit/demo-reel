@@ -266,6 +266,15 @@ to the config. These validation features require current `main`.
 
 Useful flags:
 
+`init`, `plan`, `record` and `render` also accept `--json`: stdout contains one
+result object and progress goes to stderr. Success includes `command`, `ok`,
+`version`, `schemaVersion` and an `artifacts` list with absolute paths, kinds and
+byte sizes. Recording failures include a zero-based `error.step.index`, action,
+JSON Pointer path and recovery hint. Fix the reported step before retrying.
+Run manual `--login` in an interactive terminal without `--json`, then reuse
+`--storage-state` in automation. Failed runs may leave partial files; only a
+successful result's artifact list confirms the current run's outputs.
+
 ```bash
 --login                 # open a visible browser, log in once
 --storage-state auth.json

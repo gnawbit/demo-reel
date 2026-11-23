@@ -7,6 +7,7 @@ import { findCjkFont, findFont, hasCjk } from "./lib/fonts.mjs";
 import { buildCameraFilter } from "./lib/camera.mjs";
 import { createCaptionLayers } from "./lib/captions.mjs";
 import { assertConfig, readConfig } from "./lib/config.mjs";
+import { createReporter } from "./lib/report.mjs";
 
 const LAYOUTS = {
   landscape: {
@@ -266,7 +267,9 @@ async function renderLayout({
   hostname,
   noGif,
   posterAt,
+  log,
 }) {
+  const artifacts = [];
   const assetsDir = path.join(outDir, "assets");
   await mkdir(assetsDir, { recursive: true });
 
@@ -337,7 +340,8 @@ async function renderLayout({
     outputPath,
   ]);
 
-  console.log(`Video: ${outputPath}`);
+  log(`Video: ${outputPath}`);
+  artifacts.push({ kind: "video", path: outputPath, layout: layout.key, width: layout.width, height: layout.height });
 
   if (!noGif) {
     const gifPath = path.join(outDir, layout.gif);
@@ -349,7 +353,8 @@ async function renderLayout({
       "-loop", "0",
       gifPath,
     ]);
-    console.log(`GIF:   ${gifPath}`);
+    log(`GIF:   ${gifPath}`);
+    artifacts.push({ kind: "gif", path: gifPath, layout: layout.key });
   }
 
   const posterPath = path.join(outDir, layout.poster);
@@ -360,9 +365,10 @@ async function renderLayout({
     "-q:v", "2",
     posterPath,
   ]);
-  console.log(`Poster: ${posterPath} (${posterAt.toFixed(2)}s)`);
+  log(`Poster: ${posterPath} (${posterAt.toFixed(2)}s)`);
+  artifacts.push({ kind: "poster", path: posterPath, layout: layout.key });
 
-  return { outputPath, moves: camera.moves };
+  return { outputPath, moves: camera.moves, artifacts };
 }
 
 function marksToEvents(marks, videoW, videoH) {
@@ -389,6 +395,7 @@ function marksToEvents(marks, videoW, videoH) {
 
 export async function render(argv) {
   const { values } = parseCommand("render", argv);
+  const reporter = createReporter("render", values.json);
 
   if (!values.config) throw new Error("Missing --config");
 
@@ -507,6 +514,7 @@ export async function render(argv) {
   if (values.vertical) layouts.push(LAYOUTS.vertical);
 
   let last = null;
+  const artifacts = [];
   for (const layout of layouts) {
     last = await renderLayout({
       layout,
@@ -524,13 +532,16 @@ export async function render(argv) {
       hostname,
       noGif: values["no-gif"],
       posterAt,
+      log: reporter.log,
     });
+    artifacts.push(...last.artifacts);
   }
 
-  console.log(
+  reporter.log(
     `\nDone. ${last?.moves.length || 0} camera move(s), ${durationSec.toFixed(1)}s` +
       (values.vertical ? ", 16:9 + 9:16" : "") +
       ".\n",
   );
+  await reporter.success({ duration: durationSec, posterAt, artifacts });
   return last?.outputPath;
 }

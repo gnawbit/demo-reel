@@ -1,9 +1,11 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseCommand } from "./lib/options.mjs";
+import { createReporter } from "./lib/report.mjs";
 
 export async function init(argv) {
   const { values } = parseCommand("init", argv);
+  const reporter = createReporter("init", values.json);
 
   if (!values.url) throw new Error("Provide --url https://your-app.com");
   let url;
@@ -36,8 +38,9 @@ export async function init(argv) {
     throw error;
   }
 
-  console.log(`Created story: ${outPath}`);
-  console.log("The starter records a static page. Use plan to find controls, then add click/type steps.");
-  console.log("Run record with this config, then render the resulting record.json.");
+  reporter.log(`Created story: ${outPath}`);
+  reporter.log("The starter records a static page. Use plan to find controls, then add click/type steps.");
+  reporter.log("Run record with this config, then render the resulting record.json.");
+  await reporter.success({ artifacts: [{ kind: "story", path: outPath }] });
   return outPath;
 }

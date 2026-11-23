@@ -253,6 +253,13 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 
 常用参数：
 
+`init`、`plan`、`record`、`render` 也支持 `--json`：标准输出只有一个结果对象，
+进度写入标准错误。成功结果包含 `command`、`ok`、`version`、`schemaVersion`，
+以及列出绝对路径、类型、字节数的 `artifacts`。步骤失败提供从零开始的
+`error.step.index`、动作、JSON Pointer 路径及修复提示，修正后再重试。
+手动 `--login` 需在交互终端运行且不带 `--json`，自动调用使用 `--storage-state`。
+失败可能留下部分文件；应以本次成功结果的产物清单确认输出。
+
 ```bash
 --login                 # 打开有头浏览器，手动登录一次
 --storage-state auth.json

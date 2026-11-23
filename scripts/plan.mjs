@@ -3,6 +3,7 @@ import path from "node:path";
 import { parseCommand } from "./lib/options.mjs";
 import { launchBrowser, newContext } from "./lib/browser.mjs";
 import { waitForEnter } from "./lib/tty.mjs";
+import { createReporter, requireInteractiveLogin } from "./lib/report.mjs";
 
 function parseViewport(value) {
   if (!value) return { width: 1440, height: 810 };
@@ -12,6 +13,8 @@ function parseViewport(value) {
 
 export async function plan(argv) {
   const { values } = parseCommand("plan", argv);
+  requireInteractiveLogin(values);
+  const reporter = createReporter("plan", values.json);
 
   if (!values.url) throw new Error("Missing --url");
 
@@ -31,6 +34,7 @@ export async function plan(argv) {
     proxy: values.proxy,
   });
 
+  let manifest;
   try {
     const context = await newContext(browser, { viewport, storageState });
     const page = await context.newPage();
@@ -137,22 +141,26 @@ export async function plan(argv) {
 
     await writeFile(outPath, JSON.stringify(result, null, 2), "utf8");
 
-    console.log(`\nSaved plan to ${outPath}`);
-    console.log(`Screenshot: ${screenshotPath}`);
-    console.log(`Title: ${title}`);
-    console.log(`Interactive elements: ${elements.length}\n`);
+    reporter.log(`\nSaved plan to ${outPath}`);
+    reporter.log(`Screenshot: ${screenshotPath}`);
+    if (!values.json) reporter.log(`Title: ${title}`);
+    reporter.log(`Interactive elements: ${elements.length}\n`);
     for (const el of elements.slice(0, 25)) {
       const label = el.text || el.placeholder || el.name || "(no text)";
-      console.log(
+      if (!values.json) reporter.log(
         `  <${el.tag}${el.type ? ` type=${el.type}` : ""}> ${JSON.stringify(label)}  @ ${el.selector}`,
       );
     }
-    if (elements.length > 25) console.log(`  ... and ${elements.length - 25} more`);
+    if (!values.json && elements.length > 25) reporter.log(`  ... and ${elements.length - 25} more`);
 
     await context.close();
+    manifest = { elementCount: elements.length, artifacts: [
+      { kind: "plan", path: outPath }, { kind: "screenshot", path: screenshotPath },
+    ] };
   } finally {
     await browser.close();
   }
+  await reporter.success(manifest);
 }
 
 async function loginAndSave(url, { proxy, viewport }) {
