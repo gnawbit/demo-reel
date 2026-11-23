@@ -1,7 +1,7 @@
 {
   "name": "@gnawbit/demo-reel",
   "version": "0.3.3",
-  "description": "Record repeatable web app demos, README GIFs and portrait launch videos from editable JSON steps. Local CLI and Agent Skill for Claude Code, Codex and Cursor.",
+  "description": "Create repeatable web app demos, README GIFs and 9:16 videos from editable JSON steps or existing screen recordings. Local CLI and Agent Skill for Claude Code, Codex and Cursor.",
   "type": "module",
   "bin": {
     "demo-reel": "./bin/demo-reel.mjs"
@@ -43,7 +43,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/gnawbit/demo-reel.git"
   },
-  "homepage": "https://github.com/gnawbit/demo-reel",
+  "homepage": "https://gnawbit.github.io/demo-reel/",
   "bugs": {
     "url": "https://github.com/gnawbit/demo-reel/issues"
   },

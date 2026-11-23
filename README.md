@@ -20,6 +20,8 @@ the steps in Chromium and exports landscape or portrait MP4, README GIFs and
 PNG posters with click zooms and captions. Works on Windows, macOS and Linux.
 
 Keep the story with your code and re-run it when the UI changes.
+Already have a screen recording? Supply timestamp marks to
+[render the same outputs without browser automation](#use-an-existing-screen-recording).
 
 [Agent discovery and invocation checks](docs/agent-discovery.md) separate search
 visibility, Skill selection and successful output; they are not adoption metrics.
