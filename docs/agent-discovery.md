@@ -47,7 +47,7 @@ conditions and observed outcomes against v0.3.0:
 | Skills directory selection | Found demo-reel at position 40 for `README GIF` in this run; preferred another candidate |
 | Skill metadata supplied with an installed CLI | Loaded the Skill, authored a story from `plan`, recorded and rendered MP4/GIF/poster |
 | Same metadata, Playwright assertions only | Wrote a test without loading the Skill or invoking the CLI |
-| Native Claude Code 2.1.317 plugin | Registered the Skill; model service was unreachable before any Skill invocation, so routing remains unmeasured |
+| Native Claude Code 2.1.317 plugin | Registered the Skill; authentication failed before any Skill invocation, with HTTP 401 on retry, so routing remains unmeasured |
 
 The positive case used the fictional bundled app, not an external customer's
 project. Its first render exposed delayed captions: the Agent recovered by

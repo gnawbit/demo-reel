@@ -79,7 +79,7 @@
       "skillLoaded": null,
       "cliInvoked": null,
       "outcome": "blocked",
-      "reason": "The configured model service could not be reached; one network retry ended at the 180-second limit. No positive case was started."
+      "reason": "Both attempts failed authentication before any model response. The retry reported HTTP 401 until the 180-second limit. No positive case was started."
     }
   ],
   "fixes": [
