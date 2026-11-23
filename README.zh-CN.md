@@ -279,6 +279,9 @@ v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
 故事中的 `vertical.zoom` 可保存竖屏倍率，命令行参数优先；`zoom: false` 的步骤
 仍显示全景。放大后需检查是否裁掉必要上下文。
 
+首次在自己的项目试用后，可[反馈首次演示结果](https://github.com/gnawbit/tabretake/issues/new?template=first-demo.yml)，
+失败同样有用。[试用与记录说明](docs/adoption.md)区分首次成功、重复使用和外部采用。
+
 ## 命令
 
 | 命令 | 作用 |

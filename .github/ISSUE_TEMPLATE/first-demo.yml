@@ -1,0 +1,53 @@
+name: First demo feedback
+description: Tell us what worked or blocked your first real-project demo.
+title: "[trial] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A failed attempt is useful feedback. Share only public or redacted details;
+        do not attach login state, private URLs or customer recordings.
+  - type: input
+    id: environment
+    attributes:
+      label: Version and environment
+      description: TabRetake version, OS, Node version, and coding assistant if used.
+    validations:
+      required: true
+  - type: dropdown
+    id: result
+    attributes:
+      label: What happened?
+      options:
+        - Installation or setup blocked
+        - Story creation or recording blocked
+        - Rendering blocked
+        - Output created but not usable
+        - Usable output created
+    validations:
+      required: true
+  - type: textarea
+    id: flow
+    attributes:
+      label: Flow and first obstacle
+      description: What were you trying to demonstrate? What needed manual repair?
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Where did you find TabRetake?
+      placeholder: GitHub search / Skill directory / recommendation
+  - type: dropdown
+    id: repeat
+    attributes:
+      label: Have you regenerated a demo after changing your app or story?
+      options:
+        - Not yet
+        - Tried, but blocked
+        - Yes, successfully
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Optional public evidence
+      description: Public project, story, demo or integration link. State whether this was a trial or an adopted workflow. Links are optional.

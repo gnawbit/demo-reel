@@ -29,6 +29,9 @@ upstream app, downloadable story and verified README GIF / 9:16 workflow.
 [Agent discovery and invocation checks](docs/agent-discovery.md) separate search
 visibility, Skill selection and successful output; they are not adoption metrics.
 
+Trying it on your own app? [Report your first demo](https://github.com/gnawbit/tabretake/issues/new?template=first-demo.yml),
+including failures. [Trial and measurement notes](docs/adoption.md) explain what we track.
+
 > Works with Claude Code, Codex, Cursor and any agent that supports
 > [Agent Skills](https://agentskills.io).
 
