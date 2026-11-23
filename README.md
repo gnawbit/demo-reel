@@ -287,6 +287,12 @@ Run manual `--login` in an interactive terminal without `--json`, then reuse
 `--storage-state` in automation. Failed runs may leave partial files; only a
 successful result's artifact list confirms the current run's outputs.
 
+On `main` (after v0.3.0), navigation failures return `PAGE_UNREACHABLE` with
+URL/server/network checks, or `PAGE_HTTP_ERROR` with `error.status` for HTTP
+4xx/5xx. Error pages are not recorded as successful demos. These errors omit
+the target URL so credentials and query tokens are not echoed. `doctor` checks
+dependencies; it cannot establish that an app is reachable.
+
 ```bash
 --login                 # open a visible browser, log in once
 --storage-state auth.json

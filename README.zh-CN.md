@@ -269,6 +269,11 @@ JSON 工作流及配置校验需要 v0.3.0 或更新版本。
 手动 `--login` 需在交互终端运行且不带 `--json`，自动调用使用 `--storage-state`。
 失败可能留下部分文件；应以本次成功结果的产物清单确认输出。
 
+`main`（v0.3.0 之后）将页面导航失败报告为 `PAGE_UNREACHABLE`，提示检查
+URL、服务和网络；HTTP 4xx/5xx 返回 `PAGE_HTTP_ERROR` 与 `error.status`，
+避免把错误页录成成功演示。这类错误不回显目标 URL 中的凭据或查询参数。
+`doctor` 只检查依赖，不能证明目标应用可访问。
+
 ```bash
 --login                 # 打开有头浏览器，手动登录一次
 --storage-state auth.json

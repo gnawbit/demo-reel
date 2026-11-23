@@ -37,5 +37,6 @@ export function errorReport(command, error) {
     hint: error.hint || "Check the reported input; use doctor --json to diagnose runtime dependencies.",
     ...(error.issues ? { issues: error.issues } : {}),
     ...(error.step ? { step: error.step } : {}),
+    ...(error.status ? { status: error.status } : {}),
   } };
 }

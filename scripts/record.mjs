@@ -14,6 +14,7 @@ import {
 import { waitForEnter } from "./lib/tty.mjs";
 import { assertConfig, readConfig } from "./lib/config.mjs";
 import { commandError, createReporter, requireInteractiveLogin } from "./lib/report.mjs";
+import { navigate } from "./lib/navigation.mjs";
 
 function parseViewport(value, fallback = { width: 1440, height: 810 }) {
   if (value === undefined) return fallback;
@@ -88,7 +89,7 @@ export async function record(argv) {
 
     events = [];
 
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
+    await navigate(page, url);
     await page.waitForLoadState("networkidle", { timeout: 5000 }).catch(() => {});
     await page.waitForTimeout(Number(config.initialWait ?? 700));
 
@@ -106,10 +107,7 @@ export async function record(argv) {
           }
 
           case "goto": {
-            await page.goto(step.url || url, {
-              waitUntil: "domcontentloaded",
-              timeout: 45000,
-            });
+            await navigate(page, step.url || url);
             await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
             await page.waitForTimeout(Number(step.pause || 500));
             break;
@@ -250,11 +248,13 @@ export async function record(argv) {
             throw new Error(`Unknown step action: ${step.action}`);
         }
       } catch (error) {
-        throw commandError(error.code === "TARGET_NOT_FOUND" ? "TARGET_NOT_FOUND" :
+        const navigationError = ["PAGE_UNREACHABLE", "PAGE_HTTP_ERROR"].includes(error.code);
+        throw commandError(navigationError ? error.code : error.code === "TARGET_NOT_FOUND" ? "TARGET_NOT_FOUND" :
           error.name === "TimeoutError" ? "STEP_TIMEOUT" : "STEP_FAILED",
-        `Could not complete step ${index + 1} (${step.action}).`, {
+        navigationError ? error.message : `Could not complete step ${index + 1} (${step.action}).`, {
           step: { index, action: step.action, path: `/steps/${index}` },
-          hint: "Re-run plan with the same login state, check this step's target or wait condition, then retry record.",
+          ...(navigationError && error.status ? { status: error.status } : {}),
+          hint: navigationError ? error.hint : "Re-run plan with the same login state, check this step's target or wait condition, then retry record.",
         });
       }
     }

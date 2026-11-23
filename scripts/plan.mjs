@@ -4,6 +4,7 @@ import { parseCommand } from "./lib/options.mjs";
 import { launchBrowser, newContext } from "./lib/browser.mjs";
 import { waitForEnter } from "./lib/tty.mjs";
 import { createReporter, requireInteractiveLogin } from "./lib/report.mjs";
+import { navigate } from "./lib/navigation.mjs";
 
 function parseViewport(value) {
   if (!value) return { width: 1440, height: 810 };
@@ -39,7 +40,7 @@ export async function plan(argv) {
     const context = await newContext(browser, { viewport, storageState });
     const page = await context.newPage();
 
-    await page.goto(values.url, { waitUntil: "domcontentloaded", timeout: 45000 });
+    await navigate(page, values.url);
     await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(800);
 

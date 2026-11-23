@@ -98,6 +98,11 @@ partial files. `schemaVersion` identifies the response format, not the CLI relea
 - `TARGET_NOT_FOUND`, `STEP_TIMEOUT`, `STEP_FAILED`: inspect `error.step.path`
   and its zero-based index. Re-run `plan` with the same login state, update the
   target or wait condition and retry. Do not repeat an unchanged failing command.
+- `PAGE_UNREACHABLE`: check the URL, local app server and browser network/proxy
+  access. `PAGE_HTTP_ERROR`: inspect `error.status`; fix the route/server or use
+  authorized login state for 401/403. These codes are available after v0.3.0;
+  older versions may return `COMMAND_FAILED`. Dependency checks do not prove
+  page access, and an HTTP error page is not a completed demo.
 - Missing runtime or fonts: inspect `doctor --json` and its recovery hints.
 - Captcha, anti-bot block, iframe-only or canvas-only flow: use a user-provided
   recording with marks instead of trying to bypass the restriction.
