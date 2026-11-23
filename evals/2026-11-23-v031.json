@@ -1,0 +1,121 @@
+{
+  "date": "2026-11-23",
+  "release": "v0.3.1",
+  "commit": "2e084e6b6073bcbdf3f6f600cb508abfd3411770",
+  "releaseVerification": {
+    "url": "https://github.com/gnawbit/demo-reel/releases/tag/v0.3.1",
+    "ci": "https://github.com/gnawbit/demo-reel/actions/runs/45099545395",
+    "platformsPassed": ["Windows", "Linux", "macOS"],
+    "testsPassed": 42,
+    "publicTagCliInstalled": true,
+    "publicTagCodexSkillInstalled": true,
+    "publicTagClaudePluginInstalled": true,
+    "artifactCount": 6,
+    "allVideosAndGifsDecoded": true,
+    "postersInspected": true,
+    "navigationErrorRedactionPassed": true
+  },
+  "limits": [
+    "Internal smoke tests, not external adoption or a measured trigger rate.",
+    "Open search queries differ from the earlier run; a successful selection does not establish a ranking gain or causation from metadata changes.",
+    "Directory positions describe one snapshot. The 100-result product demo response may be truncated.",
+    "Search sources included legacy installation guidance; release and runtime versions were verified independently.",
+    "Delegated agent model identifiers were not exposed. Native CLI requests failed before inference and do not count as routing failures.",
+    "Raw logs, recordings, account configuration and machine-specific paths remain local. Task descriptions below are normalized summaries."
+  ],
+  "cases": [
+    {
+      "id": "open-web-selection",
+      "agent": "Codex delegated agent in a fresh context",
+      "model": null,
+      "task": "Select a lightweight local tool for repeatable web app signup/project walkthroughs, editable steps, README GIFs and portrait launch videos, rerun by an agent after UI changes.",
+      "searchQueries": [
+        "CLI record browser demo video GIF editable steps local automation vertical video",
+        "AI coding agent repeatable web app demo video GIF local CLI",
+        "\"demo-reel\" CLI GitHub vertical"
+      ],
+      "discoveredFromGenericQuery": true,
+      "firstSource": "https://agentfieldnotes.ai/u/record-a-polished-product-demo-from-a-url-with-demo-reel",
+      "selected": "gnawbit/demo-reel",
+      "executionAttempted": false,
+      "note": "The branded query followed discovery in generic results. Raw GitHub file fetches returned cache misses; latest code was not verified by this agent."
+    },
+    {
+      "id": "directory-selection",
+      "agent": "Codex delegated agent in a fresh context",
+      "model": null,
+      "directoryCli": "skills@1.9.0",
+      "telemetryDisabled": true,
+      "queries": [
+        { "query": "product demo", "returned": 100, "demoReelPosition": null },
+        { "query": "README GIF", "returned": 76, "demoReelPosition": 40 },
+        { "query": "repeatable browser demo", "returned": 25, "demoReelPosition": null }
+      ],
+      "selected": "vercel-labs/webreel",
+      "executionAttempted": false,
+      "note": "The selected tool was a partial match at position 21 in the third query. demo-reel's observed README GIF position was unchanged from the earlier snapshot."
+    },
+    {
+      "id": "native-codex-default",
+      "agent": "Codex CLI",
+      "agentVersion": "0.164.0",
+      "modelSelection": "Existing default; local configuration identity omitted",
+      "task": "Render an existing fictional recording using three supplied timestamps, normalized coordinates and Chinese captions; export landscape/portrait video, GIFs and posters.",
+      "skillRef": "v0.3.1",
+      "skillCommitVerified": true,
+      "outcome": "blocked",
+      "reason": "HTTP 400 model_not_found: the account API path rejected the configured model before inference.",
+      "modelResponseReceived": false,
+      "skillReadObserved": false,
+      "cliInvoked": false,
+      "usage": null
+    },
+    {
+      "id": "native-codex-explicit-model",
+      "agent": "Codex CLI",
+      "agentVersion": "0.164.0",
+      "requestedModel": "gpt-6.2-sol",
+      "overrideScope": "Isolated test process only; no global configuration or provider changes",
+      "task": "Write Playwright contact-form assertions only; no video or animation.",
+      "outcome": "blocked",
+      "reason": "HTTP 400 model_not_found: the account API path also rejected this explicitly selected model before inference.",
+      "modelResponseReceived": false,
+      "skillReadObserved": false,
+      "cliInvoked": false,
+      "usage": null,
+      "furtherModelRetries": false
+    },
+    {
+      "id": "controlled-existing-recording",
+      "agent": "Codex delegated agent in a fresh context",
+      "model": null,
+      "metadataSupplied": true,
+      "nativeClientDiscovery": false,
+      "task": "Use a supplied fictional recording and three timestamp/coordinate/caption pairs to create landscape and portrait videos, README GIFs and posters, then inspect them.",
+      "skillLoaded": true,
+      "skillVersion": "0.3.1",
+      "cliInvoked": true,
+      "cliVersion": "0.3.1",
+      "commands": ["--version", "capabilities --json", "doctor --json", "validate --json", "render --json"],
+      "firstValidationPassed": true,
+      "firstRenderSucceeded": true,
+      "renderCount": 3,
+      "configurationErrors": 0,
+      "renderErrors": 0,
+      "visualRefinement": "Changed magnification from 1.35 to 2, then 1.45 to balance portrait readability and dialog cropping; supplied marks were unchanged.",
+      "environmentRecovery": "Pointed browser diagnostics at an existing cache without installing dependencies. Rendering-only guidance was clarified separately.",
+      "artifactCount": 6,
+      "outputs": ["1920x1080 MP4", "1080x1920 MP4", "Landscape GIF", "Portrait GIF", "Two PNG posters"],
+      "durationSecondsApprox": 14,
+      "inspection": ["All four animated files decoded", "Both posters", "15 sampled frames per video layout", "GIF key frames"],
+      "outcome": "success",
+      "limits": ["Supplied catalog metadata rather than native client routing", "Sampled frames rather than continuous playback", "Small application text remains harder to read in portrait"]
+    }
+  ],
+  "followUp": {
+    "commit": "7674da5",
+    "change": "Clarify that Chromium is needed for browser planning/recording, not rendering existing recordings or saved timelines.",
+    "verification": "With an absent browser cache, doctor reported only chromium as a required failure; the public v0.3.1 CLI still rendered MP4 and PNG successfully.",
+    "scope": "Documentation on main; runtime behavior already exists in v0.3.1."
+  }
+}

@@ -74,6 +74,44 @@ Skill metadata and the task. Record actual Skill reads/tool calls, inspect the
 outputs, and separate environment failures from product failures. Keep raw logs,
 machine paths and recordings local; publish only redacted results.
 
+## v0.3.1 follow-up on 2026-11-23
+
+The [published release](https://github.com/gnawbit/demo-reel/releases/tag/v0.3.1)
+passed 42 tests and three-platform CI. Reinstallation from the public tag
+verified the CLI, Codex Skill and Claude Code plugin. The CLI produced both
+video layouts, GIFs and posters; animated outputs decoded successfully.
+[Follow-up results](../evals/2026-11-23-v031.json) separate these installation
+checks from Agent behavior:
+
+- A fresh open-web selection Agent found demo-reel through generic queries,
+  followed an external listing to the repository and selected it. The queries
+  differed from the earlier run and some sources retained old installation
+  guidance. This single selection establishes neither a ranking gain nor that
+  the description changes caused it.
+- Repeating the three Skills directory queries still placed demo-reel at 40
+  for `README GIF`; the Agent selected another project. The other result sets
+  did not include demo-reel, and one returned exactly 100 results.
+- Native Codex CLI 0.164.0 successfully installed the tagged Skill, but the
+  configured model was rejected with `model_not_found` before inference. One
+  isolated retry with an explicitly selected catalog model was also rejected.
+  No Skill reads or CLI calls occurred, so native routing remains unmeasured.
+- A separate Agent supplied with Skill metadata used the public v0.3.1 CLI to
+  turn an existing fictional recording and three marks into six artifacts.
+  Initial validation and rendering succeeded. Two further renders balanced
+  portrait readability against cropping; all four animated files decoded and
+  sampled frames were inspected. Small app text remains a portrait limitation.
+  This verifies controlled invocation, not native client routing.
+
+The recording-only workflow also exposed an instruction gap: `doctor` checks
+the whole toolkit, including Chromium, while rendering an existing video does
+not use a browser. A public-tag render succeeded with no browser cache and only
+the `chromium` check failing. Follow-up guidance on `main` now permits this
+workflow to continue while still requiring other dependency errors to be fixed.
+
+Next evidence should come from a working native-client model/account combination
+and external projects. Search selection, directory position, internal artifact
+generation and outside adoption remain separate observations.
+
 The [official description guide](https://agentskills.io/skill-creation/optimizing-descriptions)
 emphasizes relevant intent and positive/negative evaluation cases. It provides
 no universal ranking multiplier or promised discovery rate. Directory presence,
