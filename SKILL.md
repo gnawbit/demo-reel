@@ -28,7 +28,7 @@ Use an installed `tabretake` CLI when available. The commands below assume it is
 on PATH. For a source checkout, replace `tabretake` with
 `node /absolute/path/to/tabretake/bin/tabretake.mjs`; paths with spaces need quoting.
 A copied Skill does not prove its runtime dependencies are installed. If needed,
-clone the canonical repository separately and run `npm ci` there, or follow the
+run `npm install --global @gnawbit/tabretake@0.4.0` and `tabretake setup`, or follow the
 [CLI installation instructions](https://github.com/gnawbit/tabretake#install).
 The renamed CLI and Skill are available together in v0.4.0. Releases through
 `v0.3.3` use the command and Skill name `demo-reel`.

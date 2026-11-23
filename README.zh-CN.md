@@ -62,19 +62,19 @@ TabRetake 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用�
 
 ## 安装
 
-从本仓库的 v0.4.0 正式标签安装 CLI。
+从 npm 安装 CLI。
 
 ```bash
-npm install --global git+https://github.com/gnawbit/tabretake.git#v0.4.0
+npm install --global @gnawbit/tabretake@0.4.0
 tabretake setup
 tabretake demo
 ```
 
-要求 Node 20.9+ 和 Git。可以在工作目录运行 `tabretake`，内置示例会将结果写入
+要求 Node 20.9+。可以在工作目录运行 `tabretake`，内置示例会将结果写入
 `./demo`。Linux 若缺少浏览器系统依赖，可用 `tabretake setup --with-deps`。
 ffmpeg/ffprobe 随依赖安装。
 
-包名为 `@gnawbit/tabretake`，目前通过 GitHub 分发。
+包名为 [`@gnawbit/tabretake`](https://www.npmjs.com/package/@gnawbit/tabretake)，已在 npm 发布。
 `v0.3.3` 及更早版本的命令和 Skill 仍叫 `demo-reel`。
 安装新版后，现有 JSON 故事可以直接用 `tabretake` 运行。
 

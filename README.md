@@ -66,20 +66,20 @@ edit and run again after a release.
 
 ## Install
 
-Install the CLI from the v0.4.0 release of this repository.
+Install the CLI from npm.
 
 ```bash
-npm install --global git+https://github.com/gnawbit/tabretake.git#v0.4.0
+npm install --global @gnawbit/tabretake@0.4.0
 tabretake setup
 tabretake demo
 ```
 
-Requires Node 20.9+ and Git. Run `tabretake` from your working directory;
+Requires Node 20.9+. Run `tabretake` from your working directory;
 the bundled demo writes its output to `./demo`. On Linux, use
 `tabretake setup --with-deps` if browser system libraries are missing.
 ffmpeg and ffprobe are included as dependencies.
 
-GitHub distributes the CLI as `@gnawbit/tabretake`. If you installed
+The npm package is [`@gnawbit/tabretake`](https://www.npmjs.com/package/@gnawbit/tabretake). If you installed
 `v0.3.3` or earlier, that release still uses `demo-reel` for the command and
 Skill. Existing JSON stories work with `tabretake`.
 

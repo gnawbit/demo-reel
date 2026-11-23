@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Use the published npm package as the primary CLI installation route.
+
 ## 0.4.0 — 2026-11-23
 
 - Add story preview with step progress, JSON diagnostics and recording preservation, plus an explicit focus action for result elements.
