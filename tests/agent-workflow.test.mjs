@@ -80,6 +80,42 @@ test("an agent can plan, initialize, record, render and recover through JSON", {
   assert.equal((await success("record", ["--config", file])).eventCount, 1);
 });
 
+test("action pauses leave time to read captions before the next interaction", { timeout: 30000 }, async (t) => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-caption-timing-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const server = createServer((_req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.end('<!doctype html><button>Start</button><input aria-label="Name"><div style="height:1200px"></div>');
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  const pause = 160;
+  const actions = [
+    { action: "click", selector: "button" },
+    { action: "type", selector: "input", value: "Demo" },
+    { action: "hover", selector: "button" },
+    { action: "drag", selector: "button", dx: 10, dy: 5, steps: 3 },
+    { action: "scroll", y: 100 },
+    { action: "press", key: "Tab" },
+  ];
+  const file = path.join(dir, "story.json");
+  await writeFile(file, JSON.stringify({
+    url: `http://127.0.0.1:${server.address().port}`, initialWait: 0, tail: 0,
+    steps: actions.map((step) => ({ ...step, pause, caption: step.action })),
+  }));
+  const { stdout } = await exec(process.execPath, [cli, "record", "--config", file, "--json"], {
+    cwd: dir, windowsHide: true, timeout: 25000,
+  });
+  const result = JSON.parse(stdout);
+  const { events, duration } = JSON.parse(await readFile(result.artifacts.find((a) => a.kind === "timeline").path, "utf8"));
+  assert.deepEqual(events.map((event) => event.action), actions.map((step) => step.action));
+  for (const [index, event] of events.entries()) {
+    const next = events[index + 1]?.t ?? duration * 1000;
+    assert.ok(event.tEnd >= event.t);
+    assert.ok(next - event.tEnd >= pause - 30, `${event.action} caption must start before its reading pause`);
+  }
+});
+
 test("JSON login and schema errors fail before browser interaction", async () => {
   for (const command of ["plan", "record"]) {
     await assert.rejects(exec(process.execPath, [cli, command, "--login", "--json"], { windowsHide: true }), (error) => {

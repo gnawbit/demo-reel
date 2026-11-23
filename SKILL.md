@@ -84,6 +84,10 @@ state changes are usually enough for a short launch clip.
    caption, zoom or branding changes. Fonts and encoder versions can affect
    appearance across machines. Output videos have no audio.
 
+For caption reading time, use action `pause` on versions after v0.3.0; on v0.3.0
+use `pause: 0` followed by `wait`. Older recordings need to be recorded again
+to adopt the corrected caption timing; re-rendering preserves their timestamps.
+
 ## Interpret results and recover
 
 `--json` writes one object to stdout; stderr carries progress. Check the exit

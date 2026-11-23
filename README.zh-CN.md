@@ -274,6 +274,10 @@ URL、服务和网络；HTTP 4xx/5xx 返回 `PAGE_HTTP_ERROR` 与 `error.status`
 避免把错误页录成成功演示。这类错误不回显目标 URL 中的凭据或查询参数。
 `doctor` 只检查依赖，不能证明目标应用可访问。
 
+`main` 也已修正字幕时序：动作完成即显示字幕，随后 `pause` 留出阅读时间。
+v0.3.0 可用 `pause: 0` 加独立 `wait` 步骤代替。旧时间线需重新录制才能获得
+新时序，仅重新渲染会保留原时间戳。
+
 ```bash
 --login                 # 打开有头浏览器，手动登录一次
 --storage-state auth.json

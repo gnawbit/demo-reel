@@ -115,7 +115,7 @@ export async function record(argv) {
 
           case "click": {
             const locator = await resolveLocator(page, step);
-            const point = await moveAndClick(page, locator, Number(step.pause ?? 700));
+            const point = await moveAndClick(page, locator, 0);
             events.push({
               t,
               tEnd: Date.now() - startedAt,
@@ -126,13 +126,14 @@ export async function record(argv) {
               caption: step.caption || "",
               label: step.text || step.name || step.selector || "",
             });
+            await page.waitForTimeout(Number(step.pause ?? 700));
             break;
           }
 
           case "type": {
             const locator = await resolveLocator(page, step);
             const value = String(step.value ?? step.text ?? "");
-            const point = await clickAndType(page, locator, value, Number(step.pause ?? 400));
+            const point = await clickAndType(page, locator, value, 0);
             events.push({
               t,
               tEnd: Date.now() - startedAt,
@@ -143,12 +144,13 @@ export async function record(argv) {
               caption: step.caption || "",
               label: value,
             });
+            await page.waitForTimeout(Number(step.pause ?? 400));
             break;
           }
 
           case "hover": {
             const locator = await resolveLocator(page, step);
-            const point = await hover(page, locator, Number(step.pause ?? 500));
+            const point = await hover(page, locator, 0);
             events.push({
               t,
               tEnd: Date.now() - startedAt,
@@ -159,6 +161,7 @@ export async function record(argv) {
               caption: step.caption || "",
               label: step.text || step.selector || "",
             });
+            await page.waitForTimeout(Number(step.pause ?? 500));
             break;
           }
 
@@ -170,7 +173,7 @@ export async function record(argv) {
               Number(step.dx || 0),
               Number(step.dy || 0),
               Number(step.steps || 24),
-              Number(step.pause ?? 600),
+              0,
             );
             events.push({
               t,
@@ -182,6 +185,7 @@ export async function record(argv) {
               caption: step.caption || "",
               label: step.selector || "",
             });
+            await page.waitForTimeout(Number(step.pause ?? 600));
             break;
           }
 
@@ -190,7 +194,6 @@ export async function record(argv) {
             await page.evaluate((dy) => {
               window.scrollBy({ top: dy, behavior: "smooth" });
             }, y);
-            await page.waitForTimeout(Number(step.pause ?? 700));
             events.push({
               t,
               tEnd: Date.now() - startedAt,
@@ -200,12 +203,12 @@ export async function record(argv) {
               y: viewport.height / 2,
               caption: step.caption || "",
             });
+            await page.waitForTimeout(Number(step.pause ?? 700));
             break;
           }
 
           case "press": {
             await page.keyboard.press(step.key || "Enter");
-            await page.waitForTimeout(Number(step.pause ?? 500));
             events.push({
               t,
               tEnd: Date.now() - startedAt,
@@ -215,6 +218,7 @@ export async function record(argv) {
               y: viewport.height / 2,
               caption: step.caption || "",
             });
+            await page.waitForTimeout(Number(step.pause ?? 500));
             break;
           }
 

@@ -293,6 +293,10 @@ URL/server/network checks, or `PAGE_HTTP_ERROR` with `error.status` for HTTP
 the target URL so credentials and query tokens are not echoed. `doctor` checks
 dependencies; it cannot establish that an app is reachable.
 
+Also on `main`, captions start when an action finishes, before its `pause`.
+Use the pause as reading time. On v0.3.0, use `pause: 0` plus a separate `wait`
+step instead. Re-record to update old timelines; re-rendering preserves timing.
+
 ```bash
 --login                 # open a visible browser, log in once
 --storage-state auth.json
