@@ -46,6 +46,12 @@ accessible labels or stable selectors. Matching is partial and selects the first
 visible match; use a scoped selector when labels repeat. Story steps do not have
 a dedicated iframe locator. `type` clears the field before typing.
 
+On `main` (not yet released), `click` waits for an enabled, unobstructed target;
+its optional `timeout` is in milliseconds (default 20,000). Persistent blocking
+returns `STEP_TIMEOUT`. v0.3.2 and earlier do not reliably wait for clickable
+targets. A successful click does not prove the app finished processing it;
+continue to use `waitFor` for the expected result.
+
 Use `waitFor` for a visible result before the next interaction. Give captions
 time to be read; they begin after the interaction and replace the previous
 caption. In v0.3.1 or newer, an action's `pause` provides reading time

@@ -203,6 +203,10 @@ demo/
 Actions: `wait`, `goto`, `click`, `type`, `hover`, `drag`, `scroll`, `press`,
 `waitFor`, `screenshot`.
 
+On `main` (not yet released), `click` waits for an enabled, unobstructed target.
+Set step `timeout` in milliseconds (default 20,000); blocked clicks return
+`STEP_TIMEOUT`. v0.3.2 and earlier do not reliably wait for clickable targets.
+
 Locators, in order of preference:
 
 1. `text` — visible label

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Wait for click targets to become actionable and report blocked clicks as step timeouts instead of successful recordings.
 - Include form labels and native select options in page plans so Agents can identify controls without guessing from field values.
 
 ## 0.3.2 — 2026-11-23

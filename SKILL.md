@@ -114,6 +114,9 @@ partial files. `schemaVersion` identifies the response format, not the CLI relea
 - `TARGET_NOT_FOUND`, `STEP_TIMEOUT`, `STEP_FAILED`: inspect `error.step.path`
   and its zero-based index. Re-run `plan` with the same login state, update the
   target or wait condition and retry. Do not repeat an unchanged failing command.
+  On `main` (not yet released), `click` also waits for an enabled, unobstructed
+  target using step `timeout` (milliseconds; default 20,000). v0.3.2 and earlier
+  do not reliably wait for clickable targets; inspect the resulting page.
 - `PAGE_UNREACHABLE`: check the URL, local app server and browser network/proxy
   access. `PAGE_HTTP_ERROR`: inspect `error.status`; fix the route/server or use
   authorized login state for 401/403. These codes are available in v0.3.1 or newer;

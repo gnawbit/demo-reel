@@ -115,7 +115,7 @@ export async function record(argv) {
 
           case "click": {
             const locator = await resolveLocator(page, step);
-            const point = await moveAndClick(page, locator, 0);
+            const point = await moveAndClick(page, locator, 0, Number(step.timeout ?? 20000));
             events.push({
               t,
               tEnd: Date.now() - startedAt,

@@ -1,4 +1,4 @@
-import { chromium } from "playwright";
+import { chromium, errors } from "playwright";
 
 export async function launchBrowser({ headless = true, proxy } = {}) {
   return chromium.launch({
@@ -128,9 +128,17 @@ export async function resolveLocator(page, step) {
   throw Object.assign(new Error("Could not find a visible element for this step."), { code: "TARGET_NOT_FOUND" });
 }
 
-export async function moveAndClick(page, locator, pause = 700) {
-  await locator.scrollIntoViewIfNeeded();
-  const box = await locator.boundingBox();
+export async function moveAndClick(page, locator, pause = 700, timeout = 20000) {
+  const deadline = Date.now() + timeout;
+  const remaining = () => {
+    const ms = deadline - Date.now();
+    if (ms <= 0) throw new errors.TimeoutError("Timed out waiting for an actionable click target.");
+    return ms;
+  };
+
+  // Wait before measuring: loading overlays or disabled controls may also move.
+  await locator.click({ trial: true, timeout: remaining() });
+  const box = await locator.boundingBox({ timeout: remaining() });
   if (!box) throw new Error("Element has no bounding box");
 
   const x = box.x + box.width / 2;
@@ -138,9 +146,8 @@ export async function moveAndClick(page, locator, pause = 700) {
 
   await page.mouse.move(x, y, { steps: 18 });
   await page.waitForTimeout(120);
-  await page.mouse.down();
-  await page.waitForTimeout(70);
-  await page.mouse.up();
+  // Recheck actionability at the actual click; never click an overlay by position.
+  await locator.click({ delay: 70, timeout: remaining() });
   await page.waitForTimeout(pause);
 
   return { x, y };

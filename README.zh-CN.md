@@ -191,6 +191,10 @@ demo/
 
 动作：`wait`、`goto`、`click`、`type`、`hover`、`drag`、`scroll`、`press`、`waitFor`、`screenshot`。
 
+`main`（尚未发布）中的 `click` 会等待目标启用且不被遮挡。步骤 `timeout`
+使用毫秒，默认 20,000；持续阻挡会返回 `STEP_TIMEOUT`。v0.3.2 及更早版本
+没有这项可靠的可点击等待。
+
 定位元素优先级：
 
 1. `text`：可见文字
