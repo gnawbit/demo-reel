@@ -35,6 +35,12 @@
     "vertical": {
       "type": "object",
       "properties": {
+        "zoom": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Portrait focus magnification; --vertical-zoom overrides this value."
+        },
         "badge": {
           "type": "string"
         },

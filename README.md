@@ -293,6 +293,13 @@ flow, inspect with `plan --viewport 390x844`, then record at the same viewport.
 Render with `--vertical --zoom 1` to keep the full page in view; larger zooms
 crop around focus points. Wide desktop recordings may still have small text.
 
+On the current source checkout (not yet in v0.4.0), landscape output fits the
+source aspect ratio and reserves space below the recording for captions.
+Use `--vertical --zoom 1 --vertical-zoom 1.8` to keep landscape overview while
+enlarging portrait focus targets. Set `vertical.zoom` in the story to save that
+portrait setting; the CLI flag takes precedence. Steps with `zoom: false`
+still show the full view. Review the result for cropped context.
+
 ## Commands
 
 | Command | What it does |

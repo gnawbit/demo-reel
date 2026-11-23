@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-23",
+  "kind": "maintainer rerender of existing real-project recordings",
+  "releaseStatus": "source after v0.4.0; not published to npm",
+  "changes": [
+    "Landscape fits the source aspect ratio within a 1600 by 760 area, with captions below it",
+    "Portrait focus zoom can be configured independently; zoom:false remains overview"
+  ],
+  "inputs": [
+    { "app": "Vikunja", "version": "2.8.0", "landscapeZoom": 1, "verticalZoom": 1.8 },
+    { "app": "Memos", "version": "26.11.2", "landscapeZoom": 1, "verticalZoom": 1.8 },
+    { "app": "TodoMVC", "commit": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a", "landscapeZoom": 1, "verticalZoom": 1 }
+  ],
+  "verification": {
+    "testsPassed": 57,
+    "regression": "Rendered edge markers remain visible outside the landscape caption band; portrait CLI zoom overrides config without enlarging landscape",
+    "visual": "Sampled frames and result posters; source headings retained in landscape and result text enlarged in portrait",
+    "media": "Original recordings reused; no new app actions or external user adoption"
+  },
+  "limitations": [
+    "Landscape content is smaller to leave space for captions",
+    "Portrait focus intentionally crops peripheral content; overview desktop text remains small",
+    "Visual inspection is sampled, not every frame"
+  ]
+}

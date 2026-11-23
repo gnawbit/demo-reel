@@ -38,6 +38,9 @@ story will not update a saved timeline. Re-record for changed browser actions.
 ## Camera, posters and portrait branding
 
 - `--zoom 1.28` sets focus magnification.
+- On source after v0.4.0, `vertical.zoom` or `--vertical-zoom 1.8` sets portrait
+  focus magnification independently (1–10). The flag overrides config; when
+  neither is set it follows `--zoom`. Check capabilities before using the flag.
 - `zoomDuration` or `--zoom-duration 0.5` sets transition seconds; `0` uses cuts.
 - `posterAt` or `--poster-at 4.5` selects an output time strictly before the end.
   Without it, the poster is chosen near the end.
@@ -45,6 +48,8 @@ story will not update a saved timeline. Re-record for changed browser actions.
   suppresses captions and font-based portrait text.
 
 Portrait cards fit the source video's aspect ratio between the title and captions.
+On source after v0.4.0, landscape recordings also fit their source aspect ratio,
+with captions below the content. Zooming still intentionally crops the source.
 For a responsive mobile UI, record with a narrow viewport such as `390x844`;
 inspect the page with `plan --viewport 390x844` before recording at that size.
 Use `--zoom 1` to retain the full viewport. Larger zoom values intentionally crop

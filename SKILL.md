@@ -101,6 +101,10 @@ state changes are usually enough for a short launch clip.
    From v0.3.2, portrait cards fit the source aspect ratio. For a mobile flow,
    inspect and record at a narrow viewport (for example `390x844`); use
    `--zoom 1` to preserve the full viewport. Wide desktop text may still be small.
+   If capabilities lists `vertical-zoom` (source checkout after v0.4.0), use
+   `--vertical --zoom 1 --vertical-zoom 1.8` for portrait focus magnification
+   while retaining landscape overview. `vertical.zoom` saves the portrait
+   setting in config; the flag overrides it. `zoom: false` remains overview.
 
 4. Inspect the poster and video, then return links to the actual generated
    artifacts. Re-record after flow changes; re-render the saved timeline after

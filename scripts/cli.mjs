@@ -33,6 +33,7 @@ Options:
   --viewport          Viewport, e.g. 1440x810 (default from config)
   --headed            Watch the recording happen (default false)
   --vertical          Also render a 9:16 vertical video + GIF.
+  --vertical-zoom     Override portrait focus zoom (1–10; otherwise uses --zoom).
   --video             Use an existing screen recording; the config needs "marks".
   --no-gif            Skip GIF export.
   --poster-at         Choose the poster time in output seconds, e.g. 4.5.

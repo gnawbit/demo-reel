@@ -101,8 +101,47 @@ test("rendering preserves brightness, caption timing and valid poster selection"
     for (const value of ["0", "NaN", "Infinity", "11"]) {
       await assert.rejects(run(`--zoom=${value}`), /--zoom must be a number/);
     }
+    for (const value of ["", "0", "NaN", "Infinity", "11"]) {
+      await assert.rejects(run(`--vertical-zoom=${value}`), /--vertical-zoom must be a number/);
+    }
     assert.deepEqual(await readFile(path.join(out, "demo-16x9.mp4")), before);
   });
+});
+
+test("landscape retains source edges outside captions while portrait focuses independently", { timeout: 120000 }, async (t) => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), "tabretake-framing-"));
+  t.after(() => rm(temp, { recursive: true, force: true }));
+  const source = path.join(temp, "source.mp4");
+  await ffmpeg(["-f", "lavfi", "-i", "color=c=white:s=640x400:r=30:d=0.6",
+    "-vf", "drawbox=x=0:y=0:w=iw:h=30:color=red:t=fill,drawbox=x=0:y=370:w=iw:h=30:color=blue:t=fill,drawbox=x=430:y=190:w=20:h=20:color=lime:t=fill",
+    "-c:v", "libx264", "-pix_fmt", "yuv420p", source]);
+  const config = path.join(temp, "story.json");
+  await writeFile(config, JSON.stringify({ video: source, vertical: { zoom: 1 },
+    marks: [{ t: 0, duration: 0, x: 440, y: 200, caption: "Result remains visible" }] }));
+  await exec(process.execPath, [cli, "render", "--config", config, "--out", temp,
+    "--vertical", "--zoom", "1", "--vertical-zoom", "2", "--zoom-duration", "0", "--no-gif"],
+  { windowsHide: true, timeout: 60000 });
+  const boxes = [];
+  for (const file of ["poster.png", "poster-9x16.png"]) {
+    const { data, info } = await sharp(path.join(temp, file)).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+    let left = info.width, right = -1, red = 0, blue = 0, bottomBlue = -1;
+    for (let y = 100; y < (file === "poster.png" ? 1040 : 1400); y++) {
+      for (let x = 100; x < info.width - 100; x++) {
+        const i = (y * info.width + x) * info.channels;
+        const [r, g, b] = data.subarray(i, i + 3);
+        if (g > 200 && r < 50 && b < 50) { left = Math.min(left, x); right = Math.max(right, x); }
+        if (r > 200 && g < 50 && b < 50) red++;
+        if (b > 200 && r < 50 && g < 50) { blue++; bottomBlue = y; }
+      }
+    }
+    boxes.push(right - left + 1);
+    if (file === "poster.png") {
+      assert.ok(red > 50000 && blue > 50000, "landscape overview must retain both full edge bands");
+      assert.ok(bottomBlue < 910, "the source must end before the caption band");
+    }
+  }
+  assert.ok(boxes[0] > 30 && boxes[1] > boxes[0] * 1.5,
+    "portrait CLI zoom must override config without enlarging landscape");
 });
 
 test("portrait output retains narrow and wide source edges at overview zoom", { timeout: 120000 }, async (t) => {

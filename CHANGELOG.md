@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Use the published npm package as the primary CLI installation route.
+- Fit landscape recordings to their source aspect ratio and place captions below the content.
+- Add `vertical.zoom` and `--vertical-zoom` to enlarge portrait focus targets independently of landscape output.
 
 ## 0.4.0 — 2026-11-23
 

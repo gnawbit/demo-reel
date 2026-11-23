@@ -38,6 +38,7 @@ export const commandOptions = {
     "no-captions": { type: "boolean", default: false },
     vertical: { type: "boolean", default: false },
     zoom: { type: "string", default: "1.28" },
+    "vertical-zoom": { type: "string" },
     "zoom-duration": { type: "string" },
     "poster-at": { type: "string" },
   },

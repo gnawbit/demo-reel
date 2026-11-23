@@ -42,6 +42,21 @@ const LAYOUTS = {
   },
 };
 
+function landscapeLayout(videoW, videoH) {
+  const layout = LAYOUTS.landscape;
+  // Reserve a separate caption band and retain the full source at overview.
+  const fit = Math.min(layout.content.w / videoW, 760 / videoH);
+  const w = Math.max(2, Math.floor(videoW * fit / 2) * 2);
+  const h = Math.max(2, Math.floor(videoH * fit / 2) * 2);
+  const x = (layout.width - w) / 2;
+  const y = 122 + (760 - h) / 2;
+  return {
+    ...layout,
+    content: { x, y, w, h },
+    frame: { ...layout.frame, x: x - 16, y: y - 52, w: w + 32, h: h + 52 },
+  };
+}
+
 function verticalLayout(videoW, videoH) {
   const layout = LAYOUTS.vertical;
   // Fit the source between branding and captions instead of cropping a phone
@@ -142,6 +157,11 @@ async function makeBrowserFrame(file, hostname, layout) {
   const url = escapeXml(hostname || "your-app.com");
   const { x, y, w, h } = layout.frame;
   const bar = layout.content.y - y;
+  const addressWidth = Math.max(0, Math.min(560, w - 128));
+  const address = addressWidth >= 120 ? `
+  <clipPath id="address-clip"><rect x="${x + 114}" y="${y + 13}" width="${addressWidth - 20}" height="26"/></clipPath>
+  <rect x="${x + 104}" y="${y + 13}" width="${addressWidth}" height="26" rx="13" fill="#161B23" stroke="#262D3A"/>
+  <text clip-path="url(#address-clip)" x="${x + 122}" y="${y + 30}" font-family="Arial, Segoe UI, sans-serif" font-size="12.5" fill="#8A93A6">${url}</text>` : "";
 
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${layout.width}" height="${layout.height}">
@@ -162,8 +182,7 @@ async function makeBrowserFrame(file, hostname, layout) {
   <circle cx="${x + 32}" cy="${y + bar / 2}" r="5.5" fill="#FF5F57"/>
   <circle cx="${x + 54}" cy="${y + bar / 2}" r="5.5" fill="#FEBC2E"/>
   <circle cx="${x + 76}" cy="${y + bar / 2}" r="5.5" fill="#28C840"/>
-  <rect x="${x + 104}" y="${y + 13}" width="560" height="26" rx="13" fill="#161B23" stroke="#262D3A"/>
-  <text x="${x + 122}" y="${y + 30}" font-family="Arial, Segoe UI, sans-serif" font-size="12.5" fill="#8A93A6">${url}</text>
+  ${address}
   <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="17" fill="none" stroke="#ffffff" stroke-opacity="0.04"/>
   </g>
 </svg>`;
@@ -511,6 +530,12 @@ export async function render(argv) {
   if (!Number.isFinite(zoom) || zoom < 1 || zoom > 10) {
     throw new Error("--zoom must be a number between 1 and 10");
   }
+  const verticalZoom = values["vertical-zoom"] === undefined
+    ? (record.config?.vertical?.zoom ?? zoom)
+    : Number(values["vertical-zoom"]);
+  if (!Number.isFinite(verticalZoom) || verticalZoom < 1 || verticalZoom > 10) {
+    throw new Error("vertical.zoom / --vertical-zoom must be a number between 1 and 10");
+  }
   const zoomDuration = values["zoom-duration"] === undefined
     ? (record.config?.zoomDuration ?? 0.35)
     : (values["zoom-duration"].trim() === "" ? NaN : Number(values["zoom-duration"]));
@@ -526,7 +551,7 @@ export async function render(argv) {
     console.warn("No CJK font found; Chinese captions may render as boxes.");
   }
 
-  const layouts = [LAYOUTS.landscape];
+  const layouts = [landscapeLayout(videoW, videoH)];
   if (values.vertical) layouts.push(verticalLayout(videoW, videoH));
 
   let last = null;
@@ -541,7 +566,7 @@ export async function render(argv) {
       videoH,
       durationSec,
       videoOffset,
-      zoom,
+      zoom: layout.key === "vertical" ? verticalZoom : zoom,
       zoomDuration,
       font,
       cjkFont,
