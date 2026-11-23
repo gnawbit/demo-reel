@@ -15,20 +15,73 @@ const cli = fileURLToPath(new URL("../bin/demo-reel.mjs", import.meta.url));
 
 test("navigation failures redact URL credentials and suggest page recovery", async () => {
   const url = "https://fixture-user:fixture-password@example.test/?token=fixture-token";
-  for (const name of ["Error", "TimeoutError"]) {
-    const page = { goto: async () => { throw Object.assign(new Error(`Failed at ${url}`), { name }); } };
-    await assert.rejects(navigate(page, url), (error) => {
-      const report = errorReport("plan", error);
-      assert.equal(report.error.code, "PAGE_UNREACHABLE");
-      assert.match(report.error.hint, /start the app/);
-      assert.doesNotMatch(JSON.stringify(report), /fixture-user|fixture-password|fixture-token/);
-      if (name === "TimeoutError") assert.match(report.error.message, /time/);
-      return true;
-    });
+  for (const allowAuthErrors of [false, true]) {
+    for (const name of ["Error", "TimeoutError"]) {
+      const page = { goto: async () => { throw Object.assign(new Error(`Failed at ${url}`), { name }); } };
+      await assert.rejects(navigate(page, url, { allowAuthErrors }), (error) => {
+        const report = errorReport("plan", error);
+        assert.equal(report.error.code, "PAGE_UNREACHABLE");
+        assert.match(report.error.hint, /start the app/);
+        assert.doesNotMatch(JSON.stringify(report) + error.stack, /fixture-user|fixture-password|fixture-token/);
+        if (name === "TimeoutError") assert.match(report.error.message, /time/);
+        return true;
+      });
+    }
   }
   const response = { status: () => 200 };
   assert.equal(await navigate({ goto: async () => response }, url), response);
   assert.equal(await navigate({ goto: async () => null }, url), null);
+});
+
+test("login navigation permits authentication pages without accepting other error pages", async () => {
+  const url = "https://example.test/?token=fixture-token";
+  for (const status of [401, 403, 404, 500]) {
+    const response = { status: () => status };
+    const page = { goto: async () => response };
+    for (const allowAuthErrors of [false, true]) {
+      if (allowAuthErrors && (status === 401 || status === 403)) {
+        assert.equal(await navigate(page, url, { allowAuthErrors }), response);
+      } else {
+        await assert.rejects(navigate(page, url, { allowAuthErrors }), (error) => {
+          assert.equal(error.code, "PAGE_HTTP_ERROR");
+          assert.equal(error.status, status);
+          assert.doesNotMatch(error.stack + JSON.stringify(errorReport("plan", error)), /fixture-token/);
+          return true;
+        });
+      }
+    }
+  }
+});
+
+test("plan and record login failures redact URLs and close the browser", { timeout: 45000 }, async (t) => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), "demo-reel-login-navigation-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  // Exercise the interactive CLI branch without requiring a desktop in CI.
+  const preload = `
+    import { chromium } from ${JSON.stringify(import.meta.resolve("playwright"))};
+    Object.defineProperty(process.stdin, "isTTY", { value: true });
+    const launch = chromium.launch.bind(chromium);
+    chromium.launch = async (options) => {
+      const browser = await launch({ ...options, headless: true });
+      browser.on("disconnected", () => console.error("fixture-browser-closed"));
+      return browser;
+    };
+  `;
+  const url = "http://fixture-user:fixture-password@127.0.0.1:1/?token=fixture-token";
+  const file = path.join(dir, "story.json");
+  await writeFile(file, JSON.stringify({ url, steps: [{ action: "wait", ms: 10 }] }));
+  for (const args of [["plan", "--url", url], ["record", "--config", file]]) {
+    await assert.rejects(exec(process.execPath, [
+      "--import", `data:text/javascript,${encodeURIComponent(preload)}`, cli, ...args, "--login",
+    ], { cwd: dir, windowsHide: true, timeout: 15000 }), (error) => {
+      assert.equal(error.code, 1);
+      assert.equal(error.killed, false);
+      assert.match(error.stderr, /Could not open the target page/);
+      assert.match(error.stderr, /fixture-browser-closed/);
+      assert.doesNotMatch(error.stdout + error.stderr, /fixture-user|fixture-password|fixture-token/);
+      return true;
+    });
+  }
 });
 
 test("plan and record reject error pages and retain navigation step locations", { timeout: 45000 }, async (t) => {

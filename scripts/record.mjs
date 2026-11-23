@@ -310,7 +310,7 @@ async function loginAndSave(url, { proxy, viewport, statePath }) {
   try {
     const context = await newContext(browser, { viewport });
     const page = await context.newPage();
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
+    await navigate(page, url, { allowAuthErrors: true });
     console.log("\nA browser window is open. Log in, then come back here.");
     await waitForEnter("Press Enter when you are logged in... ");
     await context.storageState({ path: statePath });

@@ -302,6 +302,9 @@ URL/server/network checks, or `PAGE_HTTP_ERROR` with `error.status` for HTTP
 the target URL so credentials and query tokens are not echoed. `doctor` checks
 dependencies; it cannot establish that an app is reachable.
 
+From v0.3.2, manual `--login` navigation failures also omit the target URL.
+HTTP 401/403 pages remain open for sign-in; other HTTP errors stop the command.
+
 In v0.3.1 or newer, captions start when an action finishes, before its `pause`.
 Use the pause as reading time. On v0.3.0, use `pause: 0` plus a separate `wait`
 step instead. Re-record to update old timelines; re-rendering preserves timing.

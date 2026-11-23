@@ -1,7 +1,7 @@
 import { commandError } from "./report.mjs";
 
 // Keep URLs (which may contain credentials or tokens) out of error reports.
-export async function navigate(page, url) {
+export async function navigate(page, url, { allowAuthErrors = false } = {}) {
   let response;
   try {
     response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
@@ -13,7 +13,8 @@ export async function navigate(page, url) {
     });
   }
   const status = response?.status();
-  if (status >= 400) {
+  // A login page may return 401/403 before the user signs in manually.
+  if (status >= 400 && !(allowAuthErrors && (status === 401 || status === 403))) {
     throw commandError("PAGE_HTTP_ERROR", `The target page returned HTTP ${status}.`, {
       status,
       hint: status === 401 || status === 403

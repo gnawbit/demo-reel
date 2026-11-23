@@ -118,6 +118,9 @@ partial files. `schemaVersion` identifies the response format, not the CLI relea
 
 Manual login needs an interactive terminal without `--json`:
 
+From v0.3.2, login navigation errors also omit the target URL. HTTP 401/403
+pages stay open for sign-in; other HTTP errors stop the command.
+
 ```bash
 demo-reel plan --url https://your-app.com --login
 demo-reel record --config demo.json --storage-state auth.json --json

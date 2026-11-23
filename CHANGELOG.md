@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Redact target URLs from manual login navigation failures while keeping HTTP 401/403 pages available for sign-in.
+
 ## 0.3.1 — 2026-11-23
 
 - Start captions before action pauses so the pause provides reading time. Re-record older stories to adopt the corrected timestamps.
