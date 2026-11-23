@@ -11,7 +11,7 @@
 
 <img src="docs/hero.gif" alt="demo-reel 自动录屏、点击放大、加字幕" width="100%">
 
-[观看演示](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [路线图](#路线图)
+[项目页](https://gnawbit.github.io/demo-reel/) · [观看演示](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [路线图](#路线图)
 
 demo-reel 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用可编辑 JSON
 描述操作流程，或让编程助手代写；在 Chromium 中执行步骤，添加点击放大和字幕，

@@ -12,7 +12,7 @@ English · [简体中文](README.zh-CN.md)
 
 <img src="docs/hero.gif" alt="demo-reel recording a SaaS dashboard, zooming into clicks and adding captions" width="100%">
 
-[Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
+[Project page](https://gnawbit.github.io/demo-reel/) · [Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
 
 demo-reel is a local CLI and Agent Skill for repeatable browser walkthroughs.
 Describe a flow in editable JSON, or have your coding agent write it. It runs
