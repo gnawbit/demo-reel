@@ -6,28 +6,49 @@
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
 [![最新发行版](https://img.shields.io/github/v/release/gnawbit/tabretake?label=latest%20release&color=6c5ce7)](https://github.com/gnawbit/tabretake/releases/latest)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
+[![GitHub stars](https://img.shields.io/github/stars/gnawbit/tabretake?style=social)](https://github.com/gnawbit/tabretake/stargazers)
 
-**把 Web 应用录成 README 动图或竖屏发布视频。**
+**自动化生成 Web 应用演示。从此告别手动录屏与繁琐剪辑。**
 
-<img src="docs/hero.gif" alt="TabRetake 自动录屏、点击放大、加字幕" width="100%">
+把可编辑的 JSON 步骤或 AI 编程助手的指令，直接转化为丝滑的 **16:9 README 动图 (GIF)** 与 **9:16 竖屏发布视频 (MP4)** —— 自带点击自动平滑放大、光标波纹和**不遮挡页面内容的底部字幕区**。界面改版后，一行命令全自动重拍重渲染。
 
-[项目页](https://gnawbit.github.io/tabretake/) · [观看演示](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [路线图](#路线图)
+<img src="docs/hero.gif" alt="TabRetake 录制 Vikunja 看板：创建任务、跨列拖拽并聚焦结果" width="100%">
 
-TabRetake 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用可编辑 JSON
-描述操作流程，或让编程助手代写；在 Chromium 中执行步骤，添加点击放大和字幕，
-导出横屏或竖屏 MP4、README GIF 和 PNG 封面。支持 Windows、macOS 和 Linux。
+*实测录制于 [Vikunja v2.8.0](https://github.com/go-vikunja/vikunja)（15k★ 开源看板）：输入任务、在真实看板上将卡片拖入 Doing、自动将镜头推进聚焦到结果。单次录制同时生成 16:9 MP4、README 动图与 9:16 竖屏短片。*
+
+[项目页](https://gnawbit.github.io/tabretake/) · [观看演示](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [真实实测展台](#-真实开源项目实测展台-real-world-showcase) · [路线图](#路线图)
+
+### ⚡ 为什么选择 TabRetake？
+
+| 常见痛点 | 传统手动录屏与剪辑 | TabRetake 自动化工作流 |
+|---|---|---|
+| **界面改版重录** | 手工重新操作、重新剪辑、补字幕（耗费 2 小时+） | 修改 1 行 JSON 或让 Agent 重跑（`tabretake render`，10秒搞定） |
+| **竖屏发布 (9:16)** | 画面裁切变形或需重新单独录制 | 单次录制同时导出 16:9 与 9:16，支持竖屏独立放大倍率 |
+| **字幕遮挡操作** | 悬浮字幕遮挡输入框或按钮 | 自动按源比例适配留白，字幕固定居于内容下方 |
+| **多端与自动化** | 纯人工操作，无法纳入自动化流程 | 本地 Playwright CLI + AI 编程助手（Claude Code / Cursor / Codex） |
 
 故事文件与代码一起保存，界面更新后即可重新生成演示。
 已有录屏也可配合时间标记渲染相同产物，无需浏览器自动化；详见[用已有录屏](#用已有录屏)。
 
-[TodoMVC 实例](https://gnawbit.github.io/tabretake/todomvc/)提供固定版本的上游应用、
-可下载故事及实测的 README GIF / 9:16 制作流程。
+### 🚀 30秒极速体验
 
-[Agent 发现与调用实测](docs/agent-discovery.md) 分别记录搜索可见性、Skill 选择
-和产物成功情况，不将这些测试当作外部采用。
+```bash
+npm install --global @gnawbit/tabretake@0.4.1
+tabretake setup
+tabretake demo
+```
 
-> 支持 Claude Code、Codex、Cursor，以及任何支持
-> [Agent Skills](https://agentskills.io) 的 agent。
+### 🎯 真实开源项目实测展台 (Real-World Showcase)
+
+拒绝虚假的 AI 蓝紫色假模版。TabRetake 在具有复杂 DOM 与真实交互的前端项目中深度验证：
+
+| 📋 [Vikunja](https://gnawbit.github.io/tabretake/vikunja/) (15k★ 看板协作) | ✍️ [Memos](https://gnawbit.github.io/tabretake/memos/) (35k★ 知识笔记) | 📝 [TodoMVC](https://gnawbit.github.io/tabretake/todomvc/) (前端通用标准) |
+|:---:|:---:|:---:|
+| <a href="https://gnawbit.github.io/tabretake/vikunja/"><img src="docs/poster.png" alt="Vikunja 看板拖拽" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/memos/"><img src="docs/examples/memos.png" alt="Memos 富文本与搜索" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/todomvc/"><img src="docs/examples/todomvc.png" alt="TodoMVC 任务过滤" width="100%"></a> |
+| **真实看板跨列拖拽**<br>复杂交互与目标卡片聚焦 | **富文本录入与检索**<br>真实 contenteditable 与标签联动 | **标准任务状态流**<br>经典 ES6 实现与完成项筛选 |
+| [故事 JSON](site/vikunja/story.json) · [完整复现教程](https://gnawbit.github.io/tabretake/vikunja/) | [故事 JSON](site/memos/story.json) · [完整复现教程](https://gnawbit.github.io/tabretake/memos/) | [故事 JSON](site/todomvc/story.json) · [完整复现教程](https://gnawbit.github.io/tabretake/todomvc/) |
+
+> 本地原生运行于 Windows、macOS 与 Linux。支持 Claude Code、Codex、Cursor，以及任何支持 [Agent Skills](https://agentskills.io) 的 agent。
 
 ---
 
@@ -65,7 +86,7 @@ TabRetake 是在本地生成可重复网页演示的 CLI 和 Agent Skill。用�
 从 npm 安装 CLI。
 
 ```bash
-npm install --global @gnawbit/tabretake@0.4.0
+npm install --global @gnawbit/tabretake@0.4.1
 tabretake setup
 tabretake demo
 ```
@@ -93,7 +114,7 @@ node bin/tabretake.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.0" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.1" --skill tabretake
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
@@ -103,7 +124,7 @@ npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.0" --skill t
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.0"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.1"
 ```
 
 两种工作流安装方式任选其一；插件仍需先安装上述 TabRetake 运行环境。
@@ -274,7 +295,7 @@ v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
 渲染时加 `--vertical --zoom 1` 保留完整视口；更大的缩放会围绕焦点裁切。
 宽屏桌面录屏中的细字仍可能偏小。
 
-当前源码版（尚未进入 v0.4.0）会按源视频比例适配横屏，在录屏下方留出字幕区。
+从 v0.4.1 起，横屏输出会按源视频比例自适应，并在录屏下方留出字幕区。
 使用 `--vertical --zoom 1 --vertical-zoom 1.8` 可保持横屏全景，单独放大竖屏焦点。
 故事中的 `vertical.zoom` 可保存竖屏倍率，命令行参数优先；`zoom: false` 的步骤
 仍显示全景。放大后需检查是否裁掉必要上下文。
@@ -390,12 +411,13 @@ node bin/tabretake.mjs record --config demo.json --storage-state auth.json
 接入自己的应用时，替换应用检出与启动命令、就绪检测地址和故事文件。
 使用可重置的演示数据，并在发布前检查成片。
 
-| 示例 | 故事 | 输出 |
-|---|---|---|
-| Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
+| 真实开源案例 | 上游项目 | 故事脚本 | 输出产物 |
+|---|---|---|---|
+| Vikunja 看板 (Hero) | [go-vikunja/vikunja](https://github.com/go-vikunja/vikunja) (15k★) | [site/vikunja/story.json](site/vikunja/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
+| Memos 知识库 | [usememos/memos](https://github.com/usememos/memos) (35k★) | [site/memos/story.json](site/memos/story.json) | [GIF](docs/examples/memos.gif) · [封面](docs/examples/memos.png) |
+| TodoMVC 经典标准 | [tastejs/todomvc](https://github.com/tastejs/todomvc) (ES6) | [site/todomvc/story.json](site/todomvc/story.json) | [GIF](docs/examples/todomvc.gif) · [封面](docs/examples/todomvc.png) |
 
-Northstar 是内置的虚构应用。三个[可运行示例](examples/README.md)分别展示
-README 动图、首次创建项目，以及重复生成发布素材。从源码目录运行（全局安装可将前缀替换为 `tabretake`）：
+如需在不下载任何上游项目的前提下快速体验，TabRetake 也内置了三个虚构应用预设（readme、onboarding、release），执行 `tabretake demo` 即可体验。从源码目录运行（全局安装可将前缀替换为 `tabretake`）：
 
 ```bash
 node bin/tabretake.mjs demo --story readme --port 0 --out demo-readme

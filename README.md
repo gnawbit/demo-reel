@@ -8,32 +8,48 @@ English · [简体中文](README.zh-CN.md)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/tabretake?style=social)](https://github.com/gnawbit/tabretake/stargazers)
 
-**Record your web app as a README GIF or portrait launch video.**
+**Automate your web app demos. Never manually record and edit a screen again.**
 
-<img src="docs/hero.gif" alt="TabRetake recording a SaaS dashboard, zooming into clicks and adding captions" width="100%">
+Turn editable JSON steps or AI Agent instructions into crisp **16:9 README GIFs** and **9:16 portrait launch videos** — complete with smooth click zooms, cursor ripples, and unoccluded bottom captions. When your UI changes, re-run with one command.
 
-[Project page](https://gnawbit.github.io/tabretake/) · [Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Roadmap](#roadmap)
+<img src="docs/hero.gif" alt="TabRetake recording Vikunja: creating a task, dragging it across a Kanban board, and zooming into the result" width="100%">
 
-TabRetake is a local CLI and Agent Skill for repeatable browser walkthroughs.
-Describe a flow in editable JSON, or have your coding agent write it. It runs
-the steps in Chromium and exports landscape or portrait MP4, README GIFs and
-PNG posters with click zooms and captions. Works on Windows, macOS and Linux.
+*Recorded on [Vikunja v2.8.0](https://github.com/go-vikunja/vikunja) (15k★ open-source Kanban): Type a task, drag it into Doing on a live board, and automatically focus on the result. Generates 16:9 MP4, README GIF and 9:16 portrait video in seconds.*
+
+[Project page](https://gnawbit.github.io/tabretake/) · [Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Real Showcase](#-real-world-showcase-proven-on-production-open-source-apps) · [Roadmap](#roadmap)
+
+### ⚡ Why TabRetake vs Traditional Screen Recording?
+
+| Challenge | Traditional Screen Recording | TabRetake Automated Workflow |
+|---|---|---|
+| **UI Changes** | Re-record manually, re-edit, re-export (2+ hours) | Edit 1 line of JSON or ask your agent (`tabretake render`, 10s) |
+| **Mobile (9:16)** | Clunky manual cropping or separate recording | Simultaneous 16:9 + 9:16 export with independent focus zoom |
+| **Captions** | Text overlays obstructing interactive UI elements | Dedicated bottom caption band fitted to source aspect ratio |
+| **Automation** | Purely manual busywork | Headless Playwright CLI + AI Coding Agents (Claude Code, Cursor, Codex) |
 
 Keep the story with your code and re-run it when the UI changes.
 Already have a screen recording? Supply timestamp marks to
 [render the same outputs without browser automation](#use-an-existing-screen-recording).
 
-[Try the TodoMVC recipe](https://gnawbit.github.io/tabretake/todomvc/): a pinned
-upstream app, downloadable story and verified README GIF / 9:16 workflow.
+### 🚀 Quick Taste (30 Seconds)
 
-[Agent discovery and invocation checks](docs/agent-discovery.md) separate search
-visibility, Skill selection and successful output; they are not adoption metrics.
+```bash
+npm install --global @gnawbit/tabretake@0.4.1
+tabretake setup
+tabretake demo
+```
 
-Trying it on your own app? [Report your first demo](https://github.com/gnawbit/tabretake/issues/new?template=first-demo.yml),
-including failures. [Trial and measurement notes](docs/adoption.md) explain what we track.
+### 🎯 Real-World Showcase: Proven on Production Open-Source Apps
 
-> Works with Claude Code, Codex, Cursor and any agent that supports
-> [Agent Skills](https://agentskills.io).
+No synthetic AI mockups. TabRetake is verified against real-world, complex DOMs and interactive components:
+
+| 📋 [Vikunja](https://gnawbit.github.io/tabretake/vikunja/) (15k★ Kanban) | ✍️ [Memos](https://gnawbit.github.io/tabretake/memos/) (35k★ Notes) | 📝 [TodoMVC](https://gnawbit.github.io/tabretake/todomvc/) (Web Benchmark) |
+|:---:|:---:|:---:|
+| <a href="https://gnawbit.github.io/tabretake/vikunja/"><img src="docs/poster.png" alt="Vikunja Kanban" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/memos/"><img src="docs/examples/memos.png" alt="Memos Note-Taking" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/todomvc/"><img src="docs/examples/todomvc.png" alt="TodoMVC Benchmark" width="100%"></a> |
+| **Kanban Drag & Drop**<br>Card movement & destination focus | **Rich Text & Search**<br>Live contenteditable & tag search | **Standard Task Filtering**<br>Clean ES6 multi-state walkthrough |
+| [Story JSON](site/vikunja/story.json) · [Recipe](https://gnawbit.github.io/tabretake/vikunja/) | [Story JSON](site/memos/story.json) · [Recipe](https://gnawbit.github.io/tabretake/memos/) | [Story JSON](site/todomvc/story.json) · [Recipe](https://gnawbit.github.io/tabretake/todomvc/) |
+
+> Works locally on Windows, macOS and Linux. Supports Claude Code, Codex, Cursor and any agent that supports [Agent Skills](https://agentskills.io).
 
 ---
 
@@ -72,7 +88,7 @@ edit and run again after a release.
 Install the CLI from npm.
 
 ```bash
-npm install --global @gnawbit/tabretake@0.4.0
+npm install --global @gnawbit/tabretake@0.4.1
 tabretake setup
 tabretake demo
 ```
@@ -102,7 +118,7 @@ replace `node bin/tabretake.mjs` with `tabretake`.
 To add the agent workflow after setting up the CLI:
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.0" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.1" --skill tabretake
 ```
 
 Run this in the target project; add `--agent codex`, `--agent claude-code` or
@@ -113,7 +129,7 @@ or a source checkout. Install the CLI and Skill from the same revision.
 Claude Code users can install the plugin instead (CLI 2.1.292+):
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.0"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.1"
 ```
 
 Install the workflow through one of these routes; the plugin still needs the
@@ -296,7 +312,7 @@ flow, inspect with `plan --viewport 390x844`, then record at the same viewport.
 Render with `--vertical --zoom 1` to keep the full page in view; larger zooms
 crop around focus points. Wide desktop recordings may still have small text.
 
-On the current source checkout (not yet in v0.4.0), landscape output fits the
+From v0.4.1, landscape output fits the
 source aspect ratio and reserves space below the recording for captions.
 Use `--vertical --zoom 1 --vertical-zoom 1.8` to keep landscape overview while
 enlarging portrait focus targets. Set `vertical.zoom` in the story to save that
@@ -422,12 +438,13 @@ Run **Actions → Regenerate TodoMVC demo → Run workflow** in your fork.
 For your own app, replace its checkout/start command, readiness URL and story.
 Keep demo data disposable. Review the generated assets before publishing them.
 
-| Example | Story | Output |
-|---|---|---|
-| Northstar SaaS dashboard | [examples/story.json](examples/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
+| Real-World Example | Upstream Project | Story | Output |
+|---|---|---|---|
+| Vikunja Kanban (Hero) | [go-vikunja/vikunja](https://github.com/go-vikunja/vikunja) (15k★) | [site/vikunja/story.json](site/vikunja/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
+| Memos Knowledge Base | [usememos/memos](https://github.com/usememos/memos) (35k★) | [site/memos/story.json](site/memos/story.json) | [GIF](docs/examples/memos.gif) · [Poster](docs/examples/memos.png) |
+| TodoMVC Benchmark | [tastejs/todomvc](https://github.com/tastejs/todomvc) (ES6) | [site/todomvc/story.json](site/todomvc/story.json) | [GIF](docs/examples/todomvc.gif) · [Poster](docs/examples/todomvc.png) |
 
-Northstar is a fictional bundled app. Try three [runnable recipes](examples/README.md)
-for a README GIF, first-project onboarding and repeatable release assets.
+For zero-dependency local testing without installing upstream apps, TabRetake also includes three bundled demo presets (readme, onboarding, release):
 Run a preset from the source checkout (or use the installed `tabretake` command):
 
 ```bash

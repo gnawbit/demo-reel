@@ -4,7 +4,7 @@ description: Create repeatable product demo videos and README GIFs from a web ap
 license: MIT
 metadata:
   author: gnawbit
-  version: "0.4.0"
+  version: "0.4.1"
   repository: https://github.com/gnawbit/tabretake
   compatibility: Node.js 20.9+, Chromium via tabretake setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
 ---
@@ -28,9 +28,9 @@ Use an installed `tabretake` CLI when available. The commands below assume it is
 on PATH. For a source checkout, replace `tabretake` with
 `node /absolute/path/to/tabretake/bin/tabretake.mjs`; paths with spaces need quoting.
 A copied Skill does not prove its runtime dependencies are installed. If needed,
-run `npm install --global @gnawbit/tabretake@0.4.0` and `tabretake setup`, or follow the
+run `npm install --global @gnawbit/tabretake@0.4.1` and `tabretake setup`, or follow the
 [CLI installation instructions](https://github.com/gnawbit/tabretake#install).
-The renamed CLI and Skill are available together in v0.4.0. Releases through
+The renamed CLI and Skill are available together from v0.4.0. Releases through
 `v0.3.3` use the command and Skill name `demo-reel`.
 
 ```bash
@@ -101,7 +101,7 @@ state changes are usually enough for a short launch clip.
    From v0.3.2, portrait cards fit the source aspect ratio. For a mobile flow,
    inspect and record at a narrow viewport (for example `390x844`); use
    `--zoom 1` to preserve the full viewport. Wide desktop text may still be small.
-   If capabilities lists `vertical-zoom` (source checkout after v0.4.0), use
+   From v0.4.1, `vertical-zoom` is supported: use
    `--vertical --zoom 1 --vertical-zoom 1.8` for portrait focus magnification
    while retaining landscape overview. `vertical.zoom` saves the portrait
    setting in config; the flag overrides it. `zoom: false` remains overview.

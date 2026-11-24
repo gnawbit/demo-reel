@@ -1,10 +1,11 @@
 # Changelog
 
-## Unreleased
+## 0.4.1 — 2026-11-24
 
-- Use the published npm package as the primary CLI installation route.
-- Fit landscape recordings to their source aspect ratio and place captions below the content.
+- Fit landscape recordings to their source aspect ratio and place captions below the content so captions never occlude UI interactions.
 - Add `vertical.zoom` and `--vertical-zoom` to enlarge portrait focus targets independently of landscape output.
+- Use the published npm package as the primary CLI installation route.
+- Add adoption measurement baseline and trial feedback issue template.
 
 ## 0.4.0 — 2026-11-23
 
