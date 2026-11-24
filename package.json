@@ -4,7 +4,7 @@
   "description": "Create repeatable web app demos, README GIFs and 9:16 videos from editable JSON steps or existing screen recordings. Local CLI and Agent Skill for Claude Code, Codex and Cursor.",
   "type": "module",
   "bin": {
-    "tabretake": "./bin/tabretake.mjs"
+    "tabretake": "bin/tabretake.mjs"
   },
   "files": [
     "bin/",
@@ -58,6 +58,7 @@
     "sharp": "^0.35.5"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }
