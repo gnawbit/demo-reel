@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-11-24T01:24:30.559Z",
+  "date": "2026-11-24",
+  "repository": "gnawbit/tabretake",
+  "github": {
+    "source": "https://api.github.com/repos/gnawbit/tabretake",
+    "stars": 2,
+    "forks": 0
+  },
+  "traffic": {
+    "window": "GitHub rolling 14 days, UTC; may lag capture time",
+    "views": {
+      "source": "https://api.github.com/repos/gnawbit/tabretake/traffic/views",
+      "status": 200,
+      "data": {
+        "count": 7,
+        "uniques": 3,
+        "views": [
+          {
+            "timestamp": "2026-11-09T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-10T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-11T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-12T00:00:00Z",
+            "count": 1,
+            "uniques": 1
+          },
+          {
+            "timestamp": "2026-11-13T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-14T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-15T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-16T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-17T00:00:00Z",
+            "count": 2,
+            "uniques": 2
+          },
+          {
+            "timestamp": "2026-11-18T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-19T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-20T00:00:00Z",
+            "count": 4,
+            "uniques": 1
+          },
+          {
+            "timestamp": "2026-11-21T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-22T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          }
+        ]
+      }
+    },
+    "clones": {
+      "source": "https://api.github.com/repos/gnawbit/tabretake/traffic/clones",
+      "status": 200,
+      "data": {
+        "count": 354,
+        "uniques": 131,
+        "clones": [
+          {
+            "timestamp": "2026-11-09T00:00:00Z",
+            "count": 1,
+            "uniques": 1
+          },
+          {
+            "timestamp": "2026-11-10T00:00:00Z",
+            "count": 2,
+            "uniques": 1
+          },
+          {
+            "timestamp": "2026-11-11T00:00:00Z",
+            "count": 1,
+            "uniques": 1
+          },
+          {
+            "timestamp": "2026-11-12T00:00:00Z",
+            "count": 4,
+            "uniques": 3
+          },
+          {
+            "timestamp": "2026-11-13T00:00:00Z",
+            "count": 6,
+            "uniques": 3
+          },
+          {
+            "timestamp": "2026-11-14T00:00:00Z",
+            "count": 5,
+            "uniques": 4
+          },
+          {
+            "timestamp": "2026-11-15T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-16T00:00:00Z",
+            "count": 0,
+            "uniques": 0
+          },
+          {
+            "timestamp": "2026-11-17T00:00:00Z",
+            "count": 1,
+            "uniques": 1
+          },
+          {
+            "timestamp": "2026-11-18T00:00:00Z",
+            "count": 1,
+            "uniques": 1
+          },
+          {
+            "timestamp": "2026-11-19T00:00:00Z",
+            "count": 3,
+            "uniques": 3
+          },
+          {
+            "timestamp": "2026-11-20T00:00:00Z",
+            "count": 160,
+            "uniques": 47
+          },
+          {
+            "timestamp": "2026-11-21T00:00:00Z",
+            "count": 38,
+            "uniques": 11
+          },
+          {
+            "timestamp": "2026-11-22T00:00:00Z",
+            "count": 132,
+            "uniques": 62
+          }
+        ]
+      }
+    },
+    "referrers": {
+      "source": "https://api.github.com/repos/gnawbit/tabretake/traffic/popular/referrers",
+      "status": 200,
+      "data": [
+        {
+          "referrer": "github.com",
+          "count": 5,
+          "uniques": 1
+        }
+      ]
+    }
+  },
+  "externalUsage": {
+    "firstSuccessfulUsers": null,
+    "repeatUsers": null,
+    "adoptedProjects": null,
+    "evidence": [],
+    "status": "Not measured; fill only from reviewed external reports"
+  },
+  "limitations": [
+    "Repository traffic is not project-page traffic or a user count",
+    "Clones may include maintainer, installation and CI activity",
+    "Do not sum unique counts or overlapping 14-day snapshots",
+    "No CLI telemetry; unknown usage is null, not zero"
+  ]
+}
