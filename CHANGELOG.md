@@ -2,6 +2,7 @@
 
 ## 0.4.1 — 2026-11-24
 
+- Add `init --auto` to automatically scan target web pages and generate runnable interactive steps.
 - Fit landscape recordings to their source aspect ratio and place captions below the content so captions never occlude UI interactions.
 - Add `vertical.zoom` and `--vertical-zoom` to enlarge portrait focus targets independently of landscape output.
 - Use the published npm package as the primary CLI installation route.

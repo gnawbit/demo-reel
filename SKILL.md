@@ -68,13 +68,13 @@ state changes are usually enough for a short launch clip.
 
    ```bash
    tabretake plan --url https://your-app.com --out plan.json --json
-   tabretake init --url https://your-app.com --out demo.json --json
+   tabretake init --url https://your-app.com --out demo.json --auto --json
    ```
 
-2. Read the plan file from its returned artifact path. Replace the starter's
-   wait-only steps with the requested flow. For actions, locator choices and
-   timing units, read [story authoring](references/story.md). `init` will not
-   overwrite a story. Prefer a visible result at the end and short benefit captions.
+2. Read the plan file from its returned artifact path. If `--auto` was used, inspect
+   the generated steps; otherwise replace the starter's wait-only steps with the
+   requested flow. For actions, locator choices and timing units, read
+   [story authoring](references/story.md). `init` will not overwrite an existing story.
    From v0.3.3, use `label` to identify form controls and native select `options`
    to inspect their labels, values and disabled states. Older versions omit these
    fields; use the plan screenshot and existing control metadata instead.

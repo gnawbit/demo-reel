@@ -60,3 +60,25 @@ test("init requires a valid web URL before creating a file", async (t) => {
   }
   await assert.rejects(stat(path.join(dir, "demo.json")), { code: "ENOENT" });
 });
+
+test("init with --auto discovers interactive elements and builds a multi-step story", { timeout: 30000 }, async (t) => {
+  const dir = await tempDir(t);
+  const server = createServer((_req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.end(`<!doctype html>
+      <title>Interactive App</title>
+      <input type="text" name="task" placeholder="Type here">
+      <button type="button">Submit Task</button>
+    `);
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  const url = `http://127.0.0.1:${server.address().port}`;
+  const config = path.join(dir, "auto.json");
+  await run(["init", "--url", url, "--out", config, "--auto"], dir);
+  const story = JSON.parse(await readFile(config, "utf8"));
+  assert.equal(story.url, url + "/");
+  assert.ok(story.steps.length > 2, "must generate multiple interactive steps");
+  assert.ok(story.steps.some((s) => s.action === "type" && s.value === "Test drive"));
+  assert.ok(story.steps.some((s) => s.action === "click"));
+});

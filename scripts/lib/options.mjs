@@ -6,6 +6,7 @@ export const commandOptions = {
     json: { type: "boolean", default: false },
     url: { type: "string" },
     out: { type: "string", default: "demo.json" },
+    auto: { type: "boolean", default: false },
   },
   plan: {
     json: { type: "boolean", default: false },

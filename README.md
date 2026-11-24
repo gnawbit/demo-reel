@@ -154,14 +154,14 @@ node bin/tabretake.mjs doctor
 # 2. See it work on the bundled demo app
 node bin/tabretake.mjs demo
 
-# 3. Use it on your own app
-node bin/tabretake.mjs plan --url https://your-app.com
-node bin/tabretake.mjs init --url https://your-app.com
+# 3. Use it on your own app (Auto-detect interactive steps)
+tabretake init --url https://your-app.com --auto
+tabretake record --config demo.json
+tabretake render --config demo/record.json --vertical
 ```
 
-Edit the generated `demo.json` to add your app's click/type steps, using
-`plan.json` to find controls. The starter only waits on the page and will not
-overwrite an existing story. Use `--out stories/demo.json` for another path.
+`init --auto` scans your target page, detects visible inputs and buttons, and generates a runnable multi-step story with captions.
+Without `--auto`, `init` creates a minimal starter waiting on the page. Use `plan --url <url>` to inventory all available DOM controls.
 
 From v0.3.3, plans include a `label` from ARIA references or
 HTML labels and native select `options` with `label`, `value` and `disabled`.
@@ -327,7 +327,7 @@ still show the full view. Review the result for cropped context.
 | `tabretake capabilities --json` | List supported commands, flags and JSON support |
 | `tabretake doctor [--json]` | Check Node, Chromium, ffmpeg, fonts |
 | `tabretake setup` | Install the Chromium version used by this CLI |
-| `tabretake init --url <url>` | Create an editable story file |
+| `tabretake init --url <url> [--auto]` | Create an editable story file (add `--auto` to scan page and generate interactive steps) |
 | `tabretake validate --config demo.json [--json]` | Validate a story, marks or recorded timeline without recording |
 | `tabretake plan --url <url>` | Screenshot + list interactive elements |
 | `tabretake record --config demo.json` | Record the story |
@@ -335,6 +335,14 @@ still show the full view. Review the result for cropped context.
 | `tabretake render --config demo/record.json` | Render MP4 + GIF |
 | `tabretake serve` | Serve the bundled demo app |
 | `tabretake demo` | Record + render the bundled demo |
+
+### 🏷️ Project Badge
+
+If your repository uses TabRetake to generate its release walkthroughs or README GIFs, you can add our badge:
+
+```markdown
+[![Demo by TabRetake](https://img.shields.io/badge/Demo%20by-TabRetake-6c5ce7?logo=playwright)](https://github.com/gnawbit/tabretake)
+```
 
 For agents, `capabilities --json` and `doctor --json` emit one JSON object on
 stdout with `schemaVersion: 1` and the installed version. Diagnostic checks have

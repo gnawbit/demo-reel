@@ -147,14 +147,15 @@ node bin/tabretake.mjs doctor
 # 2. 跑一遍内置 demo
 node bin/tabretake.mjs demo
 
-# 3. 录你自己的产品
-node bin/tabretake.mjs plan --url https://your-app.com
-node bin/tabretake.mjs init --url https://your-app.com
+# 3. 录你自己的产品（支持 --auto 自动识别交互控件并生成步骤）
+tabretake init --url https://your-app.com --auto
+tabretake record --config demo.json
+tabretake render --config demo/record.json --vertical
 ```
 
-参考 `plan.json` 中的控件，在生成的 `demo.json` 中添加点击、输入等操作。
-初始模板只停留在页面上，不会自动编排流程，也不会覆盖已有故事文件。
-可用 `--out stories/demo.json` 指定其他路径。
+`init --auto` 会自动扫描目标网页，识别可见的输入框与按钮，直接生成一段包含输入、点击和字幕的多步骤演示故事。
+若不加 `--auto` 则生成初始占位模板。也可用 `tabretake plan --url <url>` 查看完整的 DOM 控件清单。
+可用 `--out stories/demo.json` 指定其他保存路径。不会覆盖已有故事文件。
 
 v0.3.3 起，`label` 来自 ARIA 引用或 HTML 标签；原生下拉框的 `options`
 包含 `label`、`value` 和 `disabled`，方便识别控件与选项。`name` 仍是 HTML 属性，
@@ -311,7 +312,7 @@ v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
 | `tabretake capabilities --json` | 查询支持的命令、参数及 JSON 输出 |
 | `tabretake doctor [--json]` | 检查 Node、Chromium、ffmpeg、字体 |
 | `tabretake setup` | 安装与当前 CLI 匹配的 Chromium |
-| `tabretake init --url <url>` | 创建可编辑的故事文件 |
+| `tabretake init --url <url> [--auto]` | 创建可编辑的故事文件（加 `--auto` 自动扫描并生成交互步骤） |
 | `tabretake validate --config demo.json [--json]` | 预检故事、录屏标记或录制时间线 |
 | `tabretake plan --url <url>` | 截图 + 列出可交互元素 |
 | `tabretake record --config demo.json` | 录制故事 |
@@ -319,6 +320,14 @@ v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
 | `tabretake render --config demo/record.json` | 渲染 MP4 + GIF |
 | `tabretake serve` | 启动内置 demo 站点 |
 | `tabretake demo` | 录制 + 渲染内置 demo |
+
+### 🏷️ 徽标接入 (Project Badge)
+
+如果你的开源项目已使用 TabRetake 制作发布演示或 README 动图，欢迎在 README 中嵌入徽标：
+
+```markdown
+[![Demo by TabRetake](https://img.shields.io/badge/Demo%20by-TabRetake-6c5ce7?logo=playwright)](https://github.com/gnawbit/tabretake)
+```
 
 Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的单个 JSON
 对象，包含 `schemaVersion: 1` 和已安装版本。诊断包含稳定的 `id`、`required`、
