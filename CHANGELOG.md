@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2 — 2026-11-26
+
+- Add automatic system Chrome/Edge fallback (`--browser auto|chromium|chrome|msedge`) so users can run `demo`, `init --auto`, `plan`, `preview`, and `record` immediately without waiting for `tabretake setup`.
+- Add four built-in `brand.preset` / `--preset` themes (`midnight`, `daylight`, `paper`, `slate`) with high-contrast light/dark caption and window chrome styling.
+- Refactor documentation for higher semantic density (`README.md`, `README.zh-CN.md`, `SKILL.md`), move legacy version caveats to `docs/compatibility.md`, and add `site/robots.txt`, `site/llms.txt`, and `SoftwareApplication` JSON-LD metadata.
+
 ## 0.4.1 — 2026-11-24
 
 - Add `init --auto` to automatically scan target web pages and generate runnable interactive steps.

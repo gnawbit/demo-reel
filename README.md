@@ -18,6 +18,17 @@ Turn editable JSON steps or AI Agent instructions into crisp **16:9 README GIFs*
 
 [Project page](https://gnawbit.github.io/tabretake/) · [Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Real Showcase](#-real-world-showcase-proven-on-production-open-source-apps) · [Roadmap](#roadmap)
 
+### 📊 Technical Specs at a Glance
+
+| Spec | Value |
+|---|---|
+| **Runtime & License** | Node.js `>=20.9.0`, MIT License, 100% local execution (zero cloud upload, zero telemetry) |
+| **Browser Engine** | Playwright Chromium with automatic fallback to local **Chrome / Edge** (`--browser auto`) |
+| **Input Modes** | (1) Live Web URL + editable JSON steps (`init --auto`) · (2) Existing MP4/WebM recording + JSON `marks` |
+| **Output Artifacts** | `16:9` 1080p MP4, `README GIF` (~400–900 KB), `9:16` portrait MP4/GIF, PNG posters, `record.json` |
+| **Theme Presets** | `midnight` (dark studio), `daylight` (light minimal), `paper` (warm cream), `slate` (slate-emerald) |
+| **Platforms & Agents** | Windows, macOS, Linux · Claude Code, Codex, Cursor, and any [Agent Skills](https://agentskills.io) client |
+
 ### ⚡ Why TabRetake vs Traditional Screen Recording?
 
 | Challenge | Traditional Screen Recording | TabRetake Automated Workflow |
@@ -31,13 +42,14 @@ Keep the story with your code and re-run it when the UI changes.
 Already have a screen recording? Supply timestamp marks to
 [render the same outputs without browser automation](#use-an-existing-screen-recording).
 
-### 🚀 Quick Taste (30 Seconds)
+### 🚀 Quick Taste (Zero-Wait with Local Chrome/Edge)
 
 ```bash
-npm install --global @gnawbit/tabretake@0.4.1
-tabretake setup
-tabretake demo
+npm install --global @gnawbit/tabretake@0.4.2
+tabretake demo --preset daylight
 ```
+
+> Already have Chrome or Edge installed? `tabretake demo` works immediately without waiting for a separate browser download. Run `tabretake setup` anytime if you want Playwright's pinned Chromium.
 
 ### 🎯 Real-World Showcase: Proven on Production Open-Source Apps
 
@@ -88,19 +100,18 @@ edit and run again after a release.
 Install the CLI from npm.
 
 ```bash
-npm install --global @gnawbit/tabretake@0.4.1
-tabretake setup
+npm install --global @gnawbit/tabretake@0.4.2
 tabretake demo
 ```
 
 Requires Node 20.9+. Run `tabretake` from your working directory;
-the bundled demo writes its output to `./demo`. On Linux, use
-`tabretake setup --with-deps` if browser system libraries are missing.
-ffmpeg and ffprobe are included as dependencies.
+the bundled demo writes its output to `./demo`. If Playwright Chromium is not
+installed, TabRetake automatically falls back to local Chrome or Edge
+(`--browser auto`). Run `tabretake setup` (or `tabretake setup --with-deps` on Linux)
+to install Playwright's pinned Chromium. ffmpeg and ffprobe are included as dependencies.
 
-The npm package is [`@gnawbit/tabretake`](https://www.npmjs.com/package/@gnawbit/tabretake). If you installed
-`v0.3.3` or earlier, that release still uses `demo-reel` for the command and
-Skill. Existing JSON stories work with `tabretake`.
+The npm package is [`@gnawbit/tabretake`](https://www.npmjs.com/package/@gnawbit/tabretake).
+For legacy release notes (`v0.4.0` and earlier / `demo-reel`), see [compatibility](docs/compatibility.md).
 
 For development, install from a checkout:
 
@@ -108,7 +119,6 @@ For development, install from a checkout:
 git clone https://github.com/gnawbit/tabretake
 cd tabretake
 npm ci
-node bin/tabretake.mjs setup
 node bin/tabretake.mjs doctor
 ```
 
@@ -118,7 +128,7 @@ replace `node bin/tabretake.mjs` with `tabretake`.
 To add the agent workflow after setting up the CLI:
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.1" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.2" --skill tabretake
 ```
 
 Run this in the target project; add `--agent codex`, `--agent claude-code` or
@@ -129,7 +139,7 @@ or a source checkout. Install the CLI and Skill from the same revision.
 Claude Code users can install the plugin instead (CLI 2.1.292+):
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.1"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.2"
 ```
 
 Install the workflow through one of these routes; the plugin still needs the
@@ -154,20 +164,15 @@ node bin/tabretake.mjs doctor
 # 2. See it work on the bundled demo app
 node bin/tabretake.mjs demo
 
-# 3. Use it on your own app (Auto-detect interactive steps)
-tabretake init --url https://your-app.com --auto
+# 3. Use it on your own app (Auto-detect interactive steps + theme preset)
+tabretake init --url https://your-app.com --auto --preset daylight
 tabretake record --config demo.json
 tabretake render --config demo/record.json --vertical
 ```
 
 `init --auto` scans your target page, detects visible inputs and buttons, and generates a runnable multi-step story with captions.
-Without `--auto`, `init` creates a minimal starter waiting on the page. Use `plan --url <url>` to inventory all available DOM controls.
-
-From v0.3.3, plans include a `label` from ARIA references or
-HTML labels and native select `options` with `label`, `value` and `disabled`.
-Use these to identify controls;
-`name` remains the HTML attribute and `selector` is the suggested CSS locator.
-This is a DOM inventory, not a complete accessibility tree.
+Without `--auto`, `init` creates a minimal starter waiting on the page. Use `plan --url <url>` to inventory all available DOM controls (including ARIA/HTML `label` and native select `options`).
+`name` remains the HTML attribute and `selector` is the suggested CSS locator; this is a DOM inventory rather than a full accessibility tree.
 
 ```bash
 node bin/tabretake.mjs record --config demo.json
@@ -249,19 +254,14 @@ Preview checks browser actions. Use a rendered clip to check zooms and captions.
 Actions: `wait`, `goto`, `click`, `type`, `hover`, `focus`, `drag`, `scroll`, `press`,
 `waitFor`, `screenshot`.
 
-From v0.3.3, `click` waits for an enabled, unobstructed target.
-Set step `timeout` in milliseconds (default 20,000); blocked clicks return
-`STEP_TIMEOUT`. v0.3.2 and earlier do not reliably wait for clickable targets.
+`click` waits for an enabled, unobstructed target up to `timeout` (milliseconds, default 20,000; blocked clicks return `STEP_TIMEOUT`).
 
 Locator fields are `selector`, `role` + `name` (or `text`), `name`, or `text`.
-An explicit `selector` is tried first. From v0.4.0, label
-matching tries exact buttons/links, then partial buttons/links, then plain text
-(exact before partial). An explicit `role` restricts matching to that role,
-with exact names first.
-Each candidate keeps the first visible match. Use a scoped selector when labels
-repeat or overlap. On v0.3.3 and earlier, a partial button label can beat an
-exact link label: use `selector: "a[href='#/completed']"` instead of just
-`text: "Completed"` when a “Clear completed” button is also present.
+An explicit `selector` is tried first. Label matching tries exact buttons/links,
+then partial buttons/links, then plain text (exact before partial). An explicit
+`role` restricts matching to that role, with exact names first. Each candidate
+keeps the first visible match; use a scoped selector when labels repeat or overlap.
+See [compatibility](docs/compatibility.md) for legacy matching behavior.
 
 Tips:
 
@@ -290,11 +290,14 @@ For an existing timeline, `render --config demo/record.json --poster-at 4.5`
 overrides that setting without recording again. Times are seconds into the
 trimmed output, starting at zero, and must be shorter than the video.
 
-### Vertical branding
+### Theme presets & vertical branding
 
-The 9:16 output can carry a custom hook and CTA:
+Choose a built-in `brand.preset` (`midnight`, `daylight`, `paper`, or `slate`) in your config or override it at render time with `--preset <name>`. Explicit `brand.background` and `brand.accent` override preset colors unless `--preset` is passed on the CLI.
 
 ```json
+"brand": {
+  "preset": "daylight"
+},
 "vertical": {
   "badge": "Your product",
   "titleLines": ["Ship faster", "without the busywork"],
@@ -307,17 +310,13 @@ The 9:16 output can carry a custom hook and CTA:
 `titleLines` is capped at two lines. `watermark: false` removes the small
 TabRetake mark. Chinese text automatically uses a CJK font.
 
-From v0.3.2, portrait cards fit the source video's aspect ratio. For a mobile
-flow, inspect with `plan --viewport 390x844`, then record at the same viewport.
-Render with `--vertical --zoom 1` to keep the full page in view; larger zooms
-crop around focus points. Wide desktop recordings may still have small text.
-
-From v0.4.1, landscape output fits the
-source aspect ratio and reserves space below the recording for captions.
+Both 16:9 landscape and 9:16 portrait outputs fit the source video's aspect ratio
+and reserve dedicated space below the content for captions. For a mobile flow,
+inspect with `plan --viewport 390x844`, then record at the same viewport.
 Use `--vertical --zoom 1 --vertical-zoom 1.8` to keep landscape overview while
-enlarging portrait focus targets. Set `vertical.zoom` in the story to save that
-portrait setting; the CLI flag takes precedence. Steps with `zoom: false`
-still show the full view. Review the result for cropped context.
+enlarging portrait focus targets (`vertical.zoom` saves it in config; the CLI flag
+takes precedence). Steps with `zoom: false` keep the full view. Review the result
+for cropped context.
 
 ## Commands
 
@@ -327,14 +326,14 @@ still show the full view. Review the result for cropped context.
 | `tabretake capabilities --json` | List supported commands, flags and JSON support |
 | `tabretake doctor [--json]` | Check Node, Chromium, ffmpeg, fonts |
 | `tabretake setup` | Install the Chromium version used by this CLI |
-| `tabretake init --url <url> [--auto]` | Create an editable story file (add `--auto` to scan page and generate interactive steps) |
+| `tabretake init --url <url> [--auto] [--preset <name>]` | Create an editable story file (`--auto` scans controls; `--preset` sets theme) |
 | `tabretake validate --config demo.json [--json]` | Validate a story, marks or recorded timeline without recording |
 | `tabretake plan --url <url>` | Screenshot + list interactive elements |
 | `tabretake record --config demo.json` | Record the story |
 | `tabretake preview --config demo.json` | Execute steps in a visible browser before recording |
-| `tabretake render --config demo/record.json` | Render MP4 + GIF |
+| `tabretake render --config demo/record.json [--preset <name>]` | Render MP4 + GIF |
 | `tabretake serve` | Serve the bundled demo app |
-| `tabretake demo` | Record + render the bundled demo |
+| `tabretake demo [--preset <name>]` | Record + render the bundled demo |
 
 ### 🏷️ Project Badge
 
@@ -348,49 +347,27 @@ For agents, `capabilities --json` and `doctor --json` emit one JSON object on
 stdout with `schemaVersion: 1` and the installed version. Diagnostic checks have
 stable `id`, `required`, `status` and recovery `hint` fields on failure. Exit code
 `1` means a required check failed; missing caption fonts are warnings (exit `0`
-if required checks pass). Chromium is checked for installation, not launched.
-JSON workflows and validation require v0.3.0 or newer.
+if required checks pass). Browser presence is checked without launching a window.
 
 `doctor` checks the whole toolkit. Rendering an existing recording or saved
-timeline does not need Chromium. If `chromium` is the only failed required
+timeline does not need a browser: if `chromium` is the only failed required
 check, skip browser setup and continue with `validate` and `render`; fix other
-required errors first. Browser planning and recording still require Chromium.
+required errors first. Browser planning and recording require Chromium or local Chrome/Edge.
 
-Before recording, run `validate --config demo.json --json`. It checks types,
-supported actions, required targets and unknown fields against the packaged
-[JSON Schema](schemas/story.schema.json). Failures return exit `1` and errors
-with a `code`, JSON Pointer `path` (for example `/steps/0/action`), `message` and
-`hint`. Invalid JSON and unreadable files use an `error` object. Validation
-does not open the browser or check selectors, login state or media files.
-`record` and `render` also validate their input before changing output files.
+Before recording, run `validate --config demo.json --json` against the packaged
+[JSON Schema](schemas/story.schema.json) (`record` and `render` also validate before writing outputs).
 For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json"`
-to the config.
+to your config.
 
-Useful flags:
-
-`init`, `plan`, `record` and `render` also accept `--json`: stdout contains one
-result object and progress goes to stderr. Success includes `command`, `ok`,
-`version`, `schemaVersion` and an `artifacts` list with absolute paths, kinds and
-byte sizes. Recording failures include a zero-based `error.step.index`, action,
-JSON Pointer path and recovery hint. Fix the reported step before retrying.
-Run manual `--login` in an interactive terminal without `--json`, then reuse
-`--storage-state` in automation. Failed runs may leave partial files; only a
-successful result's artifact list confirms the current run's outputs.
-
-In v0.3.1 or newer, navigation failures return `PAGE_UNREACHABLE` with
-URL/server/network checks, or `PAGE_HTTP_ERROR` with `error.status` for HTTP
-4xx/5xx. Error pages are not recorded as successful demos. These errors omit
-the target URL so credentials and query tokens are not echoed. `doctor` checks
-dependencies; it cannot establish that an app is reachable.
-
-From v0.3.2, manual `--login` navigation failures also omit the target URL.
-HTTP 401/403 pages remain open for sign-in; other HTTP errors stop the command.
-
-In v0.3.1 or newer, captions start when an action finishes, before its `pause`.
-Use the pause as reading time. On v0.3.0, use `pause: 0` plus a separate `wait`
-step instead. Re-record to update old timelines; re-rendering preserves timing.
+`init`, `plan`, `record` and `render` accept `--json` (one JSON result object on stdout, progress on stderr).
+Navigation failures return `PAGE_UNREACHABLE` or `PAGE_HTTP_ERROR` without echoing sensitive URLs;
+captions start when an action completes and hold during its `pause`.
+Run manual `--login` in an interactive terminal without `--json`, then reuse `--storage-state` in automation.
+See [compatibility](docs/compatibility.md) for legacy version behavior (`v0.4.0` and earlier).
 
 ```bash
+--browser auto          # auto (bundled Chromium or local Chrome/Edge), chromium, chrome, msedge
+--preset daylight       # midnight (default), daylight, paper, slate
 --login                 # open a visible browser, log in once
 --storage-state auth.json
 --proxy http://127.0.0.1:10808
@@ -550,9 +527,9 @@ are yours or licensed.
 
 - [x] 9:16 vertical export
 - [x] Screen-recording input (`--video` + `marks`)
+- [x] Brand presets (`midnight`, `daylight`, `paper`, `slate`)
 - [ ] Voiceover (TTS)
 - [ ] Device frames (iPhone, Android, macOS)
-- [ ] Brand presets
 - [ ] Cloud rendering
 
 ## Contributing

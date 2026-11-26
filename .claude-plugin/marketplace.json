@@ -11,7 +11,7 @@
       "source": "./",
       "description": "Create repeatable web app demos from JSON steps or existing screen recordings with timestamp marks. Export local MP4, GIF and posters in landscape or portrait.",
       "category": "developer-tools",
-      "tags": ["demo", "video", "gif", "playwright", "launch"]
+      "tags": ["demo", "product-demo", "readme-gif", "screen-recording", "walkthrough", "9-16", "video", "gif", "playwright", "launch"]
     }
   ]
 }

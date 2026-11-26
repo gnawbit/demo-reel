@@ -60,7 +60,7 @@ Branding belongs at the top of a story/marks config, or inside a timeline's `con
 
 ```json
 {
-  "brand": { "background": "#070a12", "accent": "#6c5ce7" },
+  "brand": { "preset": "daylight", "background": "#f4f6fb", "accent": "#2563eb" },
   "vertical": {
     "badge": "Your product",
     "titleLines": ["Ship faster", "with less busywork"],
@@ -70,6 +70,8 @@ Branding belongs at the top of a story/marks config, or inside a timeline's `con
   }
 }
 ```
+
+Built-in `brand.preset` (or `--preset`) themes: `midnight` (dark studio, default), `daylight` (light minimal), `paper` (warm cream), and `slate` (dark slate-emerald). Explicit `background` and `accent` override preset colors unless `--preset` is passed to `render`.
 
 Use at most two title lines. Captions wrap and fit within the frame; excessively
 long captions produce an error. Chinese text needs a CJK font such as Microsoft

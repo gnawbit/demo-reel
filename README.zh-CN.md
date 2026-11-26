@@ -18,6 +18,17 @@
 
 [项目页](https://gnawbit.github.io/tabretake/) · [观看演示](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [真实实测展台](#-真实开源项目实测展台-real-world-showcase) · [路线图](#路线图)
 
+### 📊 核心工程规格一览
+
+| 维度 | 规格说明 |
+|---|---|
+| **运行环境与协议** | Node.js `>=20.9.0`，MIT 协议，100% 本地运行（无云端上传、无遥测收集） |
+| **浏览器引擎** | Playwright Chromium，支持未执行 `setup` 时自动回退本机 **Chrome / Edge**（`--browser auto`） |
+| **双输入模式** | (1) 实时网页 URL + 可编辑 JSON 步骤（支持 `init --auto`） · (2) 已有录屏（OBS/QuickTime）+ 时间标记 `marks` |
+| **输出产物** | `16:9` 1080p MP4、`README GIF`（约 400–900 KB）、`9:16` 竖屏 MP4/GIF、PNG 封面、`record.json` 时间线 |
+| **内置品牌主题** | `midnight`（暗夜紫）、`daylight`（浅色极简）、`paper`（暖纸复古）、`slate`（石板翠绿） |
+| **平台与智能体** | Windows、macOS、Linux · 支持 Claude Code、Codex、Cursor 及所有 [Agent Skills](https://agentskills.io) 客户端 |
+
 ### ⚡ 为什么选择 TabRetake？
 
 | 常见痛点 | 传统手动录屏与剪辑 | TabRetake 自动化工作流 |
@@ -30,13 +41,14 @@
 故事文件与代码一起保存，界面更新后即可重新生成演示。
 已有录屏也可配合时间标记渲染相同产物，无需浏览器自动化；详见[用已有录屏](#用已有录屏)。
 
-### 🚀 30秒极速体验
+### 🚀 零等待极速体验（自动适配本机 Chrome/Edge）
 
 ```bash
-npm install --global @gnawbit/tabretake@0.4.1
-tabretake setup
-tabretake demo
+npm install --global @gnawbit/tabretake@0.4.2
+tabretake demo --preset daylight
 ```
+
+> 电脑上装有 Chrome 或 Edge 即可直接开跑，无需等待下载额外浏览器。若需固定版本的独立 Chromium，可随时运行 `tabretake setup`。
 
 ### 🎯 真实开源项目实测展台 (Real-World Showcase)
 
@@ -86,18 +98,16 @@ tabretake demo
 从 npm 安装 CLI。
 
 ```bash
-npm install --global @gnawbit/tabretake@0.4.1
-tabretake setup
+npm install --global @gnawbit/tabretake@0.4.2
 tabretake demo
 ```
 
-要求 Node 20.9+。可以在工作目录运行 `tabretake`，内置示例会将结果写入
-`./demo`。Linux 若缺少浏览器系统依赖，可用 `tabretake setup --with-deps`。
-ffmpeg/ffprobe 随依赖安装。
+要求 Node 20.9+。在工作目录运行 `tabretake`，内置示例会将结果写入 `./demo`。
+若未安装 Playwright Chromium，TabRetake 会自动回退调用本机已安装的 Chrome 或 Edge（`--browser auto`）；
+需要固定版本浏览器时运行 `tabretake setup`（Linux 缺系统依赖时加 `--with-deps`）。ffmpeg/ffprobe 随依赖安装。
 
-包名为 [`@gnawbit/tabretake`](https://www.npmjs.com/package/@gnawbit/tabretake)，已在 npm 发布。
-`v0.3.3` 及更早版本的命令和 Skill 仍叫 `demo-reel`。
-安装新版后，现有 JSON 故事可以直接用 `tabretake` 运行。
+包名为 [`@gnawbit/tabretake`](https://www.npmjs.com/package/@gnawbit/tabretake)。
+旧版本（`v0.4.0` 及更早 / `demo-reel`）兼容性说明见 [版本兼容性指南](docs/compatibility.md)。
 
 参与开发时，从源码安装：
 
@@ -105,7 +115,6 @@ ffmpeg/ffprobe 随依赖安装。
 git clone https://github.com/gnawbit/tabretake
 cd tabretake
 npm ci
-node bin/tabretake.mjs setup
 node bin/tabretake.mjs doctor
 ```
 
@@ -114,7 +123,7 @@ node bin/tabretake.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.1" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.2" --skill tabretake
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
@@ -124,7 +133,7 @@ npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.1" --skill t
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.1"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.2"
 ```
 
 两种工作流安装方式任选其一；插件仍需先安装上述 TabRetake 运行环境。
@@ -147,19 +156,15 @@ node bin/tabretake.mjs doctor
 # 2. 跑一遍内置 demo
 node bin/tabretake.mjs demo
 
-# 3. 录你自己的产品（支持 --auto 自动识别交互控件并生成步骤）
-tabretake init --url https://your-app.com --auto
+# 3. 录你自己的产品（支持 --auto 自动生成步骤，--preset 选择主题）
+tabretake init --url https://your-app.com --auto --preset daylight
 tabretake record --config demo.json
 tabretake render --config demo/record.json --vertical
 ```
 
 `init --auto` 会自动扫描目标网页，识别可见的输入框与按钮，直接生成一段包含输入、点击和字幕的多步骤演示故事。
-若不加 `--auto` 则生成初始占位模板。也可用 `tabretake plan --url <url>` 查看完整的 DOM 控件清单。
-可用 `--out stories/demo.json` 指定其他保存路径。不会覆盖已有故事文件。
-
-v0.3.3 起，`label` 来自 ARIA 引用或 HTML 标签；原生下拉框的 `options`
-包含 `label`、`value` 和 `disabled`，方便识别控件与选项。`name` 仍是 HTML 属性，
-`selector` 是建议使用的 CSS 定位器。这是 DOM 清单，不是完整的无障碍树。
+若不加 `--auto` 则生成初始占位模板。也可用 `tabretake plan --url <url>` 查看完整的 DOM 控件清单（包含 ARIA/HTML `label` 与原生 `<select>` `options`）。
+`name` 仍是 HTML 属性，`selector` 是建议使用的 CSS 定位器。这是 DOM 清单，不是完整的无障碍树。
 
 ```bash
 node bin/tabretake.mjs record --config demo.json
@@ -237,18 +242,12 @@ demo/
 
 动作：`wait`、`goto`、`click`、`type`、`hover`、`focus`、`drag`、`scroll`、`press`、`waitFor`、`screenshot`。
 
-v0.3.3 起，`click` 会等待目标启用且不被遮挡。步骤 `timeout`
-使用毫秒，默认 20,000；持续阻挡会返回 `STEP_TIMEOUT`。v0.3.2 及更早版本
-没有这项可靠的可点击等待。
+`click` 会等待目标启用且不被遮挡（步骤 `timeout` 使用毫秒，默认 20,000；持续阻挡会返回 `STEP_TIMEOUT`）。
 
 定位字段为 `selector`、`role` + `name`（或 `text`）、`name` 或 `text`。
-显式 `selector` 优先。从 v0.4.0 起，先精确匹配按钮与链接，再部分匹配
-按钮与链接，最后尝试普通文字（先精确后部分）。指定 `role` 时只在该角色中匹配，
-名称同样先精确后部分。
-每个候选取首个可见元素。标签重复或重叠时，使用限定范围的 CSS 选择器。
-v0.3.3 及更早版本可能让部分匹配的按钮先于精确匹配的链接：页面同时有
-“Clear completed” 按钮时，用 `selector: "a[href='#/completed']"`
-代替单独的 `text: "Completed"`。
+显式 `selector` 优先。匹配顺序为：精确按钮/链接 $\to$ 部分匹配按钮/链接 $\to$ 普通文字（先精确后部分）。
+指定 `role` 时只在该角色中匹配，名称同样先精确后部分；每个候选取首个可见元素。标签重复或重叠时，建议使用限定范围的 CSS 选择器。
+历史版本匹配差异见[版本兼容性指南](docs/compatibility.md)。
 
 技巧：
 
@@ -274,11 +273,14 @@ v0.3.3 及更早版本可能让部分匹配的按钮先于精确匹配的链接�
 `render --config demo/record.json --poster-at 4.5` 覆盖，无需重新录制。
 时间从裁剪后成片的第 0 秒开始，必须小于视频时长。
 
-### 竖屏品牌配置
+### 主题预设与竖屏品牌配置
 
-9:16 可以带自定义钩子和 CTA：
+支持在配置中选择内置主题 `brand.preset`（`midnight`、`daylight`、`paper`、`slate`），或在渲染时通过 `--preset <name>` 一键切换皮肤。显式指定的 `brand.background` / `brand.accent` 会覆盖预设颜色（除非传入命令行 `--preset`）。
 
 ```json
+"brand": {
+  "preset": "daylight"
+},
 "vertical": {
   "badge": "你的产品",
   "titleLines": ["一句话钩子", "第二行补充"],
@@ -291,15 +293,10 @@ v0.3.3 及更早版本可能让部分匹配的按钮先于精确匹配的链接�
 `titleLines` 最多两行；`watermark: false` 会去掉底部的小 TabRetake 水印。
 中文会自动用 CJK 字体。
 
-v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
-`plan --viewport 390x844` 检查布局，再用相同 viewport 录制。
-渲染时加 `--vertical --zoom 1` 保留完整视口；更大的缩放会围绕焦点裁切。
-宽屏桌面录屏中的细字仍可能偏小。
-
-从 v0.4.1 起，横屏输出会按源视频比例自适应，并在录屏下方留出字幕区。
-使用 `--vertical --zoom 1 --vertical-zoom 1.8` 可保持横屏全景，单独放大竖屏焦点。
-故事中的 `vertical.zoom` 可保存竖屏倍率，命令行参数优先；`zoom: false` 的步骤
-仍显示全景。放大后需检查是否裁掉必要上下文。
+横屏（16:9）与竖屏（9:16）均会按源视频比例自适应留白，并在画面下方留出专用字幕区。
+移动端流程可先用 `plan --viewport 390x844` 检查布局，再用相同 viewport 录制。
+使用 `--vertical --zoom 1 --vertical-zoom 1.8` 可保持横屏全景，单独放大竖屏焦点；
+故事中的 `vertical.zoom` 可保存竖屏倍率，命令行参数优先；`zoom: false` 的步骤仍显示全景。放大后需检查是否裁掉必要上下文。
 
 首次在自己的项目试用后，可[反馈首次演示结果](https://github.com/gnawbit/tabretake/issues/new?template=first-demo.yml)，
 失败同样有用。[试用与记录说明](docs/adoption.md)区分首次成功、重复使用和外部采用。
@@ -312,14 +309,14 @@ v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
 | `tabretake capabilities --json` | 查询支持的命令、参数及 JSON 输出 |
 | `tabretake doctor [--json]` | 检查 Node、Chromium、ffmpeg、字体 |
 | `tabretake setup` | 安装与当前 CLI 匹配的 Chromium |
-| `tabretake init --url <url> [--auto]` | 创建可编辑的故事文件（加 `--auto` 自动扫描并生成交互步骤） |
+| `tabretake init --url <url> [--auto] [--preset <name>]` | 创建可编辑的故事文件（`--auto` 自动生成步骤，`--preset` 设置主题） |
 | `tabretake validate --config demo.json [--json]` | 预检故事、录屏标记或录制时间线 |
 | `tabretake plan --url <url>` | 截图 + 列出可交互元素 |
 | `tabretake record --config demo.json` | 录制故事 |
 | `tabretake preview --config demo.json` | 在可见浏览器中执行步骤，提前检查故事 |
-| `tabretake render --config demo/record.json` | 渲染 MP4 + GIF |
+| `tabretake render --config demo/record.json [--preset <name>]` | 渲染 MP4 + GIF |
 | `tabretake serve` | 启动内置 demo 站点 |
-| `tabretake demo` | 录制 + 渲染内置 demo |
+| `tabretake demo [--preset <name>]` | 录制 + 渲染内置 demo |
 
 ### 🏷️ 徽标接入 (Project Badge)
 
@@ -332,43 +329,25 @@ v0.3.2 起，竖屏卡片按源视频比例适配。移动端流程可先用
 Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的单个 JSON
 对象，包含 `schemaVersion: 1` 和已安装版本。诊断包含稳定的 `id`、`required`、
 `status`，失败时提供修复提示 `hint`。必需检查失败返回退出码 `1`；缺少字体仅警告，
-必需项通过时退出码仍为 `0`。Chromium 仅检查是否安装，不实际启动。
-JSON 工作流及配置校验需要 v0.3.0 或更新版本。
+必需项通过时退出码仍为 `0`。浏览器仅检查是否存在，不实际启动。
 
-`doctor` 检查整个工具链。渲染现有录屏或已保存的时间线不需要 Chromium；
+`doctor` 检查整个工具链。渲染现有录屏或已保存的时间线不需要浏览器；
 若唯一失败的必需项是 `chromium`，可跳过浏览器安装，继续 `validate` 和
-`render`，其他必需项错误仍需先修复。网页规划和录制仍需要 Chromium。
+`render`，其他必需项错误仍需先修复。网页规划和录制使用固定 Chromium 或本机 Chrome/Edge。
 
 录制前运行 `validate --config demo.json --json`，按随包提供的
-[JSON Schema](schemas/story.schema.json) 检查类型、动作、必需目标和未知字段。
-失败返回退出码 `1`，错误包含 `code`、JSON Pointer 路径 `path`（如
-`/steps/0/action`）、`message` 和 `hint`；JSON 语法或文件读取错误使用 `error` 对象。
-预检不会启动浏览器，也不验证选择器、登录态或媒体文件是否可用。
-`record` 和 `render` 也会在改写输出文件前校验输入。编辑器补全可在配置中加入
+[JSON Schema](schemas/story.schema.json) 检查类型、动作、必需目标和未知字段
+（`record` 与 `render` 在改写输出前也会自动校验）。编辑器补全可在配置中加入
 `"$schema": "https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json"`。
 
-常用参数：
-
-`init`、`plan`、`record`、`render` 也支持 `--json`：标准输出只有一个结果对象，
-进度写入标准错误。成功结果包含 `command`、`ok`、`version`、`schemaVersion`，
-以及列出绝对路径、类型、字节数的 `artifacts`。步骤失败提供从零开始的
-`error.step.index`、动作、JSON Pointer 路径及修复提示，修正后再重试。
+`init`、`plan`、`record`、`render` 均支持 `--json`（标准输出返回结果对象，进度写入 stderr）。
+导航异常返回 `PAGE_UNREACHABLE` 或 `PAGE_HTTP_ERROR` 且不回显敏感 URL；动作完成后字幕即刻显示并在 `pause` 期间保持。
 手动 `--login` 需在交互终端运行且不带 `--json`，自动调用使用 `--storage-state`。
-失败可能留下部分文件；应以本次成功结果的产物清单确认输出。
-
-v0.3.1 起将页面导航失败报告为 `PAGE_UNREACHABLE`，提示检查
-URL、服务和网络；HTTP 4xx/5xx 返回 `PAGE_HTTP_ERROR` 与 `error.status`，
-避免把错误页录成成功演示。这类错误不回显目标 URL 中的凭据或查询参数。
-`doctor` 只检查依赖，不能证明目标应用可访问。
-
-v0.3.2 起，手动 `--login` 的导航异常也不回显目标 URL；HTTP 401/403
-页面会保留供登录，其他 HTTP 错误会停止命令。
-
-v0.3.1 起已修正字幕时序：动作完成即显示字幕，随后 `pause` 留出阅读时间。
-v0.3.0 可用 `pause: 0` 加独立 `wait` 步骤代替。旧时间线需重新录制才能获得
-新时序，仅重新渲染会保留原时间戳。
+旧版本历史兼容细节见[版本兼容性指南](docs/compatibility.md)。
 
 ```bash
+--browser auto          # auto（固定 Chromium 或自动回退本机 Chrome/Edge）、chromium、chrome、msedge
+--preset daylight       # 主题预设：midnight（默认）、daylight、paper、slate
 --login                 # 打开有头浏览器，手动登录一次
 --storage-state auth.json
 --proxy http://127.0.0.1:10808
@@ -513,9 +492,9 @@ Linux 用 Noto Sans CJK。`doctor` 会检查。
 
 - [x] 9:16 竖屏导出
 - [x] 已有录屏输入（`--video` + `marks`）
+- [x] 多套品牌预设（`midnight`、`daylight`、`paper`、`slate`）
 - [ ] 配音（TTS）
 - [ ] 设备边框（iPhone、Android、macOS）
-- [ ] 多套品牌预设
 - [ ] 云端渲染
 
 ## 参与贡献

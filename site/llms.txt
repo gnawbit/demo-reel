@@ -1,0 +1,45 @@
+# TabRetake
+
+> Local, repeatable web app demo video and README GIF generator. CLI (`@gnawbit/tabretake`) and Agent Skill (`tabretake`) for Claude Code, Codex, and Cursor.
+
+TabRetake turns editable JSON steps (or an existing screen recording with timestamp marks) into crisp 16:9 README GIFs, 1080p MP4s, 9:16 portrait launch videos, and PNG posters. Everything runs locally via Playwright, FFmpeg, and Sharp with zero cloud uploads and zero telemetry.
+
+## Technical Specifications
+
+- **Package**: `@gnawbit/tabretake` (npm, MIT License)
+- **Runtime**: Node.js `>=20.9.0` (Windows, macOS, Linux)
+- **Browser Engine**: Playwright Chromium (or automatic zero-setup fallback to local Chrome / Edge via `--browser auto`)
+- **Media Engine**: Bundled `@ffmpeg-installer/ffmpeg`, `@ffprobe-installer/ffprobe`, and `sharp`
+- **Inputs**:
+  1. Live web URL + editable JSON story (`steps`: `wait`, `goto`, `click`, `type`, `hover`, `focus`, `drag`, `scroll`, `press`, `waitFor`, `screenshot`)
+  2. Existing local video (`--video recording.mp4`) + JSON `marks` (`t`, `x`, `y`, `caption`, `zoom`)
+- **Outputs**: `demo-16x9.mp4` (1920x1080), `demo.gif` (~400–900 KB), `poster.png`, and optional `--vertical` 9:16 portrait outputs (`demo-9x16.mp4`, `demo-9x16.gif`, `poster-9x16.png`) + `record.json` timeline
+- **Themes (`brand.preset` / `--preset`)**: `midnight` (dark studio), `daylight` (light minimal), `paper` (warm cream), `slate` (dark slate-emerald)
+- **Privacy**: 100% local execution; supports authenticated flows via `--login` and `--storage-state auth.json`
+
+## When to Use / Not Use
+
+- **Use for**: Generating a README GIF for a web app, creating a 9:16 product launch video, regenerating product walkthroughs in CI or locally after UI edits, zooming and captioning an existing screen recording.
+- **Do not use for**: Browser functional/regression test assertions (use Playwright Test), text-to-video AI generation, general multi-track audio/video editing (outputs have no audio).
+
+## Quickstart CLI Commands
+
+```bash
+npm install --global @gnawbit/tabretake
+tabretake demo --preset daylight
+tabretake init --url https://your-app.com --auto --preset midnight
+tabretake plan --url https://your-app.com --out plan.json --json
+tabretake validate --config demo.json --json
+tabretake preview --config demo.json --headless --json
+tabretake record --config demo.json --out demo --json
+tabretake render --config demo/record.json --vertical --json
+```
+
+## Documentation & Recipes
+
+- [GitHub Repository](https://github.com/gnawbit/tabretake)
+- [Agent Skill Definition (SKILL.md)](https://github.com/gnawbit/tabretake/blob/main/SKILL.md)
+- [JSON Schema](https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json)
+- [Vikunja Kanban Recipe (15k★ OSS)](https://gnawbit.github.io/tabretake/vikunja/)
+- [Memos Notes Recipe (35k★ OSS)](https://gnawbit.github.io/tabretake/memos/)
+- [TodoMVC Benchmark Recipe](https://gnawbit.github.io/tabretake/todomvc/)

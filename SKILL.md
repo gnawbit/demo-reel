@@ -1,12 +1,12 @@
 ---
 name: tabretake
-description: Create repeatable product demo videos and README GIFs from a web app URL or an existing screen recording. Use when asked for a launch video, browser walkthrough, signup or onboarding demo, or to regenerate a demo after UI changes, including 产品演示、网页录屏、README 动图. Runs locally and exports MP4, GIF and posters in landscape or portrait. Requires a story script or recording marks. Not for general video editing, text-to-video generation, or browser test assertions.
+description: Create repeatable product demo videos, screen recording walkthroughs, and README GIFs (16:9 and 9:16 portrait) from a web app URL or an existing screen recording. Use when asked for a launch video, browser walkthrough, signup or onboarding demo, vertical short video, or to regenerate a demo after UI changes, including 产品演示、网页录屏、README 动图、竖屏宣传视频. Runs locally with Playwright + FFmpeg, zero cloud upload, and supports dark/light theme presets. Not for browser test assertions, text-to-video generation, or general audio/video editing.
 license: MIT
 metadata:
   author: gnawbit
-  version: "0.4.1"
+  version: "0.4.2"
   repository: https://github.com/gnawbit/tabretake
-  compatibility: Node.js 20.9+, Chromium via tabretake setup, Windows/macOS/Linux. Target app access is required. Rendering is local; dependency installation needs network access.
+  compatibility: Node.js 20.9+, local Chrome/Edge or Chromium via tabretake setup, Windows/macOS/Linux. Target app access is required. Rendering is local.
 ---
 
 # TabRetake by gnawbit
@@ -18,20 +18,18 @@ After `waitFor`, use a `focus` step with a selector, caption and pause to frame 
 result instead of the last clicked control. Inspect the rendered clip for framing.
 
 Create a repeatable product walkthrough from a web URL, or render an existing
-screen recording with supplied timestamps. The canonical project is
+screen recording with supplied timestamps. Canonical project:
 https://github.com/gnawbit/tabretake.
-Outputs are local MP4, GIF and PNG posters in landscape and optional portrait.
+Outputs are local MP4, GIF and PNG posters in landscape (16:9) and optional portrait (9:16).
+For legacy release notes (`v0.4.0` and earlier / `demo-reel`), see [compatibility](docs/compatibility.md).
 
 ## Locate and check the CLI
 
-Use an installed `tabretake` CLI when available. The commands below assume it is
-on PATH. For a source checkout, replace `tabretake` with
-`node /absolute/path/to/tabretake/bin/tabretake.mjs`; paths with spaces need quoting.
-A copied Skill does not prove its runtime dependencies are installed. If needed,
-run `npm install --global @gnawbit/tabretake@0.4.1` and `tabretake setup`, or follow the
-[CLI installation instructions](https://github.com/gnawbit/tabretake#install).
-The renamed CLI and Skill are available together from v0.4.0. Releases through
-`v0.3.3` use the command and Skill name `demo-reel`.
+Use an installed `tabretake` CLI when available. For a source checkout, replace
+`tabretake` with `node /absolute/path/to/tabretake/bin/tabretake.mjs` (quote paths with spaces).
+If missing, install with `npm install --global @gnawbit/tabretake@0.4.2`.
+When Playwright Chromium is absent, TabRetake automatically falls back to local
+Chrome or Edge (`--browser auto`), or you can install pinned Chromium via `tabretake setup`.
 
 ```bash
 tabretake --version
@@ -39,28 +37,22 @@ tabretake capabilities --json
 tabretake doctor --json
 ```
 
-Query capabilities before choosing flags: old releases may not support them.
-On v0.2.0, fall back to `help` and plain `doctor`, or update before using the
-JSON workflow. `doctor` reports required errors and optional font warnings;
-it checks Chromium's presence, not browser launch or app access. For web
-planning/recording, run `tabretake setup` for missing Chromium; Linux may need
-`setup --with-deps`. Rendering an existing recording or saved timeline does not
-need Chromium: if `chromium` is the only failed required check, continue to
-validate/render without installing a browser. Fix other required errors first.
-Node.js 20.9+ is required. Chinese captions need a CJK system font.
+Query `capabilities --json` before choosing flags. `doctor --json` reports required
+errors and optional font warnings; it checks browser presence without launching one.
+Rendering an existing recording or saved timeline does not need a browser: if `chromium`
+is the only failed required check, continue to `validate` and `render`. Fix other
+required errors first. Node.js 20.9+ is required; Chinese captions need a CJK system font.
 
 ## Choose the input
 
-- **Web app:** confirm the URL and intended flow. `plan` inventories controls;
-  it does not write a story. Use a test account and non-sensitive demo data.
+- **Web app:** confirm the URL and intended flow. Use a test account and non-sensitive demo data.
 - **Existing recording:** get the file and moments to highlight. Read
   [recording input and branding](references/rendering.md); do not invent marks.
 - **Example requested:** `tabretake demo --story readme|onboarding|release --port 0`
-  runs a fictional bundled app. It is a template, not evidence of external adoption.
+  runs a fictional bundled app (not evidence of external adoption).
 
-Ask only for missing details that affect the result, such as the target flow or
-output orientation. Adapt the story length to the user's request; a few visible
-state changes are usually enough for a short launch clip.
+Ask only for missing details that affect the result, such as the target flow,
+theme preset (`midnight`, `daylight`, `paper`, `slate`), or output orientation.
 
 ## Record a web flow
 
@@ -68,52 +60,34 @@ state changes are usually enough for a short launch clip.
 
    ```bash
    tabretake plan --url https://your-app.com --out plan.json --json
-   tabretake init --url https://your-app.com --out demo.json --auto --json
+   tabretake init --url https://your-app.com --out demo.json --auto --preset midnight --json
    ```
 
-2. Read the plan file from its returned artifact path. If `--auto` was used, inspect
-   the generated steps; otherwise replace the starter's wait-only steps with the
-   requested flow. For actions, locator choices and timing units, read
-   [story authoring](references/story.md). `init` will not overwrite an existing story.
-   From v0.3.3, use `label` to identify form controls and native select `options`
-   to inspect their labels, values and disabled states. Older versions omit these
-   fields; use the plan screenshot and existing control metadata instead.
-   The plan's `name` is an HTML attribute, not necessarily an accessible name;
-   use `selector` when needed.
-   On v0.3.3 and earlier, use a scoped selector for overlapping labels: a
-   “Clear completed” button can match `text: "Completed"` before that exact link.
-   v0.4.0 prefers exact button/link labels and respects an explicit role;
-   see [locator behavior](references/story.md) before relying on this change.
+2. Read the plan file from its returned artifact path. Inspect `--auto` steps or
+   replace starter steps with the requested flow. See [story authoring](references/story.md)
+   for actions, locators, and timing units. `plan` includes `label` (ARIA/HTML labels)
+   and native select `options`; `name` remains the HTML attribute. Use scoped `selector`
+   when labels repeat or overlap. `init` will not overwrite an existing story.
 
-3. Validate, record and render:
+3. Validate, preview, record and render:
 
    ```bash
    tabretake validate --config demo.json --json
+   tabretake preview --config demo.json --headless --json
    tabretake record --config demo.json --out demo --json
    tabretake render --config demo/record.json --vertical --json
    ```
 
-   Omit `--vertical` for landscape only; add `--no-gif` if GIFs are unnecessary.
-   Use the returned timeline path if output goes elsewhere. Paths are resolved
-   from the current working directory unless documented otherwise; use absolute
-   paths when the CLI and target app live in different directories.
+   Omit `--vertical` for landscape only; add `--no-gif` to skip GIFs; pass
+   `--preset daylight|paper|slate|midnight` to switch themes without re-recording;
+   pass `--browser chrome|msedge|chromium|auto` to pick a browser engine.
+   Use `--vertical --zoom 1 --vertical-zoom 1.8` to keep landscape overview while
+   enlarging portrait focus targets (`vertical.zoom` saves it in config; `zoom: false`
+   keeps full view). Record narrow viewports (e.g. `390x844`) for mobile flows.
 
-   From v0.3.2, portrait cards fit the source aspect ratio. For a mobile flow,
-   inspect and record at a narrow viewport (for example `390x844`); use
-   `--zoom 1` to preserve the full viewport. Wide desktop text may still be small.
-   From v0.4.1, `vertical-zoom` is supported: use
-   `--vertical --zoom 1 --vertical-zoom 1.8` for portrait focus magnification
-   while retaining landscape overview. `vertical.zoom` saves the portrait
-   setting in config; the flag overrides it. `zoom: false` remains overview.
-
-4. Inspect the poster and video, then return links to the actual generated
-   artifacts. Re-record after flow changes; re-render the saved timeline after
-   caption, zoom or branding changes. Fonts and encoder versions can affect
-   appearance across machines. Output videos have no audio.
-
-For caption reading time, use action `pause` on v0.3.1 or newer; on v0.3.0
-use `pause: 0` followed by `wait`. Older recordings need to be recorded again
-to adopt the corrected caption timing; re-rendering preserves their timestamps.
+4. Inspect the generated poster and video, then return clickable paths to the actual
+   artifacts. Re-record after flow changes; re-render `record.json` after caption,
+   zoom, or theme preset changes. Output videos have no audio.
 
 ## Interpret results and recover
 

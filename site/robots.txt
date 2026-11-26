@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gnawbit.github.io/tabretake/sitemap.xml
