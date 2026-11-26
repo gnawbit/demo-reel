@@ -82,3 +82,35 @@ test("init with --auto discovers interactive elements and builds a multi-step st
   assert.ok(story.steps.some((s) => s.action === "type" && s.value === "Test drive"));
   assert.ok(story.steps.some((s) => s.action === "click"));
 });
+
+test("init --auto prioritizes primary controls over sidebar hash links and destructive actions", { timeout: 30000 }, async (t) => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-init-smart-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const server = createServer((_req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.end(`<!doctype html>
+      <aside>
+        <nav>
+          <a href="#">Overview</a>
+          <a href="#">Projects</a>
+        </nav>
+        <button type="button">Log out</button>
+      </aside>
+      <header>
+        <input type="search" placeholder="Search...">
+        <button id="new-project" class="primary-button">New project</button>
+      </header>
+      <main>
+        <button class="danger">Delete workspace</button>
+      </main>`);
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  const url = `http://127.0.0.1:${server.address().port}`;
+  const config = path.join(dir, "smart.json");
+  await run(["init", "--url", url, "--out", config, "--auto"], dir);
+  const story = JSON.parse(await readFile(config, "utf8"));
+  const clickTargets = story.steps.filter((s) => s.action === "click").map((s) => s.selector);
+  assert.ok(clickTargets.includes("#new-project"), `expected #new-project in ${JSON.stringify(story.steps)}`);
+  assert.equal(story.steps.some((s) => /Overview|Log out|Delete/.test(s.caption || "")), false);
+});

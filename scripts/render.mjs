@@ -58,15 +58,17 @@ function landscapeLayout(videoW, videoH) {
   };
 }
 
-function verticalLayout(videoW, videoH) {
+function verticalLayout(videoW, videoH, frameMode = "auto") {
   const layout = LAYOUTS.vertical;
   // Fit the source between branding and captions instead of cropping a phone
   // recording into the landscape card. Keep the existing 16:9 card geometry.
-  const fit = Math.min(layout.content.w / videoW, 900 / videoH);
+  const maxHeight = frameMode === "phone" ? 800 : 900;
+  const centerY = frameMode === "phone" ? 920 : layout.content.y + layout.content.h / 2;
+  const fit = Math.min(layout.content.w / videoW, maxHeight / videoH);
   const w = Math.max(2, Math.floor(videoW * fit / 2) * 2);
   const h = Math.max(2, Math.floor(videoH * fit / 2) * 2);
   const x = (layout.width - w) / 2;
-  const y = layout.content.y + (layout.content.h - h) / 2;
+  const y = centerY - h / 2;
   return {
     ...layout,
     content: { x, y, w, h },
@@ -163,8 +165,10 @@ async function makeBackground(file, theme, layout) {
 async function makeBrowserFrame(file, hostname, layout, theme) {
   const url = escapeXml(hostname || "your-app.com");
   const { x, y, w, h } = layout.frame;
-  const bar = layout.content.y - y;
+  const { x: cx, y: cy, w: cw, h: ch } = layout.content;
+  const bar = cy - y;
   const f = theme.frame;
+  const r = 8;
   const addressWidth = Math.max(0, Math.min(560, w - 128));
   const address = addressWidth >= 120 ? `
   <clipPath id="address-clip"><rect x="${x + 114}" y="${y + 13}" width="${addressWidth - 20}" height="26"/></clipPath>
@@ -179,11 +183,12 @@ async function makeBrowserFrame(file, hostname, layout, theme) {
     </filter>
     <mask id="content-cutout">
       <rect width="${layout.width}" height="${layout.height}" fill="white"/>
-      <rect x="${layout.content.x}" y="${layout.content.y}" width="${layout.content.w}" height="${layout.content.h}" fill="black"/>
+      <path d="M${cx} ${cy}H${cx + cw}V${cy + ch - r}a${r} ${r} 0 0 1 -${r} ${r}H${cx + r}a${r} ${r} 0 0 1 -${r} -${r}Z" fill="black"/>
     </mask>
   </defs>
   <g mask="url(#content-cutout)">
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="${f.bar}" filter="url(#shadow)" opacity="${theme.light ? 0.85 : 0.25}"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="${f.bar}"/>
   <path d="M${x} ${y + 18}a18 18 0 0 1 18-18h${w - 36}a18 18 0 0 1 18 18v${bar - 18}H${x}z" fill="${f.bar}"/>
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="none" stroke="${f.border}" stroke-width="1.5"/>
   <path d="M${x} ${y + bar}H${x + w}" stroke="${f.divider}" stroke-width="1"/>
@@ -200,6 +205,7 @@ async function makeBrowserFrame(file, hostname, layout, theme) {
 
 async function makeCardFrame(file, layout, theme) {
   const { x, y, w, h } = layout.frame;
+  const { x: cx, y: cy, w: cw, h: ch } = layout.content;
   const f = theme.frame;
 
   const svg = `
@@ -214,14 +220,52 @@ async function makeCardFrame(file, layout, theme) {
     </linearGradient>
     <mask id="content-cutout">
       <rect width="${layout.width}" height="${layout.height}" fill="white"/>
-      <rect x="${layout.content.x}" y="${layout.content.y}" width="${layout.content.w}" height="${layout.content.h}" fill="black"/>
+      <rect x="${cx}" y="${cy}" width="${cw}" height="${ch}" rx="12" fill="black"/>
     </mask>
   </defs>
   <g mask="url(#content-cutout)">
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="22" fill="${f.bar}" filter="url(#shadow)" opacity="${theme.light ? 0.75 : 0.3}"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="22" fill="${f.bar}"/>
   <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="22" fill="none" stroke="${f.border}" stroke-width="1.5"/>
   <rect x="${x + 1.5}" y="${y + 1.5}" width="${w - 3}" height="${h - 3}" rx="20.5" fill="none" stroke="url(#edge)" stroke-width="1"/>
   <path d="M${x + 24} ${y + 1.5}H${x + w - 24}" stroke="#ffffff" stroke-opacity="0.10" stroke-width="1"/>
+  </g>
+</svg>`;
+
+  await sharp(Buffer.from(svg)).png().toFile(file);
+}
+
+async function makePhoneFrame(file, layout, theme) {
+  const { x: cx, y: cy, w: cw, h: ch } = layout.content;
+  const f = theme.frame;
+  const padX = 16;
+  const padTop = Math.min(34, Math.max(16, cy - 16));
+  const maxBottom = layout.caption ? Math.max(16, layout.caption.y - 12 - (cy + ch)) : 34;
+  const padBottom = Math.min(34, maxBottom);
+  const x = cx - padX;
+  const y = cy - padTop;
+  const w = cw + padX * 2;
+  const h = ch + padTop + padBottom;
+  const speakerW = Math.min(72, Math.max(36, Math.round(cw * 0.14)));
+
+  const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${layout.width}" height="${layout.height}">
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="28" stdDeviation="36" flood-color="#000000" flood-opacity="${f.shadowAlpha}"/>
+    </filter>
+    <mask id="content-cutout">
+      <rect width="${layout.width}" height="${layout.height}" fill="white"/>
+      <rect x="${cx}" y="${cy}" width="${cw}" height="${ch}" rx="20" fill="black"/>
+    </mask>
+  </defs>
+  <g mask="url(#content-cutout)">
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="38" fill="${f.bar}" filter="url(#shadow)" opacity="${theme.light ? 0.85 : 0.4}"/>
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="38" fill="${f.bar}"/>
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="38" fill="none" stroke="${f.border}" stroke-width="2"/>
+    <rect x="${cx - 1}" y="${cy - 1}" width="${cw + 2}" height="${ch + 2}" rx="20" fill="none" stroke="${f.divider}" stroke-width="1"/>
+    <rect x="${cx + (cw - speakerW) / 2}" y="${y + padTop / 2 - 2.5}" width="${speakerW}" height="5" rx="2.5" fill="${f.addressBorder}"/>
+    <circle cx="${cx + cw / 2 + speakerW / 2 + 12}" cy="${y + padTop / 2}" r="3" fill="${f.addressBorder}"/>
   </g>
 </svg>`;
 
@@ -321,12 +365,18 @@ async function renderLayout({
 
   const bgPath = path.join(assetsDir, `background-${layout.key}.png`);
   const framePath = path.join(assetsDir, `frame-${layout.key}.png`);
+  const frameMode = record.config?.brand?.frame || "auto";
+  const hasFrame = frameMode !== "none";
 
   await makeBackground(bgPath, theme, layout);
-  if (layout.frame.type === "browser") {
-    await makeBrowserFrame(framePath, hostname, layout, theme);
-  } else {
-    await makeCardFrame(framePath, layout, theme);
+  if (hasFrame) {
+    if (frameMode === "phone" && (layout.key === "vertical" || videoW <= videoH)) {
+      await makePhoneFrame(framePath, layout, theme);
+    } else if (frameMode === "browser" || (frameMode === "auto" && layout.frame.type === "browser")) {
+      await makeBrowserFrame(framePath, hostname, layout, theme);
+    } else {
+      await makeCardFrame(framePath, layout, theme);
+    }
   }
 
   const camera = buildCameraFilter({
@@ -356,12 +406,13 @@ async function renderLayout({
   const graph = [
     `[0:v]scale=${layout.width}:${layout.height}[bg]`,
     `[1:v]${camera.filter}[base]`,
-    `[bg][base]overlay=${layout.content.x}:${layout.content.y}:format=auto[comp]`,
-    `[comp][2:v]overlay=0:0[out]`,
+    `[bg][base]overlay=${layout.content.x}:${layout.content.y}:format=auto[${hasFrame ? "comp" : "out"}]`,
   ];
+  if (hasFrame) graph.push(`[comp][2:v]overlay=0:0[out]`);
+  const captionInputOffset = hasFrame ? 3 : 2;
   let lastLayer = "out";
   captions.forEach((caption, i) => {
-    graph.push(`[${lastLayer}][${i + 3}:v]overlay=${caption.x}:${caption.y}:` +
+    graph.push(`[${lastLayer}][${i + captionInputOffset}:v]overlay=${caption.x}:${caption.y}:` +
       `enable='gte(t,${caption.start})*lt(t,${caption.end})'[caption${i}]`);
     lastLayer = `caption${i}`;
   });
@@ -371,7 +422,7 @@ async function renderLayout({
   await ffmpeg([
     "-loop", "1", "-framerate", "30", "-i", bgPath,
     "-i", videoPath,
-    "-i", framePath,
+    ...(hasFrame ? ["-i", framePath] : []),
     ...captions.flatMap((caption) => ["-i", caption.file]),
     "-filter_complex", graph.join(";"),
     "-map", "[v]",
@@ -439,10 +490,7 @@ function marksToEvents(marks, videoW, videoH) {
     .sort((a, b) => a.t - b.t);
 }
 
-export async function render(argv) {
-  const { values } = parseCommand("render", argv);
-  const reporter = createReporter("render", values.json);
-
+export async function executeRender(values, { reporter = createReporter("render", Boolean(values?.json)) } = {}) {
   if (!values.config) throw new Error("Missing --config");
 
   const configPath = path.resolve(values.config);
@@ -563,9 +611,10 @@ export async function render(argv) {
   }
 
   const theme = resolveTheme(record.config?.brand, values.preset);
+  const frameMode = record.config?.brand?.frame || "auto";
 
   const layouts = [landscapeLayout(videoW, videoH)];
-  if (values.vertical) layouts.push(verticalLayout(videoW, videoH));
+  if (values.vertical) layouts.push(verticalLayout(videoW, videoH, frameMode));
 
   let last = null;
   const artifacts = [];
@@ -597,6 +646,16 @@ export async function render(argv) {
       (values.vertical ? ", 16:9 + 9:16" : "") +
       ".\n",
   );
-  await reporter.success({ duration: durationSec, posterAt, artifacts });
-  return last?.outputPath;
+  return {
+    summary: { duration: durationSec, posterAt, artifacts },
+    outputPath: last?.outputPath,
+  };
+}
+
+export async function render(argv) {
+  const { values } = parseCommand("render", argv);
+  const reporter = createReporter("render", values.json);
+  const result = await executeRender(values, { reporter });
+  await reporter.success(result.summary);
+  return result.outputPath;
 }

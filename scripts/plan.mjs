@@ -1,19 +1,12 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { parseCommand } from "./lib/options.mjs";
-import { launchBrowser, newContext } from "./lib/browser.mjs";
-import { waitForEnter } from "./lib/tty.mjs";
+import { parseCommand, parseViewport } from "./lib/options.mjs";
+import { launchBrowser, loginAndSave, newContext } from "./lib/browser.mjs";
 import { createReporter, requireInteractiveLogin } from "./lib/report.mjs";
 import { navigate } from "./lib/navigation.mjs";
 
-function parseViewport(value) {
-  if (!value) return { width: 1440, height: 810 };
-  const [w, h] = value.split("x").map(Number);
-  return { width: w || 1440, height: h || 810 };
-}
-
-export async function collectElements(page) {
-  return page.evaluate(() => {
+export async function collectElements(page, { includeHints = false } = {}) {
+  return page.evaluate((withHints) => {
     function cssPath(el) {
       if (!el || el.nodeType !== 1) return "";
       if (el.id) return `#${CSS.escape(el.id)}`;
@@ -99,7 +92,7 @@ export async function collectElements(page) {
           .trim()
           .slice(0, 140);
 
-        return {
+        const item = {
           tag: el.tagName.toLowerCase(),
           type: el.getAttribute("type") || "",
           role: el.getAttribute("role") || "",
@@ -122,13 +115,36 @@ export async function collectElements(page) {
           selector: cssPath(el),
           visible,
         };
+        if (withHints) {
+          const rawHref = el.tagName === "A" ? (el.getAttribute("href") || "").trim() : "";
+          const hintSource = `${text} ${el.getAttribute("aria-label") || ""} ${el.getAttribute("placeholder") || ""}`;
+          const cls = typeof el.className === "string" ? el.className : "";
+          item._hints = {
+            inNav: Boolean(el.closest("nav, aside, footer, [role=navigation]")),
+            inMain: Boolean(el.closest("main, form, [role=main], [role=dialog]")),
+            inForm: Boolean(el.closest("form")),
+            emptyHref: el.tagName === "A" && (!rawHref || rawHref === "#" || rawHref.startsWith("javascript:")),
+            isPrimary: el.getAttribute("type") === "submit" ||
+              /\b(primary|cta|submit|create|new|add|start|save|launch)\b/i.test(`${cls} ${text}`),
+            isDestructive: /\b(delete|remove|destroy|logout|log out|sign out|cancel|close|reset|clear)\b/i.test(hintSource),
+            isSearch: el.getAttribute("type") === "search" || /\bsearch\b/i.test(hintSource),
+          };
+        }
+        return item;
       })
       .filter((el) => el.visible)
       .slice(0, 300);
-  });
+  }, includeHints);
 }
 
-export async function extractPlan(url, { viewport = { width: 1440, height: 810 }, proxy, storageState, headless = true, browser: browserMode } = {}) {
+export async function extractPlan(url, {
+  viewport = { width: 1440, height: 810 },
+  proxy,
+  storageState,
+  headless = true,
+  browser: browserMode,
+  includeHints = false,
+} = {}) {
   const browser = await launchBrowser({ headless, proxy, browser: browserMode });
   try {
     const context = await newContext(browser, { viewport, storageState });
@@ -137,7 +153,7 @@ export async function extractPlan(url, { viewport = { width: 1440, height: 810 }
     await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(800);
     const title = await page.title();
-    const elements = await collectElements(page);
+    const elements = await collectElements(page, { includeHints });
     await context.close();
     return { title, elements };
   } finally {
@@ -215,22 +231,4 @@ export async function plan(argv) {
     await browser.close();
   }
   await reporter.success(manifest);
-}
-
-async function loginAndSave(url, { proxy, viewport, browser: browserMode }) {
-  const browser = await launchBrowser({ headless: false, proxy, browser: browserMode });
-  try {
-    const context = await newContext(browser, { viewport });
-    const page = await context.newPage();
-    await navigate(page, url, { allowAuthErrors: true });
-    console.log("\nA browser window is open. Log in, then come back here.");
-    await waitForEnter("Press Enter when you are logged in... ");
-    const statePath = path.resolve("auth.json");
-    await context.storageState({ path: statePath });
-    console.log(`Saved login state to ${statePath}\n`);
-    await context.close();
-    return statePath;
-  } finally {
-    await browser.close();
-  }
 }

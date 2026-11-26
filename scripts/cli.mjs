@@ -10,27 +10,30 @@ Usage:
   tabretake doctor [--json]
   tabretake validate --config demo.json [--json]
   tabretake init    --url <url> [--out demo.json] [--auto] [--preset midnight|daylight|paper|slate]
+  tabretake capture --url <url> [--out demo.json] [--run] [--vertical] [--preset <name>]
   tabretake plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
   tabretake record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
   tabretake preview --config demo.json [--headless] [--json]
   tabretake render  --config demo.json [--out demo] [--video recording.mp4] [--vertical] [--no-gif] [--preset <name>]
+  tabretake run     --config demo.json [--out demo] [--vertical] [--preset <name>]
+  tabretake mark    --video recording.mp4 [--out story-video.json] [--preset <name>]
   tabretake serve   [--port 4173] [--dir examples/site]
   tabretake demo    [--story readme|onboarding|release] [--out demo] [--preset <name>]
 
 Examples:
-  tabretake init --url https://your-app.com
-  tabretake plan --url https://your-app.com
-  tabretake record --config demo.json
-  tabretake render --config demo.json
-  tabretake serve
+  tabretake capture --url https://your-app.com --run --vertical
+  tabretake init --url https://your-app.com --auto
+  tabretake run --config demo.json --vertical
+  tabretake mark --video recording.mp4
   tabretake record --config examples/story.json --out demo
 
 Options:
-  --json              Machine-readable results for init, plan, record and render.
+  --json              Machine-readable results for init, plan, record, render, run, capture and mark.
   --login             Open a visible browser so you can log in once.
   --storage-state     Reuse a saved Playwright storage state (cookies/localStorage).
   --proxy             Proxy server, e.g. http://127.0.0.1:10808
   --viewport          Viewport, e.g. 1440x810 (default from config)
+  --scale             Device pixel scale for crisp zoom: 1 (default) or 2 (HiDPI Retina)
   --headed            Watch the recording happen (default false)
   --vertical          Also render a 9:16 vertical video + GIF.
   --vertical-zoom     Override portrait focus zoom (1–10; otherwise uses --zoom).
@@ -76,6 +79,18 @@ export async function main(argv) {
     case "init": {
       const { init } = await import("./init.mjs");
       return init(rest);
+    }
+    case "capture": {
+      const { capture } = await import("./capture.mjs");
+      return capture(rest);
+    }
+    case "run": {
+      const { run } = await import("./run.mjs");
+      return run(rest);
+    }
+    case "mark": {
+      const { mark } = await import("./mark.mjs");
+      return mark(rest);
     }
     case "doctor": {
       const { doctor } = await import("./doctor.mjs");

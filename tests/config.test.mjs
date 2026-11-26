@@ -24,6 +24,12 @@ test("bundled stories, marks and recorded timelines validate", async () => {
   }
   assert.equal(inspectConfig({ video: "recording.webm", events: [], config: story }).kind, "record");
   assert.equal(inspectConfig({ marks: [] }).ok, true, "CLI can supply --video later");
+  assert.equal(inspectConfig({
+    ...story,
+    scale: 2,
+    brand: { preset: "slate", frame: "phone" },
+    steps: [{ action: "select", selector: "#plan", value: "pro" }],
+  }).ok, true);
 });
 
 test("validation identifies bad fields without coercing or echoing values", () => {
@@ -32,6 +38,9 @@ test("validation identifies bad fields without coercing or echoing values", () =
     [{ ...story, steps: [{ action: "click" }] }, "/steps/0"],
     [{ ...story, steps: [{ action: "waitFor" }] }, "/steps/0"],
     [{ ...story, steps: [{ action: "type", selector: "input" }] }, "/steps/0"],
+    [{ ...story, steps: [{ action: "select", selector: "select" }] }, "/steps/0"],
+    [{ ...story, scale: 3 }, "/scale"],
+    [{ ...story, brand: { frame: "tablet" } }, "/brand/frame"],
     [{ ...story, steps: [{ action: "wait", ms: "100" }] }, "/steps/0/ms"],
     [{ ...story, viewport: { width: 0, height: 720 } }, "/viewport/width"],
     [{ ...story, brand: { preset: "unknown-theme" } }, "/brand/preset"],

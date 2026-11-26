@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import {
-  clickAndType, dragBy, findSystemBrowser, hover, launchBrowser, moveAndClick, openRecordedPage, resolveLocator,
+  clickAndType, dragBy, findSystemBrowser, hover, installCursor, launchBrowser, moveAndClick, openRecordedPage, resolveLocator, selectOption,
 } from "../scripts/lib/browser.mjs";
 
 let browser;
@@ -200,4 +200,26 @@ test("openRecordedPage seeds missing Playwright ffmpeg from bundled ffmpeg and r
   assert.equal(attempts, 2);
   assert.equal(result.page, fakePage);
   assert.equal(await readFile(target, "utf8"), "ffmpeg-binary-bytes");
+});
+
+test("selectOption selects by value or label and installCursor follows theme accent", async (t) => {
+  const page = await browser.newPage({ viewport: { width: 640, height: 480 } });
+  t.after(() => page.close());
+  await installCursor(page, { accent: "#10b981" });
+  await page.goto(`data:text/html,${encodeURIComponent(`<!doctype html>
+    <select id="plan">
+      <option value="basic">Basic Plan</option>
+      <option value="pro">Pro Plan</option>
+    </select>`)}`);
+
+  const hasEmeraldRipple = await page.evaluate(() =>
+    [...document.querySelectorAll("style")].some((s) => s.textContent.includes("rgba(16,185,129")),
+  );
+  assert.equal(hasEmeraldRipple, true);
+
+  const locator = await resolveLocator(page, { selector: "#plan" });
+  await selectOption(page, locator, "Pro Plan", 0);
+  assert.equal(await locator.inputValue(), "pro");
+  await selectOption(page, locator, "basic", 0);
+  assert.equal(await locator.inputValue(), "basic");
 });

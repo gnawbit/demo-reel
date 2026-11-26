@@ -3,7 +3,9 @@ import { chmod, copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { chromium, errors } from "playwright";
 import { FFMPEG } from "./ffmpeg.mjs";
+import { navigate } from "./navigation.mjs";
 import { VALID_BROWSERS, findSystemBrowser } from "./system-browser.mjs";
+import { waitForEnter } from "./tty.mjs";
 
 export { VALID_BROWSERS, findSystemBrowser };
 
@@ -11,6 +13,7 @@ export async function launchBrowser({
   headless = true,
   proxy,
   browser = "auto",
+  scale = 1,
   launch = (opts) => chromium.launch(opts),
   hasBundledChromium = () => existsSync(chromium.executablePath()),
 } = {}) {
@@ -19,10 +22,15 @@ export async function launchBrowser({
     throw new Error(`Unsupported --browser "${mode}". Choose auto, chromium, chrome or msedge.`);
   }
 
+  const args = ["--disable-blink-features=AutomationControlled"];
+  if (Number(scale) > 1) {
+    args.push(`--force-device-scale-factor=${Number(scale)}`);
+  }
+
   const base = {
     headless,
     proxy: proxy ? { server: proxy } : undefined,
-    args: ["--disable-blink-features=AutomationControlled"],
+    args,
   };
 
   if (mode === "chrome" || mode === "msedge") {
@@ -47,17 +55,23 @@ export async function launchBrowser({
 export async function newContext(browser, options) {
   const {
     viewport = { width: 1440, height: 810 },
+    scale = 1,
     videoDir,
     storageState,
   } = options;
+  const deviceScaleFactor = Number(scale) || 1;
 
   const context = await browser.newContext({
     viewport,
+    deviceScaleFactor,
     storageState: storageState || undefined,
     recordVideo: videoDir
       ? {
           dir: videoDir,
-          size: { width: viewport.width, height: viewport.height },
+          size: {
+            width: viewport.width * deviceScaleFactor,
+            height: viewport.height * deviceScaleFactor,
+          },
         }
       : undefined,
   });
@@ -91,12 +105,22 @@ export async function openRecordedPage(
   }
 }
 
+function accentRgba(hex, alpha) {
+  const clean = String(hex || "#6c5ce7").replace("#", "");
+  const full = clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
+  const n = Number.parseInt(full, 16);
+  if (!Number.isFinite(n)) return `rgba(108,92,231,${alpha})`;
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
+}
+
 /**
  * Draws a fake cursor + click ripple on top of the page, so the recording
  * looks like a human is using it.
  */
-export async function installCursor(page) {
-  await page.addInitScript(() => {
+export async function installCursor(page, { accent = "#6c5ce7" } = {}) {
+  const rippleBg = accentRgba(accent, 0.35);
+  const rippleBorder = accentRgba(accent, 0.85);
+  await page.addInitScript(({ rippleBg, rippleBorder }) => {
     if (window.__tabretakeCursorInstalled) return;
     window.__tabretakeCursorInstalled = true;
 
@@ -108,7 +132,7 @@ export async function installCursor(page) {
       }
       #__tabretake_ripple {
         position: fixed; width: 14px; height: 14px; border-radius: 50%;
-        background: rgba(108,92,231,.35); border: 2px solid rgba(255,255,255,.9);
+        background: ${rippleBg}; border: 2px solid ${rippleBorder};
         z-index: 2147483646; pointer-events: none;
         transform: translate(-50%,-50%) scale(.2); opacity: 0;
       }
@@ -116,7 +140,6 @@ export async function installCursor(page) {
 
     const style = document.createElement("style");
     style.textContent = CSS;
-    document.documentElement.appendChild(style);
 
     const cursor = document.createElement("div");
     cursor.id = "__tabretake_cursor";
@@ -125,18 +148,28 @@ export async function installCursor(page) {
         <path d="M4 2L20.5 12.2L12.6 13.7L9.1 21.2L4 2Z"
               fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/>
       </svg>`;
-    document.documentElement.appendChild(cursor);
 
     const move = (x, y) => {
       cursor.style.transform = `translate(${x - 2}px, ${y - 2}px)`;
     };
 
+    const mount = () => {
+      if (!document.documentElement || document.getElementById("__tabretake_cursor")) return;
+      document.documentElement.appendChild(style);
+      document.documentElement.appendChild(cursor);
+      move(window.innerWidth / 2, window.innerHeight / 2);
+    };
+    if (document.documentElement) mount();
+    window.addEventListener("DOMContentLoaded", mount, { once: true });
+
     const ripple = (x, y) => {
+      const root = document.body || document.documentElement;
+      if (!root) return;
       const r = document.createElement("div");
       r.id = "__tabretake_ripple";
       r.style.left = `${x}px`;
       r.style.top = `${y}px`;
-      document.documentElement.appendChild(r);
+      root.appendChild(r);
       r.animate(
         [
           { transform: "translate(-50%,-50%) scale(.2)", opacity: 1 },
@@ -149,8 +182,7 @@ export async function installCursor(page) {
 
     window.addEventListener("mousemove", (e) => move(e.clientX, e.clientY), true);
     window.addEventListener("mousedown", (e) => ripple(e.clientX, e.clientY), true);
-    move(window.innerWidth / 2, window.innerHeight / 2);
-  });
+  }, { rippleBg, rippleBorder });
 }
 
 export async function resolveLocator(page, step) {
@@ -258,6 +290,42 @@ export async function dragBy(page, locator, dx, dy = 0, steps = 24, pause = 600)
   return { x: endX, y: endY };
 }
 
+export async function selectOption(page, locator, value, pause = 500, timeout = 20000) {
+  const deadline = Date.now() + timeout;
+  const remaining = () => {
+    const ms = deadline - Date.now();
+    if (ms <= 0) throw new errors.TimeoutError("Timed out waiting for an actionable select target.");
+    return ms;
+  };
+  await locator.waitFor({ state: "visible", timeout: remaining() });
+  await locator.scrollIntoViewIfNeeded({ timeout: remaining() });
+  const box = await locator.boundingBox({ timeout: remaining() });
+  if (!box) throw new Error("Element has no bounding box");
+
+  const x = box.x + box.width / 2;
+  const y = box.y + box.height / 2;
+  await page.mouse.move(x, y, { steps: 16 });
+  await page.waitForTimeout(100);
+
+  const target = String(value ?? "");
+  const matched = await locator.evaluate((el, raw) => {
+    if (el.tagName !== "SELECT") return null;
+    const opts = [...el.options];
+    const byValue = opts.find((o) => o.value === raw);
+    if (byValue) return { value: byValue.value };
+    const byLabel = opts.find((o) => (o.label || o.textContent || "").trim() === raw);
+    if (byLabel) return { value: byLabel.value };
+    return null;
+  }, target);
+
+  if (!matched) {
+    throw Object.assign(new Error("Could not find a matching option for select step."), { code: "TARGET_NOT_FOUND" });
+  }
+  await locator.selectOption(matched, { timeout: remaining() });
+  await page.waitForTimeout(pause);
+  return { x, y };
+}
+
 export async function hover(page, locator, pause = 500) {
   await locator.scrollIntoViewIfNeeded();
   const box = await locator.boundingBox();
@@ -267,4 +335,26 @@ export async function hover(page, locator, pause = 500) {
   await page.mouse.move(x, y, { steps: 16 });
   await page.waitForTimeout(pause);
   return { x, y };
+}
+
+export async function loginAndSave(url, {
+  proxy,
+  viewport,
+  browser: browserMode,
+  statePath = path.resolve("auth.json"),
+} = {}) {
+  const browser = await launchBrowser({ headless: false, proxy, browser: browserMode });
+  try {
+    const context = await newContext(browser, { viewport });
+    const page = await context.newPage();
+    await navigate(page, url, { allowAuthErrors: true });
+    console.log("\nA browser window is open. Log in, then come back here.");
+    await waitForEnter("Press Enter when you are logged in... ");
+    await context.storageState({ path: statePath });
+    console.log(`Saved login state to ${statePath}\n`);
+    await context.close();
+    return statePath;
+  } finally {
+    await browser.close();
+  }
 }

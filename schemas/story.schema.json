@@ -33,6 +33,15 @@
         "accent": {
           "type": "string",
           "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$"
+        },
+        "frame": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "browser",
+            "phone",
+            "none"
+          ]
         }
       },
       "additionalProperties": false
@@ -120,6 +129,7 @@
             "goto",
             "click",
             "type",
+            "select",
             "hover",
             "focus",
             "drag",
@@ -207,6 +217,7 @@
                 "enum": [
                   "click",
                   "type",
+                  "select",
                   "hover",
                   "focus",
                   "drag"
@@ -243,7 +254,10 @@
           "if": {
             "properties": {
               "action": {
-                "const": "type"
+                "enum": [
+                  "type",
+                  "select"
+                ]
               }
             }
           },
@@ -420,7 +434,11 @@
           "pattern": "^https?://"
         },
         "scale": {
-          "const": 1
+          "type": "integer",
+          "enum": [
+            1,
+            2
+          ]
         },
         "initialWait": {
           "type": "number",
@@ -477,7 +495,11 @@
           "pattern": "^https?://"
         },
         "scale": {
-          "const": 1
+          "type": "integer",
+          "enum": [
+            1,
+            2
+          ]
         },
         "initialWait": {
           "type": "number",
@@ -572,7 +594,11 @@
           "$ref": "#/definitions/viewport"
         },
         "scale": {
-          "const": 1
+          "type": "integer",
+          "enum": [
+            1,
+            2
+          ]
         },
         "video": {
           "type": "string",

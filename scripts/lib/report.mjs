@@ -17,6 +17,7 @@ export function requireInteractiveLogin(values) {
 export function createReporter(command, json) {
   return {
     log: (...args) => (json ? console.error : console.log)(...args),
+    warn: (...args) => console.error(...args),
     async success({ artifacts, ...details }) {
       if (!json) return;
       const files = await Promise.all(artifacts.map(async (artifact) => {

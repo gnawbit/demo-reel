@@ -1,34 +1,25 @@
 import { copyFile, mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { parseCommand } from "./lib/options.mjs";
+import { parseCommand, parseViewport } from "./lib/options.mjs";
 import {
   clickAndType,
   dragBy,
   hover,
   installCursor,
   launchBrowser,
+  loginAndSave,
   moveAndClick,
-  newContext,
   openRecordedPage,
   resolveLocator,
+  selectOption,
 } from "./lib/browser.mjs";
-import { waitForEnter } from "./lib/tty.mjs";
 import { assertConfig, readConfig } from "./lib/config.mjs";
 import { commandError, createReporter, requireInteractiveLogin } from "./lib/report.mjs";
 import { navigate } from "./lib/navigation.mjs";
+import { resolveTheme } from "./lib/themes.mjs";
 
-function parseViewport(value, fallback = { width: 1440, height: 810 }) {
-  if (value === undefined) return fallback;
-  if (!/^[1-9]\d*x[1-9]\d*$/.test(value)) throw new Error("--viewport must be WIDTHxHEIGHT with positive integers");
-  const [width, height] = value.split("x").map(Number);
-  return { width, height };
-}
-
-export async function record(argv, command = "record") {
+export async function executeRecord(values, { command = "record", reporter = createReporter(command, Boolean(values?.json)) } = {}) {
   const preview = command === "preview";
-  const { values } = parseCommand(command, argv);
-  requireInteractiveLogin(values);
-  const reporter = createReporter(command, values.json);
   const screenshots = [];
 
   if (!values.config && !values.url) {
@@ -48,10 +39,20 @@ export async function record(argv, command = "record") {
     width: 1440,
     height: 810,
   });
-  assertConfig({ ...config, url, viewport }, { kind: "story" });
-  const scale = 1;
+  const scaleInput = values.scale === undefined
+    ? (config.scale ?? 1)
+    : (String(values.scale).trim() === "" ? NaN : Number(values.scale));
+  if (scaleInput !== 1 && scaleInput !== 2) {
+    throw commandError("INVALID_CONFIG", "scale / --scale must be 1 or 2", {
+      hint: "Choose 1 (standard) or 2 (HiDPI Retina).",
+    });
+  }
+  const scale = scaleInput;
+  assertConfig({ ...config, url, viewport, scale }, { kind: "story" });
   const steps = config.steps || [];
   if (steps.length === 0) throw new Error("Config has no steps");
+
+  const theme = resolveTheme(config.brand, values.preset);
 
   const outDir = path.resolve(values.out || config.out || "demo");
   const rawDir = path.join(outDir, "raw");
@@ -75,6 +76,7 @@ export async function record(argv, command = "record") {
     headless: preview ? values.headless : !values.headed,
     proxy: values.proxy,
     browser: values.browser,
+    scale,
   });
 
   let videoPath = null;
@@ -86,11 +88,12 @@ export async function record(argv, command = "record") {
     const videoStartedAt = Date.now();
     const { context, page } = await openRecordedPage(browser, {
       viewport,
+      scale,
       videoDir: preview ? undefined : rawDir,
       storageState,
     });
 
-    await installCursor(page);
+    await installCursor(page, { accent: theme.accent });
 
     events = [];
 
@@ -151,6 +154,24 @@ export async function record(argv, command = "record") {
               label: value,
             });
             await page.waitForTimeout(Number(step.pause ?? 400));
+            break;
+          }
+
+          case "select": {
+            const locator = await resolveLocator(page, step);
+            const value = String(step.value ?? step.text ?? "");
+            const point = await selectOption(page, locator, value, 0, Number(step.timeout ?? 20000));
+            events.push({
+              t,
+              tEnd: Date.now() - startedAt,
+              zoom: step.zoom !== false,
+              action: "select",
+              x: point.x,
+              y: point.y,
+              caption: step.caption || "",
+              label: value,
+            });
+            await page.waitForTimeout(Number(step.pause ?? 500));
             break;
           }
 
@@ -303,8 +324,11 @@ export async function record(argv, command = "record") {
 
   if (preview) {
     reporter.log(`Preview completed ${steps.length} step(s).`);
-    await reporter.success({ duration: timelineDuration, stepCount: steps.length, artifacts: screenshots });
-    return;
+    return {
+      summary: { duration: timelineDuration, stepCount: steps.length, artifacts: screenshots },
+      record: null,
+      recordPath: null,
+    };
   }
 
   const recordingPath = path.join(outDir, "recording.webm");
@@ -329,26 +353,27 @@ export async function record(argv, command = "record") {
   reporter.log(`Record:  ${recordPath}`);
   reporter.log(`\nNext: tabretake render --config ${path.relative(process.cwd(), recordPath)}`);
   reporter.log(`      (or pass the original --config path)\n`);
-  await reporter.success({ duration: timelineDuration, eventCount: events.length, artifacts: [
-    { kind: "video", path: recordingPath }, { kind: "timeline", path: recordPath }, ...screenshots,
-  ] });
 
-  return record;
+  return {
+    summary: {
+      duration: timelineDuration,
+      eventCount: events.length,
+      artifacts: [
+        { kind: "video", path: recordingPath },
+        { kind: "timeline", path: recordPath },
+        ...screenshots,
+      ],
+    },
+    record,
+    recordPath,
+  };
 }
 
-async function loginAndSave(url, { proxy, viewport, browser: browserMode, statePath }) {
-  const browser = await launchBrowser({ headless: false, proxy, browser: browserMode });
-  try {
-    const context = await newContext(browser, { viewport });
-    const page = await context.newPage();
-    await navigate(page, url, { allowAuthErrors: true });
-    console.log("\nA browser window is open. Log in, then come back here.");
-    await waitForEnter("Press Enter when you are logged in... ");
-    await context.storageState({ path: statePath });
-    console.log(`Saved login state to ${statePath}\n`);
-    await context.close();
-    return statePath;
-  } finally {
-    await browser.close();
-  }
+export async function record(argv, command = "record") {
+  const { values } = parseCommand(command, argv);
+  requireInteractiveLogin(values);
+  const reporter = createReporter(command, values.json);
+  const result = await executeRecord(values, { command, reporter });
+  await reporter.success(result.summary);
+  return result.record;
 }

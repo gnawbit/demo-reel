@@ -187,3 +187,31 @@ test("portrait output retains narrow and wide source edges at overview zoom", { 
     });
   }
 });
+
+test("brand.frame supports phone bezel and none without breaking source framing", { timeout: 120000 }, async (t) => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), "tabretake-frames-"));
+  t.after(() => rm(temp, { recursive: true, force: true }));
+  const source = path.join(temp, "mobile.mp4");
+  await ffmpeg([
+    "-f", "lavfi", "-i", "color=c=white:s=360x640:r=30:d=0.4",
+    "-c:v", "libx264", "-pix_fmt", "yuv420p", source,
+  ]);
+  for (const frame of ["phone", "none"]) {
+    const config = path.join(temp, `${frame}.json`);
+    const out = path.join(temp, frame);
+    await writeFile(config, JSON.stringify({
+      video: source,
+      brand: { preset: "slate", frame },
+      marks: [{ t: 0, zoom: false, duration: 0 }],
+    }));
+    await exec(process.execPath, [
+      cli, "render", "--config", config, "--out", out, "--vertical", "--no-gif", "--no-captions",
+    ], { windowsHide: true, timeout: 60000 });
+    const poster = sharp(path.join(out, "poster-9x16.png"));
+    const meta = await poster.metadata();
+    assert.equal(meta.width, 1080);
+    assert.equal(meta.height, 1920);
+    const center = await poster.extract({ left: 540, top: 900, width: 1, height: 1 }).removeAlpha().raw().toBuffer();
+    assert.ok(center[0] > 230 && center[1] > 230 && center[2] > 230, `${frame} must retain center content`);
+  }
+});
