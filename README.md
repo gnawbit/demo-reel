@@ -7,6 +7,7 @@ English · [简体中文](README.zh-CN.md)
 [![Latest release](https://img.shields.io/github/v/release/gnawbit/tabretake?label=latest%20release&color=6c5ce7)](https://github.com/gnawbit/tabretake/releases/latest)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/tabretake?style=social)](https://github.com/gnawbit/tabretake/stargazers)
+[![Listed in Awesome Agent Skills](https://sagargupta.online/awesome-skills/badge.svg)](https://github.com/Sagargupta16/awesome-skills)
 
 **Automate your web app demos. Never manually record and edit a screen again.**
 
