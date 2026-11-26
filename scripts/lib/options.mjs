@@ -7,6 +7,8 @@ export const commandOptions = {
     url: { type: "string" },
     out: { type: "string", default: "demo.json" },
     auto: { type: "boolean", default: false },
+    browser: { type: "string", default: "auto" },
+    preset: { type: "string" },
   },
   plan: {
     json: { type: "boolean", default: false },
@@ -17,6 +19,7 @@ export const commandOptions = {
     proxy: { type: "string" },
     viewport: { type: "string" },
     headless: { type: "boolean", default: true },
+    browser: { type: "string", default: "auto" },
   },
   record: {
     json: { type: "boolean", default: false },
@@ -29,6 +32,7 @@ export const commandOptions = {
     proxy: { type: "string" },
     viewport: { type: "string" },
     headed: { type: "boolean", default: false },
+    browser: { type: "string", default: "auto" },
   },
   render: {
     json: { type: "boolean", default: false },
@@ -42,6 +46,7 @@ export const commandOptions = {
     "vertical-zoom": { type: "string" },
     "zoom-duration": { type: "string" },
     "poster-at": { type: "string" },
+    preset: { type: "string" },
   },
   serve: {
     port: { type: "string", default: "4173" },
@@ -51,6 +56,8 @@ export const commandOptions = {
     out: { type: "string", default: "demo" },
     port: { type: "string", default: "4173" },
     story: { type: "string", default: "onboarding" },
+    browser: { type: "string", default: "auto" },
+    preset: { type: "string" },
   },
   doctor: { json: { type: "boolean", default: false } },
   capabilities: { json: { type: "boolean", default: false } },

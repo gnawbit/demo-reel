@@ -63,6 +63,25 @@ test("missing optional fonts warn; failed native binaries block readiness", asyn
   }
 });
 
+test("diagnose accepts system browser fallback when bundled chromium is missing", async () => {
+  const report = await diagnose({
+    exists: (file) => !String(file).includes("chromium"),
+    load: async (name) => {
+      if (name === "playwright") return { chromium: { executablePath: () => "/missing/chromium" } };
+      if (name === "@ffmpeg-installer/ffmpeg" || name === "@ffprobe-installer/ffprobe") {
+        return { default: { path: "/fake/bin" } };
+      }
+      return import(name);
+    },
+    run: async () => ({ stdout: "ffmpeg version 7.0", stderr: "" }),
+    fonts: { latin: () => "Arial", cjk: () => "SimHei" },
+    systemBrowser: () => ({ channel: "chrome", path: "/usr/bin/google-chrome" }),
+  });
+  const check = report.checks.find((c) => c.id === "chromium");
+  assert.equal(check.status, "ok");
+  assert.match(check.detail, /chrome fallback/);
+});
+
 test("an installation with no dependencies can still diagnose itself", async (t) => {
   const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-diagnostics-"));
   t.after(() => rm(dir, { recursive: true, force: true }));

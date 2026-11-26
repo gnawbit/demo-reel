@@ -1,11 +1,47 @@
+import { existsSync } from "node:fs";
+import { chmod, copyFile, mkdir } from "node:fs/promises";
+import path from "node:path";
 import { chromium, errors } from "playwright";
+import { FFMPEG } from "./ffmpeg.mjs";
+import { VALID_BROWSERS, findSystemBrowser } from "./system-browser.mjs";
 
-export async function launchBrowser({ headless = true, proxy } = {}) {
-  return chromium.launch({
+export { VALID_BROWSERS, findSystemBrowser };
+
+export async function launchBrowser({
+  headless = true,
+  proxy,
+  browser = "auto",
+  launch = (opts) => chromium.launch(opts),
+  hasBundledChromium = () => existsSync(chromium.executablePath()),
+} = {}) {
+  const mode = browser || "auto";
+  if (!VALID_BROWSERS.has(mode)) {
+    throw new Error(`Unsupported --browser "${mode}". Choose auto, chromium, chrome or msedge.`);
+  }
+
+  const base = {
     headless,
     proxy: proxy ? { server: proxy } : undefined,
     args: ["--disable-blink-features=AutomationControlled"],
-  });
+  };
+
+  if (mode === "chrome" || mode === "msedge") {
+    return launch({ ...base, channel: mode });
+  }
+
+  if (mode === "chromium" || hasBundledChromium()) {
+    return launch(base);
+  }
+
+  for (const channel of ["chrome", "msedge"]) {
+    try {
+      return await launch({ ...base, channel });
+    } catch {
+      // Continue trying next installed system browser channel.
+    }
+  }
+
+  return launch(base);
 }
 
 export async function newContext(browser, options) {
@@ -27,6 +63,32 @@ export async function newContext(browser, options) {
   });
 
   return context;
+}
+
+export async function openRecordedPage(
+  browser,
+  contextOptions,
+  { ffmpegPath = FFMPEG, makeContext = (opts) => newContext(browser, opts) } = {},
+) {
+  let context = await makeContext(contextOptions);
+  try {
+    const page = await context.newPage();
+    return { context, page };
+  } catch (error) {
+    const match = /Executable doesn't exist at ([^\r\n]+)/.exec(String(error?.message || ""));
+    if (!match || !/Video rendering requires ffmpeg binary/.test(error.message) || !ffmpegPath || !existsSync(ffmpegPath)) {
+      await context.close().catch(() => {});
+      throw error;
+    }
+    const targetPath = match[1].trim();
+    await context.close().catch(() => {});
+    await mkdir(path.dirname(targetPath), { recursive: true });
+    await copyFile(ffmpegPath, targetPath);
+    await chmod(targetPath, 0o755).catch(() => {});
+    context = await makeContext(contextOptions);
+    const page = await context.newPage();
+    return { context, page };
+  }
 }
 
 /**

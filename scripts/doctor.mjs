@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { findSystemBrowser } from "./lib/system-browser.mjs";
 import { findCjkFont, findFont } from "./lib/fonts.mjs";
 import { parseCommand } from "./lib/options.mjs";
 import { nodeRange, schemaVersion, supportsNodeVersion, version } from "./lib/metadata.mjs";
@@ -15,6 +16,7 @@ export async function diagnose({
   exists = existsSync,
   run = (file) => exec(file, ["-version"], { windowsHide: true, timeout: 10000 }),
   fonts = { latin: findFont, cjk: findCjkFont },
+  systemBrowser = () => findSystemBrowser({ exists }),
 } = {}) {
   const checks = [];
   async function check(id, required, hint, probe) {
@@ -37,11 +39,17 @@ export async function diagnose({
       return (stdout || stderr).split("\n")[0].trim();
     });
   }
-  await check("chromium", true, "Run tabretake setup (from source: node bin/tabretake.mjs setup).", async () => {
+  await check("chromium", true, "Run tabretake setup (or install Chrome/Edge for automatic fallback).", async () => {
     const { chromium } = await load("playwright");
     const file = chromium.executablePath();
-    if (!exists(file)) throw new Error("Chromium executable not found");
-    return "Executable found; browser launch and system libraries are not tested.";
+    if (exists(file)) {
+      return "Executable found; browser launch and system libraries are not tested.";
+    }
+    const fallback = systemBrowser();
+    if (fallback) {
+      return `Using system ${fallback.channel} fallback; run tabretake setup for pinned Chromium.`;
+    }
+    throw new Error("Chromium executable not found and no Chrome/Edge fallback detected");
   });
   await check("sharp", true, reinstall, async () => {
     const { default: sharp } = await load("sharp");

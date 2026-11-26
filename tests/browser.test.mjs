@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import {
-  clickAndType, dragBy, hover, launchBrowser, moveAndClick, resolveLocator,
+  clickAndType, dragBy, findSystemBrowser, hover, launchBrowser, moveAndClick, openRecordedPage, resolveLocator,
 } from "../scripts/lib/browser.mjs";
 
 let browser;
@@ -135,3 +138,66 @@ for (const location of ["visible", "below fold", "scroll container"]) {
     });
   }
 }
+
+test("launchBrowser falls back to system chrome/msedge when bundled chromium is absent", async () => {
+  const calls = [];
+  const fakeBrowser = { close: async () => {} };
+  const result = await launchBrowser({
+    browser: "auto",
+    hasBundledChromium: () => false,
+    launch: async (opts) => {
+      calls.push(opts.channel || "chromium");
+      if (opts.channel === "msedge") return fakeBrowser;
+      throw new Error("missing channel");
+    },
+  });
+  assert.equal(result, fakeBrowser);
+  assert.deepEqual(calls, ["chrome", "msedge"]);
+
+  await assert.rejects(
+    launchBrowser({ browser: "safari" }),
+    /Unsupported --browser/,
+  );
+});
+
+test("findSystemBrowser detects installed Chrome or Edge paths across platforms", () => {
+  const win = findSystemBrowser({
+    platform: "win32",
+    env: { LOCALAPPDATA: "C:\\Users\\Demo\\AppData\\Local" },
+    exists: (p) => p.endsWith("msedge.exe"),
+  });
+  assert.equal(win?.channel, "msedge");
+
+  const mac = findSystemBrowser({
+    platform: "darwin",
+    exists: (p) => p.includes("Google Chrome.app"),
+  });
+  assert.equal(mac?.channel, "chrome");
+});
+
+test("openRecordedPage seeds missing Playwright ffmpeg from bundled ffmpeg and retries", async (t) => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-ffmpeg-seed-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const source = path.join(dir, "bundled-ffmpeg");
+  const target = path.join(dir, "pw-cache", "ffmpeg-win64.exe");
+  await writeFile(source, "ffmpeg-binary-bytes");
+
+  let attempts = 0;
+  const fakePage = { id: "page" };
+  const result = await openRecordedPage({}, {}, {
+    ffmpegPath: source,
+    makeContext: async () => ({
+      close: async () => {},
+      newPage: async () => {
+        attempts += 1;
+        if (attempts === 1) {
+          throw new Error(`Executable doesn't exist at ${target}\nVideo rendering requires ffmpeg binary.`);
+        }
+        return fakePage;
+      },
+    }),
+  });
+  assert.equal(attempts, 2);
+  assert.equal(result.page, fakePage);
+  assert.equal(await readFile(target, "utf8"), "ffmpeg-binary-bytes");
+});

@@ -9,13 +9,13 @@ Usage:
   tabretake capabilities [--json]
   tabretake doctor [--json]
   tabretake validate --config demo.json [--json]
-  tabretake init    --url <url> [--out demo.json]
+  tabretake init    --url <url> [--out demo.json] [--auto] [--preset midnight|daylight|paper|slate]
   tabretake plan    --url <url> [--out plan.json] [--login] [--storage-state auth.json]
   tabretake record  --config demo.json [--out demo] [--login] [--storage-state auth.json]
   tabretake preview --config demo.json [--headless] [--json]
-  tabretake render  --config demo.json [--out demo] [--video recording.mp4] [--vertical] [--no-gif]
+  tabretake render  --config demo.json [--out demo] [--video recording.mp4] [--vertical] [--no-gif] [--preset <name>]
   tabretake serve   [--port 4173] [--dir examples/site]
-  tabretake demo    [--story readme|onboarding|release] [--out demo]
+  tabretake demo    [--story readme|onboarding|release] [--out demo] [--preset <name>]
 
 Examples:
   tabretake init --url https://your-app.com
@@ -36,6 +36,8 @@ Options:
   --vertical-zoom     Override portrait focus zoom (1–10; otherwise uses --zoom).
   --video             Use an existing screen recording; the config needs "marks".
   --no-gif            Skip GIF export.
+  --browser           Browser channel: auto (default), chromium, chrome or msedge.
+  --preset            Brand theme preset: midnight, daylight, paper or slate.
   --poster-at         Choose the poster time in output seconds, e.g. 4.5.
   --zoom-duration     Ease between click targets in seconds (default 0.35; 0 for cuts).
 `;

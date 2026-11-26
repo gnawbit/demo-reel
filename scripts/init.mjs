@@ -2,6 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { parseCommand } from "./lib/options.mjs";
 import { createReporter } from "./lib/report.mjs";
+import { resolveTheme } from "./lib/themes.mjs";
 import { extractPlan } from "./plan.mjs";
 
 export function buildAutoSteps(elements) {
@@ -80,7 +81,7 @@ export async function init(argv) {
   if (values.auto) {
     reporter.log("Scanning page to generate interactive steps (--auto)...");
     try {
-      const { elements } = await extractPlan(url.href);
+      const { elements } = await extractPlan(url.href, { browser: values.browser });
       steps = buildAutoSteps(elements);
       reporter.log(`Generated ${steps.length} step(s) from discovered interactive controls.`);
     } catch (err) {
@@ -88,13 +89,14 @@ export async function init(argv) {
     }
   }
 
+  const theme = resolveTheme({}, values.preset);
   const story = {
     url: url.href,
     displayUrl: url.host,
     viewport: { width: 1440, height: 810 },
     initialWait: 700,
     tail: 1200,
-    brand: { background: "#070a12", accent: "#6c5ce7" },
+    brand: { preset: theme.preset, background: theme.background, accent: theme.accent },
     steps,
   };
   const outPath = path.resolve(values.out);

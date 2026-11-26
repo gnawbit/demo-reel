@@ -9,6 +9,7 @@ import {
   launchBrowser,
   moveAndClick,
   newContext,
+  openRecordedPage,
   resolveLocator,
 } from "./lib/browser.mjs";
 import { waitForEnter } from "./lib/tty.mjs";
@@ -65,6 +66,7 @@ export async function record(argv, command = "record") {
     storageState = await loginAndSave(url, {
       proxy: values.proxy,
       viewport,
+      browser: values.browser,
       statePath: path.resolve(values["save-state"] || "auth.json"),
     });
   }
@@ -72,6 +74,7 @@ export async function record(argv, command = "record") {
   const browser = await launchBrowser({
     headless: preview ? values.headless : !values.headed,
     proxy: values.proxy,
+    browser: values.browser,
   });
 
   let videoPath = null;
@@ -81,12 +84,11 @@ export async function record(argv, command = "record") {
 
   try {
     const videoStartedAt = Date.now();
-    const context = await newContext(browser, {
+    const { context, page } = await openRecordedPage(browser, {
       viewport,
       videoDir: preview ? undefined : rawDir,
       storageState,
     });
-    const page = await context.newPage();
 
     await installCursor(page);
 
@@ -334,8 +336,8 @@ export async function record(argv, command = "record") {
   return record;
 }
 
-async function loginAndSave(url, { proxy, viewport, statePath }) {
-  const browser = await launchBrowser({ headless: false, proxy });
+async function loginAndSave(url, { proxy, viewport, browser: browserMode, statePath }) {
+  const browser = await launchBrowser({ headless: false, proxy, browser: browserMode });
   try {
     const context = await newContext(browser, { viewport });
     const page = await context.newPage();

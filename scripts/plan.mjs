@@ -128,8 +128,8 @@ export async function collectElements(page) {
   });
 }
 
-export async function extractPlan(url, { viewport = { width: 1440, height: 810 }, proxy, storageState, headless = true } = {}) {
-  const browser = await launchBrowser({ headless, proxy });
+export async function extractPlan(url, { viewport = { width: 1440, height: 810 }, proxy, storageState, headless = true, browser: browserMode } = {}) {
+  const browser = await launchBrowser({ headless, proxy, browser: browserMode });
   try {
     const context = await newContext(browser, { viewport, storageState });
     const page = await context.newPage();
@@ -160,12 +160,13 @@ export async function plan(argv) {
 
   let storageState = values["storage-state"];
   if (values.login) {
-    storageState = await loginAndSave(values.url, { proxy: values.proxy, viewport });
+    storageState = await loginAndSave(values.url, { proxy: values.proxy, viewport, browser: values.browser });
   }
 
   const browser = await launchBrowser({
     headless: values.headless || !values.login,
     proxy: values.proxy,
+    browser: values.browser,
   });
 
   let manifest;
@@ -216,8 +217,8 @@ export async function plan(argv) {
   await reporter.success(manifest);
 }
 
-async function loginAndSave(url, { proxy, viewport }) {
-  const browser = await launchBrowser({ headless: false, proxy });
+async function loginAndSave(url, { proxy, viewport, browser: browserMode }) {
+  const browser = await launchBrowser({ headless: false, proxy, browser: browserMode });
   try {
     const context = await newContext(browser, { viewport });
     const page = await context.newPage();

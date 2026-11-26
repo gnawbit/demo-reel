@@ -31,8 +31,14 @@ export async function demo(argv) {
       server.url,
       "--out",
       values.out,
+      ...(values.browser ? ["--browser", values.browser] : []),
     ]);
-    await render(["--config", path.join(values.out, "record.json"), "--vertical"]);
+    await render([
+      "--config",
+      path.join(values.out, "record.json"),
+      "--vertical",
+      ...(values.preset ? ["--preset", values.preset] : []),
+    ]);
   } finally {
     await server.close();
   }
