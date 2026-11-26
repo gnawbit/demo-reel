@@ -123,6 +123,7 @@ export async function collectElements(page, { includeHints = false } = {}) {
             inNav: Boolean(el.closest("nav, aside, footer, [role=navigation]")),
             inMain: Boolean(el.closest("main, form, [role=main], [role=dialog]")),
             inForm: Boolean(el.closest("form")),
+            hiddenContainer: Boolean(el.closest("[aria-hidden='true'], [inert]")) || style.pointerEvents === "none",
             emptyHref: el.tagName === "A" && (!rawHref || rawHref === "#" || rawHref.startsWith("javascript:")),
             isPrimary: el.getAttribute("type") === "submit" ||
               /\b(primary|cta|submit|create|new|add|start|save|launch)\b/i.test(`${cls} ${text}`),

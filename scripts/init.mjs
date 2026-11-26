@@ -10,6 +10,7 @@ function scoreElement(el) {
   let score = 0;
   if (hints.isDestructive) score -= 100;
   if (hints.emptyHref) score -= 80;
+  if (hints.hiddenContainer) score -= 90;
   if (hints.inNav) score -= 40;
   if (hints.inMain) score += 30;
   if (hints.inForm) score += 25;
@@ -69,7 +70,7 @@ export function buildAutoSteps(elements) {
     addChosen(item);
   }
 
-  for (const { el } of chosen.sort((a, b) => a.index - b.index)) {
+  for (const [idx, { el }] of chosen.sort((a, b) => a.index - b.index).entries()) {
     if (isTextInput(el)) {
       const caption = el.label || el.placeholder || (el.name ? `Enter ${el.name}` : "Input demo text");
       steps.push({
@@ -98,13 +99,11 @@ export function buildAutoSteps(elements) {
         caption: `Click: ${caption}`,
       });
     }
-    steps.push({ action: "wait", ms: 600 });
+    steps.push({ action: "wait", ms: idx === chosen.length - 1 ? 1200 : 600 });
   }
 
   if (steps.length === 1) {
     steps.push({ action: "wait", ms: 1500 });
-  } else {
-    steps.push({ action: "wait", ms: 1200 });
   }
   return steps;
 }

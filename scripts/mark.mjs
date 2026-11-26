@@ -1,11 +1,11 @@
 import { spawn } from "node:child_process";
 import crypto from "node:crypto";
 import { createReadStream } from "node:fs";
-import { mkdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import path from "node:path";
 import { parseCommand } from "./lib/options.mjs";
-import { assertConfig } from "./lib/config.mjs";
+import { assertConfig, inspectConfig } from "./lib/config.mjs";
 import { probe } from "./lib/ffmpeg.mjs";
 import { commandError, createReporter } from "./lib/report.mjs";
 import { resolveTheme } from "./lib/themes.mjs";
@@ -44,8 +44,17 @@ async function readJsonBody(req, limitBytes = 1024 * 1024) {
   return JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
 }
 
-function renderMarkHtml({ token, duration, width, height, preset, videoName }) {
-  const bootstrap = JSON.stringify({ token, duration, width, height, preset: preset || "midnight", videoName })
+function renderMarkHtml({ token, duration, width, height, preset, videoName, initialMarks = [], initialDisplayUrl = "your-app.com" }) {
+  const bootstrap = JSON.stringify({
+    token,
+    duration,
+    width,
+    height,
+    preset: preset || "midnight",
+    videoName,
+    initialMarks,
+    initialDisplayUrl,
+  })
     .replace(/</g, "\\u003c");
   return `<!doctype html>
 <html lang="en">
@@ -116,6 +125,7 @@ function renderMarkHtml({ token, duration, width, height, preset, videoName }) {
         </label>
       </div>
       <div class="marks" id="marks"></div>
+      <div class="row-opts"><label><input id="vertical" type="checkbox" checked> Also render 9:16 vertical</label></div>
       <div class="status" id="status">Click the video frame to add your first mark.</div>
       <div class="actions">
         <button id="save" type="button">Save JSON</button>
@@ -134,10 +144,19 @@ function renderMarkHtml({ token, duration, width, height, preset, videoName }) {
     const statusEl = document.getElementById("status");
     const presetEl = document.getElementById("preset");
     const displayUrlEl = document.getElementById("displayUrl");
+    const verticalEl = document.getElementById("vertical");
     presetEl.value = BOOT.preset;
+    displayUrlEl.value = BOOT.initialDisplayUrl || "your-app.com";
     document.getElementById("meta").textContent = BOOT.videoName + " · " + BOOT.width + "×" + BOOT.height + " · " + BOOT.duration.toFixed(2) + "s";
 
-    let marks = [];
+    let marks = Array.isArray(BOOT.initialMarks) ? BOOT.initialMarks.map((m) => ({
+      t: Number(m.t || 0),
+      x: Number(m.x ?? 0.5),
+      y: Number(m.y ?? 0.5),
+      duration: Number(m.duration ?? 0.2),
+      caption: m.caption || "",
+      zoom: m.zoom !== false,
+    })) : [];
     const round3 = (n) => Math.round(n * 1000) / 1000;
     const round2 = (n) => Math.round(n * 100) / 100;
 
@@ -233,12 +252,14 @@ function renderMarkHtml({ token, duration, width, height, preset, videoName }) {
       } catch (err) { statusEl.textContent = "Error: " + err.message; }
     });
     document.getElementById("render").addEventListener("click", async () => {
-      statusEl.textContent = "Rendering 16:9 + 9:16...";
+      statusEl.textContent = verticalEl.checked ? "Rendering 16:9 + 9:16..." : "Rendering 16:9...";
       try {
-        const res = await postJson("/api/render", { ...payload(), vertical: true });
-        statusEl.textContent = "Rendered " + res.artifacts.length + " artifact(s).";
+        const res = await postJson("/api/render", { ...payload(), vertical: verticalEl.checked });
+        const dir = res.renderDir ? " into " + res.renderDir : "";
+        statusEl.textContent = "Rendered " + res.artifacts.length + " artifact(s)" + dir + ".";
       } catch (err) { statusEl.textContent = "Error: " + err.message; }
     });
+    if (marks.length > 0) renderMarks();
     document.getElementById("done").addEventListener("click", async () => {
       await postJson("/api/save", payload()).catch(() => {});
       await postJson("/api/done", {}).catch(() => {});
@@ -294,6 +315,21 @@ export async function startMarkServer({
   let resolveDone;
   const donePromise = new Promise((resolve) => { resolveDone = resolve; });
 
+  let initialMarks = [];
+  let initialDisplayUrl = "your-app.com";
+  let initialPreset = preset;
+  try {
+    const existing = JSON.parse(await readFile(resolvedOut, "utf8"));
+    if (inspectConfig(existing, { kind: "marks" }).ok) {
+      initialMarks = existing.marks || [];
+      if (existing.displayUrl) initialDisplayUrl = existing.displayUrl;
+      if (!initialPreset && existing.brand?.preset) initialPreset = existing.brand.preset;
+      artifacts.set(resolvedOut, { kind: "marks", path: resolvedOut });
+    }
+  } catch {
+    // No readable existing marks file; start fresh.
+  }
+
   const saveConfig = async (body) => {
     const cfg = buildMarksConfig({
       videoPath: resolvedVideo,
@@ -317,8 +353,10 @@ export async function startMarkServer({
           duration,
           width,
           height,
-          preset,
+          preset: initialPreset,
           videoName: path.basename(resolvedVideo),
+          initialMarks,
+          initialDisplayUrl,
         });
         res.writeHead(200, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" });
         res.end(html);
@@ -387,7 +425,7 @@ export async function startMarkServer({
           }, { reporter: reporter || createReporter("render", false) });
           for (const item of renderRes.summary.artifacts) artifacts.set(item.path, item);
           res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ ok: true, path: resolvedOut, artifacts: renderRes.summary.artifacts }));
+          res.end(JSON.stringify({ ok: true, path: resolvedOut, renderDir: path.resolve(renderDir), artifacts: renderRes.summary.artifacts }));
           return;
         }
         if (reqUrl === "/api/done") {

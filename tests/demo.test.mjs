@@ -25,7 +25,11 @@ test("installed package sets up and renders a demo outside its checkout", { time
   const packed = await npm(["pack", "--json", "--pack-destination", temp], root);
   const [pkg] = JSON.parse(packed.stdout);
   assert.equal(pkg.name, "@gnawbit/tabretake");
-  for (const required of ["bin/tabretake.mjs", "scripts/setup.mjs", "schemas/story.schema.json", "references/story.md", "references/rendering.md", "agents/openai.yaml", "examples/story.json", "examples/stories/readme.json", "examples/stories/release.json", "examples/site/index.html", "SKILL.md"]) {
+  for (const required of [
+    "bin/tabretake.mjs", "scripts/setup.mjs", "scripts/capture.mjs", "scripts/run.mjs", "scripts/mark.mjs",
+    "schemas/story.schema.json", "references/story.md", "references/rendering.md", "agents/openai.yaml",
+    "examples/story.json", "examples/stories/readme.json", "examples/stories/release.json", "examples/site/index.html", "SKILL.md",
+  ]) {
     assert.ok(pkg.files.some((file) => file.path === required), `${required} must be packaged`);
   }
   assert.equal(pkg.files.some((file) => /^(?:\.serena|\.github|tests|demo|docs)\//.test(file.path)), false);
@@ -35,7 +39,11 @@ test("installed package sets up and renders a demo outside its checkout", { time
   const installedVersion = await npm(["exec", "--offline", "--", "tabretake", "--version"], consumer);
   assert.equal(installedVersion.stdout.trim(), pkg.version);
   const capabilities = await exec(process.execPath, [installedCli, "capabilities", "--json"], { cwd: consumer, windowsHide: true });
-  assert.equal(JSON.parse(capabilities.stdout).commands.render.json, true);
+  const parsedCaps = JSON.parse(capabilities.stdout);
+  assert.equal(parsedCaps.commands.render.json, true);
+  assert.equal(parsedCaps.commands.run.json, true);
+  assert.equal(parsedCaps.commands.capture.json, true);
+  assert.equal(parsedCaps.commands.mark.json, true);
   const installedStory = path.join(consumer, "node_modules", "@gnawbit", "tabretake", "examples", "story.json");
   const validation = await exec(process.execPath, [installedCli, "validate", "--config", installedStory, "--json"], {
     cwd: consumer, windowsHide: true,

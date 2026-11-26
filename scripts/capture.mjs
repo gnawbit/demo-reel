@@ -54,6 +54,48 @@ function toStep(event, pause) {
   return step;
 }
 
+export function pushCapturedEvent(merged, item) {
+  if (!item || !item.action) return merged;
+  const prev = merged.at(-1);
+  const currKey = targetKey(item);
+  const prevKey = prev ? targetKey(prev) : "";
+
+  // Drop synthetic form-submit click (detail === 0) immediately following Enter press.
+  if (
+    item.action === "click" &&
+    item.syntheticDetail0 &&
+    prev?.action === "press" &&
+    prev.key === "Enter" &&
+    Number.isFinite(item.at) &&
+    Number.isFinite(prev.at) &&
+    item.at - prev.at <= 120
+  ) {
+    return merged;
+  }
+
+  if (item.action === "type" && prev?.action === "type" && currKey && currKey === prevKey) {
+    prev.value = item.value;
+    prev.at = item.at ?? prev.at;
+    return merged;
+  }
+  if (item.action === "type" && prev?.action === "click" && prev.isInput && currKey && currKey === prevKey) {
+    merged[merged.length - 1] = { ...item };
+    return merged;
+  }
+  if (item.action === "select" && prev?.action === "click" && prev.isSelect && currKey && currKey === prevKey) {
+    merged[merged.length - 1] = { ...item };
+    return merged;
+  }
+  if (item.action === "select" && prev?.action === "select" && currKey && currKey === prevKey) {
+    prev.value = item.value;
+    prev.label = item.label ?? prev.label;
+    prev.at = item.at ?? prev.at;
+    return merged;
+  }
+  merged.push({ ...item });
+  return merged;
+}
+
 export function buildCapturedStory({
   url,
   displayUrl,
@@ -64,31 +106,7 @@ export function buildCapturedStory({
 }) {
   const merged = [];
   for (const item of rawEvents) {
-    if (!item || !item.action) continue;
-    const prev = merged.at(-1);
-    const currKey = targetKey(item);
-    const prevKey = prev ? targetKey(prev) : "";
-
-    if (item.action === "type" && prev?.action === "type" && currKey && currKey === prevKey) {
-      prev.value = item.value;
-      prev.at = item.at ?? prev.at;
-      continue;
-    }
-    if (item.action === "type" && prev?.action === "click" && prev.isInput && currKey && currKey === prevKey) {
-      merged[merged.length - 1] = { ...item };
-      continue;
-    }
-    if (item.action === "select" && prev?.action === "click" && prev.isSelect && currKey && currKey === prevKey) {
-      merged[merged.length - 1] = { ...item };
-      continue;
-    }
-    if (item.action === "select" && prev?.action === "select" && currKey && currKey === prevKey) {
-      prev.value = item.value;
-      prev.label = item.label ?? prev.label;
-      prev.at = item.at ?? prev.at;
-      continue;
-    }
-    merged.push({ ...item });
+    pushCapturedEvent(merged, item);
   }
 
   const steps = [];
@@ -137,11 +155,35 @@ function installCaptureScript(context) {
     const HUD_ID = "__tabretake_capture_hud";
     let focusMode = false;
     let stepCount = 0;
+    let lastSummary = "";
     let statusNote = "";
 
-    const report = (payload) => {
+    let hudCountEl;
+    let hudFocusBtn;
+    let hudNoteEl;
+    const syncHud = () => {
+      if (hudCountEl) {
+        const suffix = lastSummary ? ` · ${lastSummary}` : "";
+        hudCountEl.textContent = `Capturing · ${stepCount} step${stepCount === 1 ? "" : "s"}${suffix}`;
+      }
+      if (hudFocusBtn) {
+        hudFocusBtn.textContent = focusMode ? "Click element to focus…" : "Pin focus";
+        hudFocusBtn.style.background = focusMode ? "#6c5ce7" : "rgba(255,255,255,0.1)";
+      }
+      if (hudNoteEl) {
+        hudNoteEl.textContent = statusNote;
+        hudNoteEl.style.display = statusNote ? "block" : "none";
+      }
+    };
+
+    const report = async (payload) => {
       if (typeof window.__tabretakeCaptureReport === "function") {
-        window.__tabretakeCaptureReport(payload).catch(() => {});
+        const res = await window.__tabretakeCaptureReport(payload).catch(() => null);
+        if (res && typeof res.count === "number") {
+          stepCount = res.count;
+          lastSummary = res.lastSummary || "";
+          syncHud();
+        }
       }
     };
 
@@ -227,35 +269,21 @@ function installCaptureScript(context) {
       return { target, locator: { selector: cssPath(target) } };
     }
 
-    let hudCountEl;
-    let hudFocusBtn;
-    let hudNoteEl;
-    const syncHud = () => {
-      if (hudCountEl) hudCountEl.textContent = `Capturing · ${stepCount} step${stepCount === 1 ? "" : "s"}`;
-      if (hudFocusBtn) {
-        hudFocusBtn.textContent = focusMode ? "Click element to focus…" : "Pin focus";
-        hudFocusBtn.style.background = focusMode ? "#6c5ce7" : "rgba(255,255,255,0.1)";
-      }
-      if (hudNoteEl) {
-        hudNoteEl.textContent = statusNote;
-        hudNoteEl.style.display = statusNote ? "block" : "none";
-      }
-    };
-
     const mountHud = () => {
       if (!document.documentElement || document.getElementById(HUD_ID)) return;
       const host = document.createElement("div");
       host.id = HUD_ID;
-      host.style.cssText = "position:fixed;top:14px;right:14px;z-index:2147483647;font-family:system-ui,-apple-system,sans-serif;";
+      let dockedTop = false;
+      host.style.cssText = "position:fixed;bottom:14px;right:14px;z-index:2147483647;font-family:system-ui,-apple-system,sans-serif;";
       const shadow = host.attachShadow({ mode: "open" });
       shadow.innerHTML = `
         <style>
-          .bar { display:flex; align-items:center; gap:8px; padding:8px 12px; border-radius:12px;
+          .bar { display:flex; align-items:center; gap:6px; padding:6px 10px; border-radius:11px;
             background:rgba(13,17,23,0.92); color:#f1f5f9; border:1px solid rgba(255,255,255,0.14);
             box-shadow:0 12px 32px rgba(0,0,0,0.45); font-size:12px; backdrop-filter:blur(8px); }
           .dot { width:8px; height:8px; border-radius:50%; background:#ef4444; box-shadow:0 0 8px #ef4444; }
-          button { border:0; border-radius:7px; padding:5px 9px; color:#f8fafc; background:rgba(255,255,255,0.1);
-            cursor:pointer; font:inherit; font-weight:500; }
+          button { border:0; border-radius:7px; padding:4px 8px; color:#f8fafc; background:rgba(255,255,255,0.1);
+            cursor:pointer; font:inherit; font-weight:500; white-space:nowrap; }
           button:hover { background:rgba(255,255,255,0.18); }
           .save { background:#10b981; color:#052e16; font-weight:600; }
           .save:hover { background:#34d399; }
@@ -268,6 +296,7 @@ function installCaptureScript(context) {
           <button id="focus" type="button" title="Alt+F: capture a focus step without clicking through">Pin focus</button>
           <button id="wait" type="button">+ Wait 1s</button>
           <button id="undo" type="button">Undo</button>
+          <button id="flip" type="button" title="Move bar to top or bottom">↕</button>
           <button id="save" class="save" type="button">Save &amp; Finish</button>
           <button id="discard" type="button">Discard</button>
         </div>
@@ -277,6 +306,11 @@ function installCaptureScript(context) {
       hudFocusBtn = shadow.getElementById("focus");
       hudNoteEl = shadow.getElementById("note");
       hudFocusBtn.addEventListener("click", () => { focusMode = !focusMode; syncHud(); });
+      shadow.getElementById("flip").addEventListener("click", () => {
+        dockedTop = !dockedTop;
+        host.style.top = dockedTop ? "14px" : "";
+        host.style.bottom = dockedTop ? "" : "14px";
+      });
       shadow.getElementById("wait").addEventListener("click", () => {
         stepCount += 1;
         syncHud();
@@ -291,6 +325,7 @@ function installCaptureScript(context) {
       shadow.getElementById("discard").addEventListener("click", () => report({ kind: "discard" }));
       document.documentElement.appendChild(host);
       syncHud();
+      report({ kind: "ping" });
     };
 
     if (document.documentElement) mountHud();
@@ -401,6 +436,7 @@ function installCaptureScript(context) {
         ...locator,
         isInput,
         isSelect,
+        syntheticDetail0: event.detail === 0,
         label: controlLabel(target).slice(0, 40),
         at: Date.now(),
       });
@@ -438,9 +474,9 @@ export async function runCaptureSession({
     };
 
     await context.exposeBinding("__tabretakeCaptureReport", (_source, payload) => {
-      if (!payload || typeof payload !== "object") return;
+      if (!payload || typeof payload !== "object") return { count: rawEvents.length };
       if (payload.kind === "step") {
-        rawEvents.push(payload);
+        pushCapturedEvent(rawEvents, payload);
       } else if (payload.kind === "undo") {
         rawEvents.pop();
       } else if (payload.kind === "password-skipped") {
@@ -453,6 +489,9 @@ export async function runCaptureSession({
       } else if (payload.kind === "discard") {
         finish(true);
       }
+      const last = rawEvents.at(-1);
+      const lastSummary = last ? `${last.action}` : "";
+      return { count: rawEvents.length, lastSummary };
     });
 
     await installCaptureScript(context);

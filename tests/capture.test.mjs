@@ -34,6 +34,17 @@ test("buildCapturedStory coalesces click+type, click+select, and clamps pauses",
   const empty = buildCapturedStory({ url: "https://example.com", rawEvents: [] });
   assert.equal(inspectConfig(empty, { kind: "story" }).ok, true);
   assert.deepEqual(empty.steps, [{ action: "wait", ms: 1500 }]);
+
+  // Form Enter press should suppress immediate synthetic detail=0 submit click
+  const formEnter = buildCapturedStory({
+    url: "https://example.com",
+    rawEvents: [
+      { action: "type", selector: "#todo", value: "Ship release", at: 1000 },
+      { action: "press", key: "Enter", at: 1100 },
+      { action: "click", selector: "#submit", syntheticDetail0: true, at: 1120 },
+    ],
+  });
+  assert.deepEqual(formEnter.steps.map((s) => s.action), ["type", "press"]);
 });
 
 test("runCaptureSession captures interactions, skips passwords, and supports focus mode", { timeout: 30000 }, async (t) => {
@@ -66,6 +77,13 @@ test("runCaptureSession captures interactions, skips passwords, and supports foc
     preset: "slate",
     onReady: async ({ page }) => {
       await page.click("#name");
+      await page.type("#name", "Draft");
+      // Undo should pop the entire logical type step (all 5 keystrokes at once)
+      await page.locator("#__tabretake_capture_hud").evaluate((host) => {
+        host.shadowRoot.getElementById("undo").click();
+      });
+      await page.waitForTimeout(50);
+      await page.fill("#name", "");
       await page.type("#name", "Alpha");
       await page.click("#secret");
       await page.type("#secret", secret);

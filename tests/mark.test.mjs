@@ -91,4 +91,11 @@ test("mark studio serves HTML, streams Range video, saves marks and renders outp
   });
   assert.equal(doneRes.status, 200);
   await session.waitForDone();
+
+  // Reopening mark studio on an existing story-video.json preloads saved marks
+  const reopened = await startMarkServer({ videoPath, outPath, port: 0 });
+  t.after(() => reopened.close());
+  const reopenedHtml = await (await fetch(reopened.url)).text();
+  assert.ok(reopenedHtml.includes("Focus point"));
+  assert.ok(reopenedHtml.includes("demo.local"));
 });

@@ -113,4 +113,7 @@ test("init --auto prioritizes primary controls over sidebar hash links and destr
   const clickTargets = story.steps.filter((s) => s.action === "click").map((s) => s.selector);
   assert.ok(clickTargets.includes("#new-project"), `expected #new-project in ${JSON.stringify(story.steps)}`);
   assert.equal(story.steps.some((s) => /Overview|Log out|Delete/.test(s.caption || "")), false);
+  // Ensure no consecutive duplicate wait steps at tail
+  assert.notEqual(story.steps.at(-2)?.action, "wait");
+  assert.deepEqual(story.steps.at(-1), { action: "wait", ms: 1200 });
 });
