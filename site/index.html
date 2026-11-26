@@ -30,7 +30,7 @@
         "license": "https://opensource.org/licenses/MIT",
         "url": "https://gnawbit.github.io/tabretake/",
         "codeRepository": "https://github.com/gnawbit/tabretake",
-        "softwareVersion": "0.4.2",
+        "softwareVersion": "0.5.0",
         "description": "Local CLI and Agent Skill that turns editable JSON steps or existing screen recordings into repeatable 16:9 README GIFs, 1080p MP4s, and 9:16 portrait launch videos with click zooms and unoccluded bottom captions."
       }
     </script>
@@ -159,7 +159,7 @@
           and captions locally, then re-run editable JSON steps after UI changes.
         </p>
         <div class="install">
-          <code id="cli-commands">npm install --global @gnawbit/tabretake@0.4.2
+          <code id="cli-commands">npm install --global @gnawbit/tabretake@0.5.0
 tabretake demo --preset daylight</code>
           <button type="button" data-copy="cli-commands" aria-label="Copy CLI commands">Copy</button>
         </div>
@@ -171,7 +171,7 @@ tabretake demo --preset daylight</code>
         <div class="skill-install">
           <h2>Add the Agent Skill</h2>
           <div class="install">
-            <code id="skill-command">npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.2" --skill tabretake</code>
+            <code id="skill-command">npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.0" --skill tabretake</code>
             <button type="button" data-copy="skill-command" aria-label="Copy Skill command">Copy</button>
           </div>
           <p class="note">Run in your target project after installing the CLI. Skills CLI needs Node 22.20+.
@@ -191,16 +191,16 @@ tabretake demo --preset daylight</code>
         <div class="card">
           <h2>Web app URL + JSON steps</h2>
           <p>Runs with local Chrome/Edge immediately or pinned Chromium via <code>tabretake setup</code>.
-            Use <code>init --auto</code> or <code>plan</code> to inspect controls, run <code>record</code>,
-            then <code>render --vertical</code>.</p>
+            Use <code>capture</code> to record clicks interactively, or <code>init --auto</code> and <code>plan</code>,
+            then <code>run --vertical --scale 2</code>.</p>
           <p>Keep the story with your app and update its steps when the UI changes.
             <a href="https://github.com/gnawbit/tabretake#quickstart">Record a web flow</a>.</p>
         </div>
         <div class="card">
           <h2>Existing recording + timestamp marks</h2>
-          <p>Supply a local video and the moments to highlight. Add captions and
-            focus points in a JSON <code>marks</code> file, then validate and render it.
-            Timestamps come from you or video inspection.</p>
+          <p>Supply a local video and click directly on zoom targets using
+            <code>tabretake mark --video recording.mp4</code>, or author a JSON <code>marks</code>
+            file and render it locally.</p>
           <p>Rendering uses no Chromium. If the browser is the only failed
             <code>doctor</code> check, you can continue; fix other required errors first.
             <a href="https://github.com/gnawbit/tabretake#use-an-existing-screen-recording">Render an existing recording</a>.</p>

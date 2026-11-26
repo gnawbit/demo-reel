@@ -79,17 +79,17 @@ flowchart TD
 
 ### 极速上手体验（30秒）
 ```bash
-npm install --global @gnawbit/tabretake@0.4.2
+npm install --global @gnawbit/tabretake@0.5.0
 tabretake demo --preset daylight
 ```
 
 如果你在用 Claude Code，也可以直接装插件：
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.2"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.0"
 ```
 对它说一句：“为 http://localhost:3000 的注册流程生成一张带点击放大的 README 动图”，它就会帮你写步骤并全自动跑出成片。
 
-目前刚刚发布了 v0.4.2，很想听听大家对于“Web 演示可重复生成”这一工作流的看法与建议，欢迎吐槽或提 Issue！如果觉得对你有帮助，求一个 Star 支持～🌟
+目前刚刚发布了 v0.5.0，支持浏览器交互式直接捕获生成 `story.json`（`capture`）、本地点击视频自动打点（`mark`）、一条命令闭环出片（`run`）与 2x HiDPI 高清放大，很想听听大家对于“Web 演示可重复生成”这一工作流的看法与建议，欢迎吐槽或提 Issue！如果觉得对你有帮助，求一个 Star 支持～🌟
 ```
 
 ---
@@ -171,7 +171,7 @@ Instead of synthetic marketing templates, we verified TabRetake against complex 
 
 Try it in 30 seconds:
 ```bash
-npm install --global @gnawbit/tabretake@0.4.2
+npm install --global @gnawbit/tabretake@0.5.0
 tabretake demo --preset daylight
 ```
 

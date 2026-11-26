@@ -24,8 +24,8 @@
 |---|---|
 | **运行环境与协议** | Node.js `>=20.9.0`，MIT 协议，100% 本地运行（无云端上传、无遥测收集） |
 | **浏览器引擎** | Playwright Chromium，支持未执行 `setup` 时自动回退本机 **Chrome / Edge**（`--browser auto`） |
-| **双输入模式** | (1) 实时网页 URL + 可编辑 JSON 步骤（支持 `init --auto`） · (2) 已有录屏（OBS/QuickTime）+ 时间标记 `marks` |
-| **输出产物** | `16:9` 1080p MP4、`README GIF`（约 400–900 KB）、`9:16` 竖屏 MP4/GIF、PNG 封面、`record.json` 时间线 |
+| **双输入模式** | (1) 交互式 `capture` / `init --auto` / 可编辑 JSON 步骤 · (2) 已有录屏（OBS/QuickTime）+ 可视化 `mark` 打点 |
+| **输出产物** | `16:9` 1080p MP4、`README GIF`（约 400–900 KB）、`9:16` 竖屏 MP4/GIF、PNG 封面、`record.json`（支持 2x HiDPI `--scale 2`） |
 | **内置品牌主题** | `midnight`（暗夜紫）、`daylight`（浅色极简）、`paper`（暖纸复古）、`slate`（石板翠绿） |
 | **平台与智能体** | Windows、macOS、Linux · 支持 Claude Code、Codex、Cursor 及所有 [Agent Skills](https://agentskills.io) 客户端 |
 
@@ -44,7 +44,7 @@
 ### 🚀 零等待极速体验（自动适配本机 Chrome/Edge）
 
 ```bash
-npm install --global @gnawbit/tabretake@0.4.2
+npm install --global @gnawbit/tabretake@0.5.0
 tabretake demo --preset daylight
 ```
 
@@ -98,7 +98,7 @@ tabretake demo --preset daylight
 从 npm 安装 CLI。
 
 ```bash
-npm install --global @gnawbit/tabretake@0.4.2
+npm install --global @gnawbit/tabretake@0.5.0
 tabretake demo
 ```
 
@@ -123,7 +123,7 @@ node bin/tabretake.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.2" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.0" --skill tabretake
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
@@ -133,7 +133,7 @@ npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.4.2" --skill t
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.4.2"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.0"
 ```
 
 两种工作流安装方式任选其一；插件仍需先安装上述 TabRetake 运行环境。

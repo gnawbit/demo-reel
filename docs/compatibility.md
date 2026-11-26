@@ -9,7 +9,7 @@ TabRetake preserves story JSON compatibility across releases. This guide records
 
 ## Behavioral Changes by Release
 
-* **Unreleased (main)**:
+* **v0.5.0**:
   * Added `tabretake capture` interactive recorder (outputs editable `story.json`), `tabretake run` one-command validate + record + render pipeline, and `tabretake mark` local visual video marker UI.
   * Added native `<select>` step action (`select`), HiDPI `scale: 2` / `--scale 2`, theme-matched cursor ripples, rounded content corner masks, `brand.frame` (`auto`, `browser`, `phone`, `none`), and smarter `init --auto` element scoring.
 * **v0.4.2**:

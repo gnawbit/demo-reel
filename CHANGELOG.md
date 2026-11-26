@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.0 — 2026-11-26
 
 - Add `tabretake capture` interactive recorder so users can click, type, select, and pin `focus` steps directly in a browser window to generate an editable `story.json` (with automatic password field skipping).
 - Add `tabretake run` to validate, record, and render in a single command (supporting story, marks, and recorded timelines).
