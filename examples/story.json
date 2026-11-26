@@ -6,8 +6,7 @@
   "initialWait": 900,
   "tail": 1200,
   "brand": {
-    "background": "#070a12",
-    "accent": "#6c5ce7"
+    "preset": "daylight"
   },
   "steps": [
     { "action": "wait", "ms": 600 },
