@@ -36,6 +36,7 @@ An editable story:
 | `click`, `hover` | locator, `pause`, `caption`, `zoom` |
 | `focus` | locator, `pause`, `caption`, `zoom`; measure the target after scrolling into view |
 | `type` | locator, `value`, `pause`, `caption`, `zoom` |
+| `select` | locator, `value` or `text`, `pause`, `caption`, `zoom` |
 | `drag` | locator, `dx`, `dy`, `steps`, `pause`, `caption`, `zoom` |
 | `scroll` | `y`, `pause`, `caption`, `zoom` |
 | `press` | `key`, `pause`, `caption`, `zoom` |
@@ -74,7 +75,7 @@ new timing; saved timelines keep their original timestamps.
 Set `zoom: false` when the result is elsewhere on screen. Avoid
 recording a blank initial load or ending on an unfinished dialog.
 
-To improve blurry output, record at a larger viewport such as 1920x1080.
+To improve blurry output when zooming, record with `"scale": 2` (or `--scale 2`) for HiDPI 2x capture, or use a larger viewport such as `1920x1080`. To capture an editable story by clicking through the app interactively, run `tabretake capture --url <url> --out story.json`.
 If text does not fit, shorten the caption or split it across meaningful steps.
 If a selector fails, inspect the reported step and refresh the page plan rather
 than guessing at selectors or increasing every timeout.

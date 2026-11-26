@@ -20,9 +20,12 @@ checks still apply, and missing fonts need visual inspection of captions.
 ```
 
 ```bash
+tabretake mark --video recording.mp4 --out story-video.json
 tabretake validate --config story-video.json --json
 tabretake render --config story-video.json --video recording.mp4 --vertical --json
 ```
+
+Use `tabretake mark` to click directly on the video frame in a local browser UI instead of estimating normalized `x`, `y` and `t` manually.
 
 `video` in the config is relative to the config file; `--video` is relative to
 the current working directory. Marks use **seconds**. Prefer normalized `x`, `y`
@@ -71,7 +74,7 @@ Branding belongs at the top of a story/marks config, or inside a timeline's `con
 }
 ```
 
-Built-in `brand.preset` (or `--preset`) themes: `midnight` (dark studio, default), `daylight` (light minimal), `paper` (warm cream), and `slate` (dark slate-emerald). Explicit `background` and `accent` override preset colors unless `--preset` is passed to `render`.
+Built-in `brand.preset` (or `--preset`) themes: `midnight` (dark studio, default), `daylight` (light minimal), `paper` (warm cream), and `slate` (dark slate-emerald). Cursor click ripples automatically adopt `accent`; `brand.frame` supports `"auto"` (default), `"browser"`, `"phone"` (lightweight vertical device bezel), or `"none"`. Explicit `background` and `accent` override preset colors unless `--preset` is passed to `render`. Use `"scale": 2` (or `--scale 2` on `record`/`run`) for HiDPI 2x recording.
 
 Use at most two title lines. Captions wrap and fit within the frame; excessively
 long captions produce an error. Chinese text needs a CJK font such as Microsoft

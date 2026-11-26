@@ -46,8 +46,11 @@ required errors first. Node.js 20.9+ is required; Chinese captions need a CJK sy
 ## Choose the input
 
 - **Web app:** confirm the URL and intended flow. Use a test account and non-sensitive demo data.
-- **Existing recording:** get the file and moments to highlight. Read
+- **Existing recording:** get the file and moments to highlight, or launch
+  `tabretake mark --video recording.mp4` for interactive timestamp picking. Read
   [recording input and branding](references/rendering.md); do not invent marks.
+- **Interactive capture:** `tabretake capture --url https://your-app.com --out demo.json --run`
+  lets the user perform the steps in a visible browser and saves a reusable story.
 - **Example requested:** `tabretake demo --story readme|onboarding|release --port 0`
   runs a fictional bundled app (not evidence of external adoption).
 
@@ -69,18 +72,21 @@ theme preset (`midnight`, `daylight`, `paper`, `slate`), or output orientation.
    and native select `options`; `name` remains the HTML attribute. Use scoped `selector`
    when labels repeat or overlap. `init` will not overwrite an existing story.
 
-3. Validate, preview, record and render:
+3. Validate, preview, record and render (or use `tabretake run` for one-command execution):
 
    ```bash
    tabretake validate --config demo.json --json
    tabretake preview --config demo.json --headless --json
-   tabretake record --config demo.json --out demo --json
+   tabretake run --config demo.json --out demo --vertical --scale 2 --json
+   # Or run record and render separately:
+   tabretake record --config demo.json --out demo --scale 2 --json
    tabretake render --config demo/record.json --vertical --json
    ```
 
    Omit `--vertical` for landscape only; add `--no-gif` to skip GIFs; pass
    `--preset daylight|paper|slate|midnight` to switch themes without re-recording;
-   pass `--browser chrome|msedge|chromium|auto` to pick a browser engine.
+   pass `--browser chrome|msedge|chromium|auto` to pick a browser engine;
+   pass `--scale 2` for HiDPI Retina recording when zooming in.
    Use `--vertical --zoom 1 --vertical-zoom 1.8` to keep landscape overview while
    enlarging portrait focus targets (`vertical.zoom` saves it in config; `zoom: false`
    keeps full view). Record narrow viewports (e.g. `390x844`) for mobile flows.

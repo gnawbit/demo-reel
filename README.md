@@ -164,14 +164,16 @@ node bin/tabretake.mjs doctor
 # 2. See it work on the bundled demo app
 node bin/tabretake.mjs demo
 
-# 3. Use it on your own app (Auto-detect interactive steps + theme preset)
+# 3. Record your own app (choose interactive capture or auto-scan + one-command run)
+tabretake capture --url https://your-app.com --out demo.json --run --vertical --preset daylight
+# Or auto-scan DOM controls into an editable story, then run:
 tabretake init --url https://your-app.com --auto --preset daylight
-tabretake record --config demo.json
-tabretake render --config demo/record.json --vertical
+tabretake run --config demo.json --vertical --scale 2
 ```
 
-`init --auto` scans your target page, detects visible inputs and buttons, and generates a runnable multi-step story with captions.
-Without `--auto`, `init` creates a minimal starter waiting on the page. Use `plan --url <url>` to inventory all available DOM controls (including ARIA/HTML `label` and native select `options`).
+`capture` opens a browser window so you can click, type, select, and pin focus points directly — saving an editable `demo.json` (never storing password values) and optionally rendering immediately with `--run`.
+`init --auto` scans your target page, skips navigation dead links and destructive actions, prioritizes main form/CTA controls, and generates a runnable multi-step story with captions.
+`run` validates, records, and renders in a single command (or accepts an existing `marks` or `record.json` config). You can also run `record` and `render` separately, or use `plan --url <url>` to inspect all DOM controls (including ARIA/HTML `label` and native select `options`).
 `name` remains the HTML attribute and `selector` is the suggested CSS locator; this is a DOM inventory rather than a full accessibility tree.
 
 ```bash
@@ -251,7 +253,7 @@ Preview checks browser actions. Use a rendered clip to check zooms and captions.
 }
 ```
 
-Actions: `wait`, `goto`, `click`, `type`, `hover`, `focus`, `drag`, `scroll`, `press`,
+Actions: `wait`, `goto`, `click`, `type`, `select`, `hover`, `focus`, `drag`, `scroll`, `press`,
 `waitFor`, `screenshot`.
 
 `click` waits for an enabled, unobstructed target up to `timeout` (milliseconds, default 20,000; blocked clicks return `STEP_TIMEOUT`).
@@ -292,7 +294,7 @@ trimmed output, starting at zero, and must be shorter than the video.
 
 ### Theme presets & vertical branding
 
-Choose a built-in `brand.preset` (`midnight`, `daylight`, `paper`, or `slate`) in your config or override it at render time with `--preset <name>`. Explicit `brand.background` and `brand.accent` override preset colors unless `--preset` is passed on the CLI.
+Choose a built-in `brand.preset` (`midnight`, `daylight`, `paper`, or `slate`) in your config or override it at render time with `--preset <name>`. Cursor click ripples automatically follow the theme's `accent` color, and `brand.frame` supports `"auto"` (default), `"browser"`, `"phone"` (lightweight portrait bezel), or `"none"`. Explicit `brand.background` and `brand.accent` override preset colors unless `--preset` is passed on the CLI. Use `"scale": 2` (or `--scale 2`) for HiDPI 2x recording so zoomed shots stay crisp.
 
 ```json
 "brand": {
@@ -327,11 +329,14 @@ for cropped context.
 | `tabretake doctor [--json]` | Check Node, Chromium, ffmpeg, fonts |
 | `tabretake setup` | Install the Chromium version used by this CLI |
 | `tabretake init --url <url> [--auto] [--preset <name>]` | Create an editable story file (`--auto` scans controls; `--preset` sets theme) |
+| `tabretake capture --url <url> [--out demo.json] [--run]` | Record your real browser clicks/inputs into an editable `story.json` |
 | `tabretake validate --config demo.json [--json]` | Validate a story, marks or recorded timeline without recording |
 | `tabretake plan --url <url>` | Screenshot + list interactive elements |
 | `tabretake record --config demo.json` | Record the story |
 | `tabretake preview --config demo.json` | Execute steps in a visible browser before recording |
 | `tabretake render --config demo/record.json [--preset <name>]` | Render MP4 + GIF |
+| `tabretake run --config demo.json [--vertical] [--scale 2]` | Validate, record, and render in one command |
+| `tabretake mark --video recording.mp4 [--out story-video.json]` | Open local visual studio to click-mark timestamps & zoom points |
 | `tabretake serve` | Serve the bundled demo app |
 | `tabretake demo [--preset <name>]` | Record + render the bundled demo |
 
@@ -359,7 +364,7 @@ Before recording, run `validate --config demo.json --json` against the packaged
 For editor completion, add `"$schema": "https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json"`
 to your config.
 
-`init`, `plan`, `record` and `render` accept `--json` (one JSON result object on stdout, progress on stderr).
+`init`, `capture`, `plan`, `record`, `render`, `run` and `mark` accept `--json` (one JSON result object on stdout, progress on stderr).
 Navigation failures return `PAGE_UNREACHABLE` or `PAGE_HTTP_ERROR` without echoing sensitive URLs;
 captions start when an action completes and hold during its `pause`.
 Run manual `--login` in an interactive terminal without `--json`, then reuse `--storage-state` in automation.
@@ -372,6 +377,7 @@ See [compatibility](docs/compatibility.md) for legacy version behavior (`v0.4.0`
 --storage-state auth.json
 --proxy http://127.0.0.1:10808
 --viewport 1440x810
+--scale 2               # 1 (default) or 2 (HiDPI Retina recording for crisp zooms)
 --headed                # watch the recording happen
 --vertical              # also render 9:16 + vertical GIF
 --video recording.mp4   # render an existing recording + marks
@@ -441,8 +447,14 @@ node bin/tabretake.mjs demo --story release --port 0 --out demo-release
 ## Use an existing screen recording
 
 If a site blocks automation, or you are demoing a desktop or mobile app, record
-the flow with OBS, Screen Studio, QuickTime or the OS recorder, then describe
-where to zoom in `marks`:
+the flow with OBS, Screen Studio, QuickTime or the OS recorder, then run the
+local visual studio to click on zoom targets directly (no manual math required):
+
+```bash
+tabretake mark --video recording.mp4 --out story-video.json
+```
+
+Or author `marks` JSON directly to describe where to zoom:
 
 ```json
 {

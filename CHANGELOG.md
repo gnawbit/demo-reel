@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Add `tabretake capture` interactive recorder so users can click, type, select, and pin `focus` steps directly in a browser window to generate an editable `story.json` (with automatic password field skipping).
+- Add `tabretake run` to validate, record, and render in a single command (supporting story, marks, and recorded timelines).
+- Add `tabretake mark` local visual video marker studio for click-to-mark timestamps and normalized `(x, y)` coordinates on existing screen recordings.
+- Upgrade `init --auto` element scoring to skip empty navigation links and destructive buttons while prioritizing main form/CTA controls and native `<select>` elements.
+- Add `select` story step action, HiDPI `--scale 2` / `"scale": 2` recording, theme-matched cursor click ripples, rounded content corner masks, and `brand.frame` (`auto`, `browser`, `phone`, `none`).
+
 ## 0.4.2 — 2026-11-26
 
 - Add automatic system Chrome/Edge fallback (`--browser auto|chromium|chrome|msedge`) so users can run `demo`, `init --auto`, `plan`, `preview`, and `record` immediately without waiting for `tabretake setup`.

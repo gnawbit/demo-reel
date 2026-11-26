@@ -156,14 +156,16 @@ node bin/tabretake.mjs doctor
 # 2. 跑一遍内置 demo
 node bin/tabretake.mjs demo
 
-# 3. 录你自己的产品（支持 --auto 自动生成步骤，--preset 选择主题）
+# 3. 录你自己的产品（交互式点击捕获，或自动扫描后一条命令出片）
+tabretake capture --url https://your-app.com --out demo.json --run --vertical --preset daylight
+# 或先自动生成可编辑故事，再一键录制渲染（--scale 2 开启 2x 高清放大）：
 tabretake init --url https://your-app.com --auto --preset daylight
-tabretake record --config demo.json
-tabretake render --config demo/record.json --vertical
+tabretake run --config demo.json --vertical --scale 2
 ```
 
-`init --auto` 会自动扫描目标网页，识别可见的输入框与按钮，直接生成一段包含输入、点击和字幕的多步骤演示故事。
-若不加 `--auto` 则生成初始占位模板。也可用 `tabretake plan --url <url>` 查看完整的 DOM 控件清单（包含 ARIA/HTML `label` 与原生 `<select>` `options`）。
+`capture` 会打开真实浏览器窗口，让你像平时一样点击、输入、选下拉框、快捷键标 `focus`（密码框自动脱敏不落盘），结束即生成可编辑的 `demo.json`，加上 `--run` 还可直接出片。
+`init --auto` 会自动扫描目标网页，跳过空导航链接与危险按钮，优先主区域表单和主操作按钮生成多步骤故事。
+`run` 将校验、录制与渲染合并为一条命令（同样支持直接传入 `marks` 或 `record.json`）。你也可以继续分别调用 `record` 和 `render`，或用 `tabretake plan --url <url>` 查看完整 DOM 控件清单（含 ARIA/HTML `label` 与原生 `<select>` `options`）。
 `name` 仍是 HTML 属性，`selector` 是建议使用的 CSS 定位器。这是 DOM 清单，不是完整的无障碍树。
 
 ```bash
@@ -240,7 +242,7 @@ demo/
 }
 ```
 
-动作：`wait`、`goto`、`click`、`type`、`hover`、`focus`、`drag`、`scroll`、`press`、`waitFor`、`screenshot`。
+动作：`wait`、`goto`、`click`、`type`、`select`、`hover`、`focus`、`drag`、`scroll`、`press`、`waitFor`、`screenshot`。
 
 `click` 会等待目标启用且不被遮挡（步骤 `timeout` 使用毫秒，默认 20,000；持续阻挡会返回 `STEP_TIMEOUT`）。
 
@@ -275,7 +277,7 @@ demo/
 
 ### 主题预设与竖屏品牌配置
 
-支持在配置中选择内置主题 `brand.preset`（`midnight`、`daylight`、`paper`、`slate`），或在渲染时通过 `--preset <name>` 一键切换皮肤。显式指定的 `brand.background` / `brand.accent` 会覆盖预设颜色（除非传入命令行 `--preset`）。
+支持在配置中选择内置主题 `brand.preset`（`midnight`、`daylight`、`paper`、`slate`），或在渲染时通过 `--preset <name>` 一键切换皮肤。点击波纹颜色会自动跟随主题 `accent`；`brand.frame` 支持 `"auto"`（默认）、`"browser"`、`"phone"`（轻量竖屏手机边框）或 `"none"`。显式指定的 `brand.background` / `brand.accent` 会覆盖预设颜色（除非传入命令行 `--preset`）。传入 `"scale": 2` 或 `--scale 2` 可开启 2x HiDPI 录制，放大局部时更清晰。
 
 ```json
 "brand": {
@@ -310,11 +312,14 @@ demo/
 | `tabretake doctor [--json]` | 检查 Node、Chromium、ffmpeg、字体 |
 | `tabretake setup` | 安装与当前 CLI 匹配的 Chromium |
 | `tabretake init --url <url> [--auto] [--preset <name>]` | 创建可编辑的故事文件（`--auto` 自动生成步骤，`--preset` 设置主题） |
+| `tabretake capture --url <url> [--out demo.json] [--run]` | 打开浏览器亲自点一遍流程，自动生成可编辑 `story.json` |
 | `tabretake validate --config demo.json [--json]` | 预检故事、录屏标记或录制时间线 |
 | `tabretake plan --url <url>` | 截图 + 列出可交互元素 |
 | `tabretake record --config demo.json` | 录制故事 |
 | `tabretake preview --config demo.json` | 在可见浏览器中执行步骤，提前检查故事 |
 | `tabretake render --config demo/record.json [--preset <name>]` | 渲染 MP4 + GIF |
+| `tabretake run --config demo.json [--vertical] [--scale 2]` | 一条命令完成校验、录制与渲染出片 |
+| `tabretake mark --video recording.mp4 [--out story-video.json]` | 打开本地可视化打点器，点击视频画面自动生成 `marks` |
 | `tabretake serve` | 启动内置 demo 站点 |
 | `tabretake demo [--preset <name>]` | 录制 + 渲染内置 demo |
 
@@ -340,7 +345,7 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 （`record` 与 `render` 在改写输出前也会自动校验）。编辑器补全可在配置中加入
 `"$schema": "https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json"`。
 
-`init`、`plan`、`record`、`render` 均支持 `--json`（标准输出返回结果对象，进度写入 stderr）。
+`init`、`capture`、`plan`、`record`、`render`、`run`、`mark` 均支持 `--json`（标准输出返回结果对象，进度写入 stderr）。
 导航异常返回 `PAGE_UNREACHABLE` 或 `PAGE_HTTP_ERROR` 且不回显敏感 URL；动作完成后字幕即刻显示并在 `pause` 期间保持。
 手动 `--login` 需在交互终端运行且不带 `--json`，自动调用使用 `--storage-state`。
 旧版本历史兼容细节见[版本兼容性指南](docs/compatibility.md)。
@@ -352,6 +357,7 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 --storage-state auth.json
 --proxy http://127.0.0.1:10808
 --viewport 1440x810
+--scale 2               # 1（默认）或 2（2x Retina 高清录制，放大不发虚）
 --headed                # 看着它录
 --vertical              # 同时输出 9:16 和竖屏 GIF
 --video recording.mp4   # 渲染已有录屏 + marks
@@ -416,7 +422,13 @@ node bin/tabretake.mjs demo --story release --port 0 --out demo-release
 ## 用已有录屏
 
 如果站点有验证码、强反爬，或者你要演示的是桌面 App / 手机 App，先用 OBS、
-Screen Studio、QuickTime 或系统录屏录下来，再用 `marks` 描述哪里该放大：
+Screen Studio、QuickTime 或系统录屏录下来，直接用本地可视化打点器在视频画面上点选需要放大的区域（无需手算时间与坐标）：
+
+```bash
+tabretake mark --video recording.mp4 --out story-video.json
+```
+
+也可以直接编写 `marks` JSON 描述哪里该放大：
 
 ```json
 {
