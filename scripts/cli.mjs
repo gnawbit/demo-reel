@@ -4,7 +4,7 @@ const HELP = `
 TabRetake — turn any URL into a polished demo video and GIF.
 
 Usage:
-  tabretake setup   [--with-deps]
+  tabretake setup   [--with-deps] [--proxy <url>] [--json]
   tabretake --version
   tabretake capabilities [--json]
   tabretake doctor [--json]

@@ -1,13 +1,16 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
+import { EventEmitter } from "node:events";
 import { cp, mkdtemp, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { PassThrough } from "node:stream";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { diagnose } from "../scripts/doctor.mjs";
 import { supportsNodeVersion, version } from "../scripts/lib/metadata.mjs";
+import { setup } from "../scripts/setup.mjs";
 
 const exec = promisify(execFile);
 const root = fileURLToPath(new URL("../", import.meta.url));
@@ -27,6 +30,8 @@ test("version and capabilities work outside the checkout", async () => {
   assert.equal(stderr, "");
   assert.equal(result.version, version);
   assert.equal(result.schemaVersion, 1);
+  assert.equal(result.commands.setup.json, true);
+  assert.equal(result.commands.setup.options.proxy.type, "string");
   assert.equal(result.commands.doctor.json, true);
   assert.equal(result.commands.record.json, true);
   assert.equal(result.commands.record.options.scale.type, "string");
@@ -110,4 +115,65 @@ test("an installation with no dependencies can still diagnose itself", async (t)
     }
     return true;
   });
+});
+
+function fakeSpawn(emitFn) {
+  const calls = [];
+  const spawn = (cmd, args, opts) => {
+    const child = new EventEmitter();
+    child.stdout = new PassThrough();
+    child.stderr = new PassThrough();
+    calls.push({ cmd, args, opts });
+    queueMicrotask(() => emitFn(child));
+    return child;
+  };
+  return { spawn, calls };
+}
+
+test("setup forwards proxy and --with-deps and classifies network/permission failures", async () => {
+  const sink = new PassThrough();
+  const ok = fakeSpawn((child) => {
+    child.stdout.end("Downloading Chromium...\n");
+    child.stderr.end();
+    child.emit("close", 0, null);
+  });
+  await setup(["--with-deps", "--proxy", "http://127.0.0.1:10808"], {
+    spawn: ok.spawn, env: {}, stdout: sink, stderr: sink,
+  });
+  assert.deepEqual(ok.calls[0].args.slice(1), ["install", "chromium", "--with-deps"]);
+  assert.equal(ok.calls[0].opts.env.HTTPS_PROXY, "http://127.0.0.1:10808");
+  assert.equal(ok.calls[0].opts.env.http_proxy, "http://127.0.0.1:10808");
+
+  const netFail = fakeSpawn((child) => {
+    child.stdout.end();
+    child.stderr.write("\x1b[31mError: Failed to download Chromium, caused by\n");
+    child.stderr.write("Request to https://user:secret@cdn.playwright.dev/ failed: connect ETIMED");
+    child.stderr.end("OUT 1.2.3.4\n");
+    child.emit("close", 1, null);
+  });
+  await assert.rejects(
+    setup([], { spawn: netFail.spawn, env: {}, stdout: sink, stderr: sink }),
+    (error) => {
+      assert.equal(error.code, "CHROMIUM_SETUP_FAILED");
+      assert.match(error.message, /exit 1.*connect ETIMEDOUT/);
+      assert.doesNotMatch(error.message, /secret/);
+      assert.match(error.hint, /PLAYWRIGHT_DOWNLOAD_HOST=https:\/\/cdn\.npmmirror\.com\/binaries\/playwright/);
+      return true;
+    },
+  );
+
+  const permFail = fakeSpawn((child) => {
+    child.stdout.end();
+    child.stderr.end("Error: EACCES: permission denied, mkdir '/root/.cache/ms-playwright'\n");
+    child.emit("close", 1, null);
+  });
+  await assert.rejects(
+    setup([], { spawn: permFail.spawn, env: {}, stdout: sink, stderr: sink }),
+    (error) => {
+      assert.equal(error.code, "CHROMIUM_SETUP_FAILED");
+      assert.match(error.message, /EACCES: permission denied/);
+      assert.match(error.hint, /PLAYWRIGHT_BROWSERS_PATH/);
+      return true;
+    },
+  );
 });

@@ -36,7 +36,11 @@ const recordOptions = {
 };
 
 export const commandOptions = {
-  setup: { "with-deps": { type: "boolean", default: false } },
+  setup: {
+    "with-deps": { type: "boolean", default: false },
+    proxy: { type: "string" },
+    json: { type: "boolean", default: false },
+  },
   init: {
     json: { type: "boolean", default: false },
     url: { type: "string" },
