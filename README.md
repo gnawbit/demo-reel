@@ -5,6 +5,9 @@ English · [简体中文](docs/README.zh-CN.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
 [![Latest release](https://img.shields.io/github/v/release/gnawbit/tabretake?label=latest%20release&color=6c5ce7)](https://github.com/gnawbit/tabretake/releases/latest)
+[![npm version](https://img.shields.io/npm/v/@gnawbit/tabretake?color=6c5ce7&logo=npm)](https://www.npmjs.com/package/@gnawbit/tabretake)
+[![npm downloads](https://img.shields.io/npm/dw/@gnawbit/tabretake?color=339933&logo=npm)](https://www.npmjs.com/package/@gnawbit/tabretake)
+[![CI](https://github.com/gnawbit/tabretake/actions/workflows/ci.yml/badge.svg)](https://github.com/gnawbit/tabretake/actions/workflows/ci.yml)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/tabretake?style=social)](https://github.com/gnawbit/tabretake/stargazers)
 [![Listed in Awesome Agent Skills](https://sagargupta.online/awesome-skills/badge.svg)](https://github.com/Sagargupta16/awesome-skills)
@@ -419,20 +422,15 @@ SPAs and authenticated pages.
 
 Reproduce authenticated flows in [Vikunja](https://gnawbit.github.io/tabretake/vikunja/)
 (task creation and Kanban drag) and [Memos](https://gnawbit.github.io/tabretake/memos/)
-(rich-text notes and search). Both recipes pin unmodified upstream releases and
-include downloadable stories, local setup and retake instructions.
+(rich-text notes and search) — see the [Real-World Showcase](#-real-world-showcase-proven-on-production-open-source-apps)
+above for story files, GIFs and posters. Both recipes pin unmodified upstream
+releases and include downloadable stories, local setup and retake instructions.
 
 The [manual demo workflow](.github/workflows/demo.yml) starts a pinned TodoMVC
 build, waits for it, records the story and uploads MP4, GIF and poster artifacts.
 Run **Actions → Regenerate TodoMVC demo → Run workflow** in your fork.
 For your own app, replace its checkout/start command, readiness URL and story.
 Keep demo data disposable. Review the generated assets before publishing them.
-
-| Real-World Example | Upstream Project | Story | Output |
-|---|---|---|---|
-| Vikunja Kanban (Hero) | [go-vikunja/vikunja](https://github.com/go-vikunja/vikunja) (15k★) | [site/vikunja/story.json](site/vikunja/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
-| Memos Knowledge Base | [usememos/memos](https://github.com/usememos/memos) (35k★) | [site/memos/story.json](site/memos/story.json) | [GIF](docs/examples/memos.gif) · [Poster](docs/examples/memos.png) |
-| TodoMVC Benchmark | [tastejs/todomvc](https://github.com/tastejs/todomvc) (ES6) | [site/todomvc/story.json](site/todomvc/story.json) | [GIF](docs/examples/todomvc.gif) · [Poster](docs/examples/todomvc.png) |
 
 For zero-dependency local testing without installing upstream apps, TabRetake also includes three bundled demo presets (readme, onboarding, release):
 Run a preset from the source checkout (or use the installed `tabretake` command):

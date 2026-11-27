@@ -48,7 +48,7 @@
   "author": "gnawbit",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/gnawbit/tabretake.git"
+    "url": "git+https://github.com/gnawbit/tabretake.git"
   },
   "homepage": "https://gnawbit.github.io/tabretake/",
   "bugs": {

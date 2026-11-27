@@ -5,8 +5,12 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](../LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](../package.json)
 [![最新发行版](https://img.shields.io/github/v/release/gnawbit/tabretake?label=latest%20release&color=6c5ce7)](https://github.com/gnawbit/tabretake/releases/latest)
+[![npm 版本](https://img.shields.io/npm/v/@gnawbit/tabretake?color=6c5ce7&logo=npm)](https://www.npmjs.com/package/@gnawbit/tabretake)
+[![npm 周下载](https://img.shields.io/npm/dw/@gnawbit/tabretake?color=339933&logo=npm)](https://www.npmjs.com/package/@gnawbit/tabretake)
+[![CI](https://github.com/gnawbit/tabretake/actions/workflows/ci.yml/badge.svg)](https://github.com/gnawbit/tabretake/actions/workflows/ci.yml)
 [![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](../SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/tabretake?style=social)](https://github.com/gnawbit/tabretake/stargazers)
+[![Listed in Awesome Agent Skills](https://sagargupta.online/awesome-skills/badge.svg)](https://github.com/Sagargupta16/awesome-skills)
 
 **自动化生成 Web 应用演示。从此告别手动录屏与繁琐剪辑。**
 
@@ -394,7 +398,7 @@ node bin/tabretake.mjs record --config demo.json --storage-state auth.json
 ## 示例
 
 真实开源应用案例包括 [Vikunja](https://gnawbit.github.io/tabretake/vikunja/) 的任务创建与看板拖拽，
-以及 [Memos](https://gnawbit.github.io/tabretake/memos/) 的富文本笔记与搜索。
+以及 [Memos](https://gnawbit.github.io/tabretake/memos/) 的富文本笔记与搜索（成片与故事脚本见顶部 [真实开源项目实测展台](#-真实开源项目实测展台-real-world-showcase)）。
 案例固定上游原版发行包，提供故事下载、本机搭建和重复录制方法。
 
 [手动演示工作流](../.github/workflows/demo.yml) 会启动固定版本的 TodoMVC、等待服务就绪、
@@ -402,12 +406,6 @@ node bin/tabretake.mjs record --config demo.json --storage-state auth.json
 **Actions → Regenerate TodoMVC demo → Run workflow** 即可运行。
 接入自己的应用时，替换应用检出与启动命令、就绪检测地址和故事文件。
 使用可重置的演示数据，并在发布前检查成片。
-
-| 真实开源案例 | 上游项目 | 故事脚本 | 输出产物 |
-|---|---|---|---|
-| Vikunja 看板 (Hero) | [go-vikunja/vikunja](https://github.com/go-vikunja/vikunja) (15k★) | [site/vikunja/story.json](../site/vikunja/story.json) | [16:9 MP4](hero.mp4) · [9:16 MP4](hero-9x16.mp4) · [GIF](hero.gif) |
-| Memos 知识库 | [usememos/memos](https://github.com/usememos/memos) (35k★) | [site/memos/story.json](../site/memos/story.json) | [GIF](examples/memos.gif) · [封面](examples/memos.png) |
-| TodoMVC 经典标准 | [tastejs/todomvc](https://github.com/tastejs/todomvc) (ES6) | [site/todomvc/story.json](../site/todomvc/story.json) | [GIF](examples/todomvc.gif) · [封面](examples/todomvc.png) |
 
 如需在不下载任何上游项目的前提下快速体验，TabRetake 也内置了三个虚构应用预设（readme、onboarding、release），执行 `tabretake demo` 即可体验。从源码目录运行（全局安装可将前缀替换为 `tabretake`）：
 
