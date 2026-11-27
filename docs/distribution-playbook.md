@@ -1,6 +1,6 @@
 # TabRetake 全渠道推广与种子用户获取操作手册 (Distribution Playbook)
 
-本手册用于支持 TabRetake（当前版本 **v0.5.0**）的社区发布、技术写作与开发者试用收集。遵循客观、实测、尊重开源社区规范的原则，不夸大效果、不向无关项目仓库 Issue 投放推广，以真实可运行的命令行与案例成片获取初期反馈和外部采用。
+本手册用于支持 TabRetake（当前版本 **v0.5.1**）的社区发布、技术写作与开发者试用收集。遵循客观、实测、尊重开源社区规范的原则，不夸大效果、不向无关项目仓库 Issue 投放推广，以真实可运行的命令行与案例成片获取初期反馈和外部采用。
 
 ---
 
@@ -9,8 +9,8 @@
 1. [渠道矩阵与当前推进状态](#一渠道矩阵与当前推进状态)
 2. [国内核心开发者社区发布文案](#二国内核心开发者社区发布文案)
    - [V2EX（分享创造 / 程序员）](#1-v2ex分享创造--程序员)
-   - [阮一峰《科技爱好者周刊》投稿（已更新同步至 v0.5.0）](#2-阮一峰科技爱好者周刊投稿)
-   - [HelloGitHub 开源月刊推荐投稿（已更新同步至 v0.5.0）](#3-hellogithub-开源月刊推荐投稿)
+   - [阮一峰《科技爱好者周刊》投稿（已更新同步至 v0.5.1）](#2-阮一峰科技爱好者周刊投稿)
+   - [HelloGitHub 开源月刊推荐投稿（已更新同步至 v0.5.1）](#3-hellogithub-开源月刊推荐投稿)
 3. [海外顶级技术生态发布文案](#三海外顶级技术生态发布文案)
    - [Show HN (Hacker News)](#1-show-hn-hacker-news)
    - [Twitter / X 发布 Thread](#2-twitter--x-发布-thread)
@@ -32,8 +32,8 @@
 |---|---|---|---|
 | **仓库检索与技能目录**<br>GitHub Topics / `skills.sh` | GitHub 站内搜索与 Agent Skills CLI 用户 | 13 个高召回 Topics；`skills.sh` 新名页面 `gnawbit/tabretake/tabretake` | 已完成标签补全与新名详情页上线（`2026-11-27` 核查：Algolia `q=tabretake` 尚为 0 条，搜索仍命中旧名 `demo-reel`） |
 | **开源月刊 / 精选清单**<br>阮一峰周刊 / HelloGitHub / Awesome 清单 | 国内中文开源读者、Playwright 与 Claude Code 生态用户 | 真实案例成片展示 + 一键可复现 CLI / Skill | `Sagargupta16/awesome-skills` 已收录并加徽标；周刊 `#13728`、HelloGitHub `#4487`、`awesome-playwright#319`、`awesome-llm-skills#359` 已开启；`awesome-claude-skills#2504` 返回 404 待核实补提 |
-| **中文开发者主阵地**<br>V2EX / 掘金 / 知乎 | Web 全栈、前端与 AI 编程助手高频用户 | 痛点对比 + `capture` / `mark` / `run` 30 秒上手 + 真实案例 GIF | **待发布（文稿已按 v0.5.0 就绪，需账号登录后发布）** |
-| **海外技术主阵地**<br>Show HN / Twitter(X) / Reddit / Dev.to | 独立开发者、OSS 维护者、Cursor/Claude Code 用户 | `Show HN` 技术工程解析 + 4 推文 Thread + 英文深度复盘 | **待发布（文稿已按 v0.5.0 就绪，需账号登录后发布）** |
+| **中文开发者主阵地**<br>V2EX / 掘金 / 知乎 | Web 全栈、前端与 AI 编程助手高频用户 | 痛点对比 + `capture` / `mark` / `run` 30 秒上手 + 真实案例 GIF | **待发布（文稿已按 v0.5.1 就绪，需账号登录后发布）** |
+| **海外技术主阵地**<br>Show HN / Twitter(X) / Reddit / Dev.to | 独立开发者、OSS 维护者、Cursor/Claude Code 用户 | `Show HN` 技术工程解析 + 4 推文 Thread + 英文深度复盘 | **待发布（文稿已按 v0.5.1 就绪，需账号登录后发布）** |
 | **外部试用闭环**<br>定向邀请 & `first-demo.yml` | 有真实发版演示需求的 Web 开发者 | 试用模板反馈首次障碍、成片可用性与二次重拍效果 | **待授权发送（见 [docs/adoption.md](adoption.md)）** |
 
 ---
@@ -55,12 +55,12 @@
 3. **字幕经常挡住关键按钮**：浮在画面上的字幕很容易遮住输入框和 CTA；
 4. **必须手写脚本也很劝退**：如果只是为了录一个 15 秒演示，还要手写一套完整定位脚本，心智负担依然高。
 
-为此我开源了一个完全运行在本地、基于 **Playwright + FFmpeg + Sharp** 的命令行工具与 AI Agent Skill：**TabRetake（v0.5.0）**。
+为此我开源了一个完全运行在本地、基于 **Playwright + FFmpeg + Sharp** 的命令行工具与 AI Agent Skill：**TabRetake（v0.5.1）**。
 
 - GitHub：https://github.com/gnawbit/tabretake
 - 协议：MIT（100% 本地运行，零云端上传、无遥测）
 
-### v0.5.0 提供了三条低门槛工作流，不用全靠手写
+### v0.5.1 提供了三条低门槛工作流，不用全靠手写
 
 1. **浏览器交互直录成故事（`tabretake capture`）**：
    直接打开浏览器让你像平时一样点击、输入、下拉选择并锁定结果元素位置，退出时自动导出可编辑的 JSON 故事文件（自动跳过密码字段，支持 `--run` 直接顺手出片）。
@@ -84,7 +84,7 @@
 
 ### 30 秒本地直接试跑（复用本机 Chrome / Edge，无需等下载浏览器）
 ```bash
-npm install --global @gnawbit/tabretake@0.5.0
+npm install --global @gnawbit/tabretake@0.5.1
 tabretake demo --preset daylight
 ```
 想录自己的网站，直接运行交互捕获：
@@ -93,12 +93,12 @@ tabretake capture --url http://localhost:3000 --out demo.json --run --vertical -
 ```
 Claude Code 用户也可以直接安装插件或 Skill：
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.0"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.1"
 # 或通用 Agent Skills CLI：
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.0" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.1" --skill tabretake
 ```
 
-项目刚升级到 **v0.5.0**，非常希望听听大家在制作项目 README 动图、发版短片或对接 AI Coding Agent 时的真实痛点与建议。如果刚好帮到你，欢迎顺手点个 Star 支持一下，也欢迎用仓库里的反馈模板提真实试跑反馈！
+项目刚升级到 **v0.5.1**，非常希望听听大家在制作项目 README 动图、发版短片或对接 AI Coding Agent 时的真实痛点与建议。如果刚好帮到你，欢迎顺手点个 Star 支持一下，也欢迎用仓库里的反馈模板提真实试跑反馈！
 ```
 
 ---
@@ -107,7 +107,7 @@ npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.0" --skill t
 
 - **投稿地址**：在 [ruanyf/weekly](https://github.com/ruanyf/weekly/issues) 提交 Issue（当前已更新同步在 `ruanyf/weekly#13728`）。
 - **Issue 标题**：`开源项目推荐：TabRetake —— 可重复生成的 Web 应用演示与 README 动图生成器`
-- **Issue 内容参考稿（v0.5.0 同步版）**：
+- **Issue 内容参考稿（v0.5.1 同步版）**：
 
 ```markdown
 ## 项目名称
@@ -119,7 +119,7 @@ https://github.com/gnawbit/tabretake
 ## 项目简介
 每个 Web 项目发版或写 README 都需要演示动图与视频，但手动录屏不仅耗时，一旦界面微调就必须全部重录。
 
-TabRetake (v0.5.0) 是一个 100% 本地运行、基于 Playwright 与 FFmpeg 的声明式 Web 演示生成器（同时提供 CLI、Agent Skill 与 Claude Code 插件）。开发者既可以通过 `tabretake capture` 在浏览器真实点选一次自动生成可编辑的 JSON 故事，也可以用 `tabretake init --auto` 扫描页面控件或通过 `tabretake mark` 为已有录屏可视化打点，一键执行 `tabretake run` 生成带点击缓动放大、光标波纹与居底不遮挡字幕的 16:9 README GIF/MP4 及 9:16 竖屏发布短片。界面微调后只需更新配置重新运行，文案、主题预设或封面时间点改动甚至可以直接基于 `record.json` 秒级重渲染。
+TabRetake (v0.5.1) 是一个 100% 本地运行、基于 Playwright 与 FFmpeg 的声明式 Web 演示生成器（同时提供 CLI、Agent Skill 与 Claude Code 插件）。开发者既可以通过 `tabretake capture` 在浏览器真实点选一次自动生成可编辑的 JSON 故事，也可以用 `tabretake init --auto` 扫描页面控件或通过 `tabretake mark` 为已有录屏可视化打点，一键执行 `tabretake run` 生成带点击缓动放大、光标波纹与居底不遮挡字幕的 16:9 README GIF/MP4 及 9:16 竖屏发布短片。界面微调后只需更新配置重新运行，文案、主题预设或封面时间点改动甚至可以直接基于 `record.json` 秒级重渲染。
 
 ## 核心亮点
 1. **三栖零门槛输入**：支持浏览器交互直录（`capture`）、DOM 智能扫描（`init --auto`）与本地已有视频可视化打点（`mark`）；
@@ -136,7 +136,7 @@ TabRetake (v0.5.0) 是一个 100% 本地运行、基于 Playwright 与 FFmpeg �
 ### 3. HelloGitHub 开源月刊推荐投稿
 
 - **投稿地址**：在 [521xueweihan/HelloGitHub](https://github.com/521xueweihan/HelloGitHub/issues) 提交 Issue（当前已更新同步在 `521xueweihan/HelloGitHub#4487`）。
-- **Issue 内容参考稿（v0.5.0 同步版）**：
+- **Issue 内容参考稿（v0.5.1 同步版）**：
 
 ```markdown
 - 项目名称：TabRetake
@@ -144,7 +144,7 @@ TabRetake (v0.5.0) 是一个 100% 本地运行、基于 Playwright 与 FFmpeg �
 - 类别：JavaScript / 开发者工具
 - 一句话描述：支持浏览器交互捕获与视频打点的可重复 Web 演示视频及 README GIF 生成器
 - 项目推荐语：
-每次 Web 产品改版都要重新录屏剪辑 README 动图？TabRetake（v0.5.0）把产品演示变成了可编辑、可一键重拍的本地工作流。支持三种零负担上手方式：打开浏览器点一遍直接导出 JSON 故事（`capture`）、智能扫描页面表单控件生成脚本（`init --auto`）、或导入现有录屏在本地打点面板标注缩放焦点（`mark`）。随后执行 `tabretake run` 即可本地同步渲染带平滑点击放大、光标波纹和居底不遮挡字幕的 16:9 README GIF/MP4 与 9:16 手机竖屏短片，支持 `--scale 2` HiDPI 与本地 Chrome/Edge 自动复用。项目基于 Playwright、Sharp 和 FFmpeg 运行，完全离线、MIT 开源，真实复杂应用 9 秒看板演示动图约 425 KB。
+每次 Web 产品改版都要重新录屏剪辑 README 动图？TabRetake（v0.5.1）把产品演示变成了可编辑、可一键重拍的本地工作流。支持三种零负担上手方式：打开浏览器点一遍直接导出 JSON 故事（`capture`）、智能扫描页面表单控件生成脚本（`init --auto`）、或导入现有录屏在本地打点面板标注缩放焦点（`mark`）。随后执行 `tabretake run` 即可本地同步渲染带平滑点击放大、光标波纹和居底不遮挡字幕的 16:9 README GIF/MP4 与 9:16 手机竖屏短片，支持 `--scale 2` HiDPI 与本地 Chrome/Edge 自动复用。项目基于 Playwright、Sharp 和 FFmpeg 运行，完全离线、MIT 开源，真实复杂应用 9 秒看板演示动图约 425 KB。
 - 效果展示：
 https://raw.githubusercontent.com/gnawbit/tabretake/main/docs/hero.gif
 ```
@@ -164,9 +164,9 @@ Hi HN,
 
 I built TabRetake because recording launch clips and README GIFs manually breaks down the moment a UI changes—you tweak one button label or CSS margin, and the entire recording + zoom keyframe edit is obsolete.
 
-TabRetake (v0.5.0, MIT) turns Web UI flows into reproducible 16:9 README GIFs/MP4s, 9:16 portrait videos, and PNG posters—running 100% locally via Playwright Chromium (or your existing Chrome/Edge), Sharp, and FFmpeg.
+TabRetake (v0.5.1, MIT) turns Web UI flows into reproducible 16:9 README GIFs/MP4s, 9:16 portrait videos, and PNG posters—running 100% locally via Playwright Chromium (or your existing Chrome/Edge), Sharp, and FFmpeg.
 
-Instead of forcing you to hand-write a story file from scratch, v0.5.0 gives you three ways to start:
+Instead of forcing you to hand-write a story file from scratch, v0.5.1 gives you three ways to start:
 1. Interactive capture (`tabretake capture`): click, type, select, and pin result `focus` targets in a real browser window to generate an editable `story.json` (passwords are automatically omitted; add `--run` to render immediately).
 2. Auto-scan (`tabretake init --auto`): scores main forms/CTAs/selects while skipping empty nav links and destructive buttons to bootstrap a runnable story.
 3. Local visual marker studio (`tabretake mark --video recording.mp4`): for desktop apps or automation-blocked pages, click directly on frames of an existing MP4/WebM recording to pick timestamps and zoom coordinates.
@@ -183,7 +183,7 @@ Tested on unmodified upstream builds (full recipes at https://gnawbit.github.io/
 
 Try it locally in ~30 seconds (automatically falls back to installed Chrome/Edge via `--browser auto`):
 ```bash
-npm install --global @gnawbit/tabretake@0.5.0
+npm install --global @gnawbit/tabretake@0.5.1
 tabretake demo --preset daylight
 ```
 
@@ -199,12 +199,12 @@ Curious how other devs here handle keeping README GIFs and vertical release vide
 - **Tweet 1（主推文 + 附带 `docs/hero.mp4` 或 `docs/hero.gif`）**：
   > Stop re-recording and re-editing your product demo every time a UI label changes.
   >
-  > Meet TabRetake v0.5.0: an open-source, 100% local Playwright + FFmpeg CLI & Agent Skill that turns real browser clicks or existing recordings into 16:9 README GIFs & 9:16 launch videos.
+  > Meet TabRetake v0.5.1: an open-source, 100% local Playwright + FFmpeg CLI & Agent Skill that turns real browser clicks or existing recordings into 16:9 README GIFs & 9:16 launch videos.
   >
   > No hand-editing keyframes. 👇 1/4
 
 - **Tweet 2（三种零摩擦入口）**：
-  > 3 ways to create a repeatable demo in v0.5.0:
+  > 3 ways to create a repeatable demo in v0.5.1:
   >
   > • `tabretake capture` -> Click through your app once -> exports an editable JSON story (skips passwords)
   > • `tabretake init --auto` -> Scans forms/CTAs into steps
@@ -223,7 +223,7 @@ Curious how other devs here handle keeping README GIFs and vertical release vide
 - **Tweet 4（安装 CTA + 零下载浏览器兜底）**：
   > Already have Chrome or Edge installed? Run the demo immediately with zero extra browser download (`--browser auto`):
   >
-  > `npm i -g @gnawbit/tabretake@0.5.0`
+  > `npm i -g @gnawbit/tabretake@0.5.1`
   > `tabretake demo --preset daylight`
   >
   > Works with Claude Code, Codex, and Cursor. MIT licensed.
@@ -241,7 +241,7 @@ Curious how other devs here handle keeping README GIFs and vertical release vide
 - **正文草稿**：
 
 ```markdown
-I got tired of re-recording and hand-zooming screen captures every time our frontend UI changed slightly right before a release, so I built **TabRetake** (just hit **v0.5.0**, MIT licensed).
+I got tired of re-recording and hand-zooming screen captures every time our frontend UI changed slightly right before a release, so I built **TabRetake** (just hit **v0.5.1**, MIT licensed).
 
 **GitHub:** https://github.com/gnawbit/tabretake
 **Live examples (Vikunja Kanban, Memos, TodoMVC):** https://gnawbit.github.io/tabretake/
@@ -259,7 +259,7 @@ Instead of baking edits into a one-off project timeline you have to redo after e
 If Chrome or Edge is already installed on your machine, `--browser auto` uses it automatically without waiting for a fresh Playwright Chromium download:
 
 ```bash
-npm install --global @gnawbit/tabretake@0.5.0
+npm install --global @gnawbit/tabretake@0.5.1
 tabretake demo --preset daylight
 ```
 
@@ -291,7 +291,7 @@ Would love technical feedback on the story schema, portrait `--vertical-zoom` cr
 
 只要测试提一句「这个按钮文案改一下」或者「边距调宽 8px」，整套录屏、缩放关键帧和剪辑时间线就得从头再来。
 
-为了把「软件演示视频」变成像代码测试一样可版本化、可重复执行的资产，我做了 **TabRetake**（MIT 协议，目前已发布 **v0.5.0**）。这篇文章不空谈概念，主要复盘我们在真实项目复现（Vikunja 看板拖拽、Memos 富文本笔记、TodoMVC）和架构演进中解决的几个核心工程问题。
+为了把「软件演示视频」变成像代码测试一样可版本化、可重复执行的资产，我做了 **TabRetake**（MIT 协议，目前已发布 **v0.5.1**）。这篇文章不空谈概念，主要复盘我们在真实项目复现（Vikunja 看板拖拽、Memos 富文本笔记、TodoMVC）和架构演进中解决的几个核心工程问题。
 
 ---
 
@@ -374,7 +374,7 @@ Playwright 原生就有录制功能，但直接用来做产品演示会立刻碰
 如果你正在维护开源项目或 SaaS 工具，欢迎在本地试跑一下内置示例：
 
 ```bash
-npm install --global @gnawbit/tabretake@0.5.0
+npm install --global @gnawbit/tabretake@0.5.1
 tabretake demo --preset daylight
 ```
 
@@ -394,14 +394,14 @@ tabretake capture --url http://localhost:3000 --out demo.json --run --vertical -
 
 ### 2. 英文长文草稿：Dev.to / Hashnode
 
-- **标题**：`Making Web App Demo Videos Declarative and Reproducible with Playwright + FFmpeg (TabRetake v0.5.0)`
+- **标题**：`Making Web App Demo Videos Declarative and Reproducible with Playwright + FFmpeg (TabRetake v0.5.1)`
 - **标签**：`#opensource` `#playwright` `#webdev` `#ffmpeg`
 - **正文草稿**：
 
 ```markdown
 Every developer knows the release-day tax: you finish shipping a feature, manually screen-record a walkthrough, spend 30–60 minutes nudging zoom keyframes and subtitles in a video editor, export a GIF for your README—and then notice one button label or CSS margin changed before launch. Everything has to be recorded all over again.
 
-I built **TabRetake** (MIT licensed, [gnawbit/tabretake](https://github.com/gnawbit/tabretake), **v0.5.0**) so Web product demos behave like repeatable build artifacts: editable, local-only, and re-runnable in seconds.
+I built **TabRetake** (MIT licensed, [gnawbit/tabretake](https://github.com/gnawbit/tabretake), **v0.5.1**) so Web product demos behave like repeatable build artifacts: editable, local-only, and re-runnable in seconds.
 
 ---
 
@@ -409,7 +409,7 @@ I built **TabRetake** (MIT licensed, [gnawbit/tabretake](https://github.com/gnaw
 
 Instead of mixing browser interactions and visual effects into a one-off project file, TabRetake splits the pipeline into three clean stages joined by `record.json`:
 
-1. **Input / Authoring (3 friction-free routes in v0.5.0)**:
+1. **Input / Authoring (3 friction-free routes in v0.5.1)**:
    - `tabretake capture`: Perform the flow once in a live browser window—clicks, inputs, `<select>` changes, and pinned result `focus` targets export straight to `story.json` (passwords omitted).
    - `tabretake init --auto`: Scans the DOM for main forms and CTAs while filtering out dead nav links or destructive buttons.
    - `tabretake mark --video clip.mp4`: A local point-and-click studio for turning existing OBS/desktop recordings into normalized `(t, x, y)` mark files when sites block automation.
@@ -449,7 +449,7 @@ Rather than relying on synthetic marketing demos, every release recipe on our [p
 If Chrome or Edge is already installed, you don't even have to wait for a pinned Chromium download:
 
 ```bash
-npm install --global @gnawbit/tabretake@0.5.0
+npm install --global @gnawbit/tabretake@0.5.1
 tabretake demo --preset daylight
 ```
 
@@ -459,7 +459,7 @@ Capture your own local dev server interactively:
 tabretake capture --url http://localhost:3000 --out demo.json --run --vertical --scale 2
 ```
 
-Ships with a root `SKILL.md` for Claude Code, Codex, and Cursor (`npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.0" --skill tabretake`). Everything runs locally—zero cloud uploads, zero telemetry, MIT licensed.
+Ships with a root `SKILL.md` for Claude Code, Codex, and Cursor (`npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.1" --skill tabretake`). Everything runs locally—zero cloud uploads, zero telemetry, MIT licensed.
 
 Repo & issues: https://github.com/gnawbit/tabretake
 ```

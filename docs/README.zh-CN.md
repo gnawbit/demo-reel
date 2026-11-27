@@ -1,22 +1,22 @@
 # TabRetake — 可重复生成的 Web 应用演示
 
-[English](README.md) · 简体中文
+[English](../README.md) · 简体中文
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](../LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](../package.json)
 [![最新发行版](https://img.shields.io/github/v/release/gnawbit/tabretake?label=latest%20release&color=6c5ce7)](https://github.com/gnawbit/tabretake/releases/latest)
-[![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](SKILL.md)
+[![Agent skill](https://img.shields.io/badge/agent%20skill-Claude%20Code%20%7C%20Codex%20%7C%20Cursor-6c5ce7)](../SKILL.md)
 [![GitHub stars](https://img.shields.io/github/stars/gnawbit/tabretake?style=social)](https://github.com/gnawbit/tabretake/stargazers)
 
 **自动化生成 Web 应用演示。从此告别手动录屏与繁琐剪辑。**
 
 把可编辑的 JSON 步骤或 AI 编程助手的指令，直接转化为丝滑的 **16:9 README 动图 (GIF)** 与 **9:16 竖屏发布视频 (MP4)** —— 自带点击自动平滑放大、光标波纹和**不遮挡页面内容的底部字幕区**。界面改版后，一行命令全自动重拍重渲染。
 
-<img src="docs/hero.gif" alt="TabRetake 录制 Vikunja 看板：创建任务、跨列拖拽并聚焦结果" width="100%">
+<img src="hero.gif" alt="TabRetake 录制 Vikunja 看板：创建任务、跨列拖拽并聚焦结果" width="100%">
 
 *实测录制于 [Vikunja v2.8.0](https://github.com/go-vikunja/vikunja)（15k★ 开源看板）：输入任务、在真实看板上将卡片拖入 Doing、自动将镜头推进聚焦到结果。单次录制同时生成 16:9 MP4、README 动图与 9:16 竖屏短片。*
 
-[项目页](https://gnawbit.github.io/tabretake/) · [观看演示](docs/hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [真实实测展台](#-真实开源项目实测展台-real-world-showcase) · [路线图](#路线图)
+[项目页](https://gnawbit.github.io/tabretake/) · [观看演示](hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [真实实测展台](#-真实开源项目实测展台-real-world-showcase) · [路线图](#路线图)
 
 ### 📊 核心工程规格一览
 
@@ -44,7 +44,7 @@
 ### 🚀 零等待极速体验（自动适配本机 Chrome/Edge）
 
 ```bash
-npm install --global @gnawbit/tabretake@0.5.0
+npm install --global @gnawbit/tabretake@0.5.1
 tabretake demo --preset daylight
 ```
 
@@ -56,9 +56,9 @@ tabretake demo --preset daylight
 
 | 📋 [Vikunja](https://gnawbit.github.io/tabretake/vikunja/) (15k★ 看板协作) | ✍️ [Memos](https://gnawbit.github.io/tabretake/memos/) (35k★ 知识笔记) | 📝 [TodoMVC](https://gnawbit.github.io/tabretake/todomvc/) (前端通用标准) |
 |:---:|:---:|:---:|
-| <a href="https://gnawbit.github.io/tabretake/vikunja/"><img src="docs/poster.png" alt="Vikunja 看板拖拽" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/memos/"><img src="docs/examples/memos.png" alt="Memos 富文本与搜索" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/todomvc/"><img src="docs/examples/todomvc.png" alt="TodoMVC 任务过滤" width="100%"></a> |
+| <a href="https://gnawbit.github.io/tabretake/vikunja/"><img src="poster.png" alt="Vikunja 看板拖拽" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/memos/"><img src="examples/memos.png" alt="Memos 富文本与搜索" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/todomvc/"><img src="examples/todomvc.png" alt="TodoMVC 任务过滤" width="100%"></a> |
 | **真实看板跨列拖拽**<br>复杂交互与目标卡片聚焦 | **富文本录入与检索**<br>真实 contenteditable 与标签联动 | **标准任务状态流**<br>经典 ES6 实现与完成项筛选 |
-| [故事 JSON](site/vikunja/story.json) · [完整复现教程](https://gnawbit.github.io/tabretake/vikunja/) | [故事 JSON](site/memos/story.json) · [完整复现教程](https://gnawbit.github.io/tabretake/memos/) | [故事 JSON](site/todomvc/story.json) · [完整复现教程](https://gnawbit.github.io/tabretake/todomvc/) |
+| [故事 JSON](../site/vikunja/story.json) · [完整复现教程](https://gnawbit.github.io/tabretake/vikunja/) | [故事 JSON](../site/memos/story.json) · [完整复现教程](https://gnawbit.github.io/tabretake/memos/) | [故事 JSON](../site/todomvc/story.json) · [完整复现教程](https://gnawbit.github.io/tabretake/todomvc/) |
 
 > 本地原生运行于 Windows、macOS 与 Linux。支持 Claude Code、Codex、Cursor，以及任何支持 [Agent Skills](https://agentskills.io) 的 agent。
 
@@ -89,16 +89,16 @@ tabretake demo --preset daylight
 
 | 16:9 — README / 官网 | 9:16 — 竖屏发布短片 |
 |---|---|
-| <img src="docs/poster.png" alt="16:9 演示封面" width="100%"> | <img src="docs/poster-9x16.png" alt="9:16 竖屏演示封面" width="100%"> |
+| <img src="poster.png" alt="16:9 演示封面" width="100%"> | <img src="poster-9x16.png" alt="9:16 竖屏演示封面" width="100%"> |
 
-[16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [9:16 GIF](docs/hero-9x16.gif)
+[16:9 MP4](hero.mp4) · [9:16 MP4](hero-9x16.mp4) · [9:16 GIF](hero-9x16.gif)
 
 ## 安装
 
 从 npm 安装 CLI。
 
 ```bash
-npm install --global @gnawbit/tabretake@0.5.0
+npm install --global @gnawbit/tabretake@0.5.1
 tabretake demo
 ```
 
@@ -107,7 +107,7 @@ tabretake demo
 需要固定版本浏览器时运行 `tabretake setup`（Linux 缺系统依赖时加 `--with-deps`）。ffmpeg/ffprobe 随依赖安装。
 
 包名为 [`@gnawbit/tabretake`](https://www.npmjs.com/package/@gnawbit/tabretake)。
-旧版本（`v0.4.0` 及更早 / `demo-reel`）兼容性说明见 [版本兼容性指南](docs/compatibility.md)。
+旧版本（`v0.4.0` 及更早 / `demo-reel`）兼容性说明见 [版本兼容性指南](compatibility.md)。
 
 参与开发时，从源码安装：
 
@@ -123,7 +123,7 @@ node bin/tabretake.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.0" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.1" --skill tabretake
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
@@ -133,12 +133,12 @@ npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.0" --skill t
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.0"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.1"
 ```
 
 两种工作流安装方式任选其一；插件仍需先安装上述 TabRetake 运行环境。
 它是 Claude Code 插件，不是 Cowork 安装包或 MCP 服务。
-[发现与调用验证记录](docs/agent-discovery.md)区分了已经验证的能力和尚未测量的效果。
+[发现与调用验证记录](agent-discovery.md)区分了已经验证的能力和尚未测量的效果。
 可这样向编程助手提问：
 
 - “把 http://localhost:3000 的注册流程做成 README 动图。”
@@ -300,7 +300,7 @@ demo/
 故事中的 `vertical.zoom` 可保存竖屏倍率，命令行参数优先；`zoom: false` 的步骤仍显示全景。放大后需检查是否裁掉必要上下文。
 
 首次在自己的项目试用后，可[反馈首次演示结果](https://github.com/gnawbit/tabretake/issues/new?template=first-demo.yml)，
-失败同样有用。[试用与记录说明](docs/adoption.md)区分首次成功、重复使用和外部采用。
+失败同样有用。[试用与记录说明](adoption.md)区分首次成功、重复使用和外部采用。
 
 ## 命令
 
@@ -340,7 +340,7 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 `render`，其他必需项错误仍需先修复。网页规划和录制使用固定 Chromium 或本机 Chrome/Edge。
 
 录制前运行 `validate --config demo.json --json`，按随包提供的
-[JSON Schema](schemas/story.schema.json) 检查类型、动作、必需目标和未知字段
+[JSON Schema](../schemas/story.schema.json) 检查类型、动作、必需目标和未知字段
 （`record` 与 `render` 在改写输出前也会自动校验）。编辑器补全可在配置中加入
 `"$schema": "https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json"`。
 
@@ -382,7 +382,7 @@ node bin/tabretake.mjs record --config demo.json --storage-state auth.json
 
 ## 工作原理
 
-<img src="docs/architecture.svg" alt="故事文件进入 Playwright 录制，生成事件时间线和 webm，再由 sharp + ffmpeg 渲染成 MP4、GIF 和封面" width="100%">
+<img src="architecture.svg" alt="故事文件进入 Playwright 录制，生成事件时间线和 webm，再由 sharp + ffmpeg 渲染成 MP4、GIF 和封面" width="100%">
 
 1. `plan` 打开页面，列出按钮、链接和输入框。
 2. `record` 驱动 Chromium，移动光标、点击、输入、录屏。
@@ -397,7 +397,7 @@ node bin/tabretake.mjs record --config demo.json --storage-state auth.json
 以及 [Memos](https://gnawbit.github.io/tabretake/memos/) 的富文本笔记与搜索。
 案例固定上游原版发行包，提供故事下载、本机搭建和重复录制方法。
 
-[手动演示工作流](.github/workflows/demo.yml) 会启动固定版本的 TodoMVC、等待服务就绪、
+[手动演示工作流](../.github/workflows/demo.yml) 会启动固定版本的 TodoMVC、等待服务就绪、
 录制故事并上传 MP4、GIF 和封面附件。在自己的 fork 中选择
 **Actions → Regenerate TodoMVC demo → Run workflow** 即可运行。
 接入自己的应用时，替换应用检出与启动命令、就绪检测地址和故事文件。
@@ -405,9 +405,9 @@ node bin/tabretake.mjs record --config demo.json --storage-state auth.json
 
 | 真实开源案例 | 上游项目 | 故事脚本 | 输出产物 |
 |---|---|---|---|
-| Vikunja 看板 (Hero) | [go-vikunja/vikunja](https://github.com/go-vikunja/vikunja) (15k★) | [site/vikunja/story.json](site/vikunja/story.json) | [16:9 MP4](docs/hero.mp4) · [9:16 MP4](docs/hero-9x16.mp4) · [GIF](docs/hero.gif) |
-| Memos 知识库 | [usememos/memos](https://github.com/usememos/memos) (35k★) | [site/memos/story.json](site/memos/story.json) | [GIF](docs/examples/memos.gif) · [封面](docs/examples/memos.png) |
-| TodoMVC 经典标准 | [tastejs/todomvc](https://github.com/tastejs/todomvc) (ES6) | [site/todomvc/story.json](site/todomvc/story.json) | [GIF](docs/examples/todomvc.gif) · [封面](docs/examples/todomvc.png) |
+| Vikunja 看板 (Hero) | [go-vikunja/vikunja](https://github.com/go-vikunja/vikunja) (15k★) | [site/vikunja/story.json](../site/vikunja/story.json) | [16:9 MP4](hero.mp4) · [9:16 MP4](hero-9x16.mp4) · [GIF](hero.gif) |
+| Memos 知识库 | [usememos/memos](https://github.com/usememos/memos) (35k★) | [site/memos/story.json](../site/memos/story.json) | [GIF](examples/memos.gif) · [封面](examples/memos.png) |
+| TodoMVC 经典标准 | [tastejs/todomvc](https://github.com/tastejs/todomvc) (ES6) | [site/todomvc/story.json](../site/todomvc/story.json) | [GIF](examples/todomvc.gif) · [封面](examples/todomvc.png) |
 
 如需在不下载任何上游项目的前提下快速体验，TabRetake 也内置了三个虚构应用预设（readme、onboarding、release），执行 `tabretake demo` 即可体验。从源码目录运行（全局安装可将前缀替换为 `tabretake`）：
 
@@ -464,7 +464,7 @@ node bin/tabretake.mjs render \
 
 输出和网址录制完全一样：16:9 / 9:16 视频、GIF、封面。
 
-最小示例见 [examples/story-video.json](examples/story-video.json)。
+最小示例见 [examples/story-video.json](../examples/story-video.json)。
 
 ## 和 Screen Studio 的区别
 
@@ -510,12 +510,12 @@ Linux 用 Noto Sans CJK。`doctor` 会检查。
 
 ## 参与贡献
 
-欢迎 issue 和 PR，先看 [CONTRIBUTING.md](CONTRIBUTING.md)。
+欢迎 issue 和 PR，先看 [CONTRIBUTING.md](../CONTRIBUTING.md)。
 请不要提交 `auth.json`、客户录屏或任何包含个人数据的文件。
 
 ## License
 
-MIT — 见 [LICENSE](LICENSE)。
+MIT — 见 [LICENSE](../LICENSE)。
 
 ---
 

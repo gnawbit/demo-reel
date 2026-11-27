@@ -61,7 +61,7 @@ accuracy or directory ranking.
 
 - One focused change per PR.
 - Explain the user-facing problem, not just the implementation.
-- Update `README.md`, `README.zh-CN.md` and `SKILL.md` if you add a config
+- Update `README.md`, `docs/README.zh-CN.md` and `SKILL.md` if you add a config
   field or command.
 - Do not commit `auth.json`, customer recordings, cookies or API keys.
 

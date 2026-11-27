@@ -9,6 +9,10 @@ TabRetake preserves story JSON compatibility across releases. This guide records
 
 ## Behavioral Changes by Release
 
+* **v0.5.1**:
+  * Missing system/Playwright browsers fail with structured `BROWSER_MISSING` / `BROWSER_DEPS_MISSING` codes and `Hint:` guidance (`tabretake setup` / `tabretake doctor`), and `init --auto` reports when no local browser is detected.
+  * `tabretake capture --login --run` reuses saved login state cleanly across the capture and pipeline stages, and `tabretake mark` preserves existing story fields when writing timeline marks.
+  * `docs/README.zh-CN.md` moved out of the package root so npm displays the English `README.md`.
 * **v0.5.0**:
   * Added `tabretake capture` interactive recorder (outputs editable `story.json`), `tabretake run` one-command validate + record + render pipeline, and `tabretake mark` local visual video marker UI.
   * Added native `<select>` step action (`select`), HiDPI `scale: 2` / `--scale 2`, theme-matched cursor ripples, rounded content corner masks, `brand.frame` (`auto`, `browser`, `phone`, `none`), and smarter `init --auto` element scoring.

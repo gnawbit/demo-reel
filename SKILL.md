@@ -4,7 +4,7 @@ description: Create repeatable product demo videos, screen recording walkthrough
 license: MIT
 metadata:
   author: gnawbit
-  version: "0.5.0"
+  version: "0.5.1"
   repository: https://github.com/gnawbit/tabretake
   compatibility: Node.js 20.9+, local Chrome/Edge or Chromium via tabretake setup, Windows/macOS/Linux. Target app access is required. Rendering is local.
 ---
@@ -28,7 +28,7 @@ For legacy release notes (v0.4.0 and earlier / `demo-reel`), see
 
 Use an installed `tabretake` CLI when available. For a source checkout, replace
 `tabretake` with `node /absolute/path/to/tabretake/bin/tabretake.mjs` (quote paths with spaces).
-If missing, install with `npm install --global @gnawbit/tabretake@0.5.0`.
+If missing, install with `npm install --global @gnawbit/tabretake@0.5.1`.
 When Playwright Chromium is absent, TabRetake automatically falls back to local
 Chrome or Edge (`--browser auto`), or you can install pinned Chromium via `tabretake setup`.
 

@@ -1,6 +1,6 @@
 # TabRetake — repeatable web app demo videos
 
-English · [简体中文](README.zh-CN.md)
+English · [简体中文](docs/README.zh-CN.md)
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20.9-339933?logo=node.js&logoColor=white)](package.json)
@@ -46,7 +46,7 @@ Already have a screen recording? Supply timestamp marks to
 ### 🚀 Quick Taste (Zero-Wait with Local Chrome/Edge)
 
 ```bash
-npm install --global @gnawbit/tabretake@0.5.0
+npm install --global @gnawbit/tabretake@0.5.1
 tabretake demo --preset daylight
 ```
 
@@ -101,7 +101,7 @@ edit and run again after a release.
 Install the CLI from npm.
 
 ```bash
-npm install --global @gnawbit/tabretake@0.5.0
+npm install --global @gnawbit/tabretake@0.5.1
 tabretake demo
 ```
 
@@ -129,7 +129,7 @@ replace `node bin/tabretake.mjs` with `tabretake`.
 To add the agent workflow after setting up the CLI:
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.0" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.1" --skill tabretake
 ```
 
 Run this in the target project; add `--agent codex`, `--agent claude-code` or
@@ -140,7 +140,7 @@ or a source checkout. Install the CLI and Skill from the same revision.
 Claude Code users can install the plugin instead (CLI 2.1.292+):
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.0"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.1"
 ```
 
 Install the workflow through one of these routes; the plugin still needs the

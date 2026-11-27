@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.1 — 2026-11-27
+
+- Move the Chinese README to `docs/README.zh-CN.md` and remove it from `package.json` `files` so npm displays the English `README.md`.
+- Classify missing system/Playwright browsers (`BROWSER_MISSING` and `BROWSER_DEPS_MISSING`) with actionable `Hint:` recovery lines in CLI error output, and warn during `tabretake init --auto` when no browser is detected.
+- Reuse saved login state in `tabretake capture --login --run` without repeating manual login, preserve existing story fields (such as `brand` and `controls`) when updating via `tabretake mark`, and remove the unused `bin/demo-reel.mjs` alias.
+
 ## 0.5.0 — 2026-11-26
 
 - Add `tabretake capture` interactive recorder so users can click, type, select, and pin `focus` steps directly in a browser window to generate an editable `story.json` (with automatic password field skipping).

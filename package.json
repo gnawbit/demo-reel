@@ -1,6 +1,6 @@
 {
   "name": "@gnawbit/tabretake",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Create repeatable web app demos, README GIFs and 9:16 videos from editable JSON steps or existing screen recordings. Local CLI and Agent Skill for Claude Code, Codex and Cursor.",
   "type": "module",
   "bin": {
@@ -17,7 +17,6 @@
     "examples/story.json",
     "examples/story-video.json",
     "SKILL.md",
-    "README.zh-CN.md",
     "CHANGELOG.md"
   ],
   "scripts": {
