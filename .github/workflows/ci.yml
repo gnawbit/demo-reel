@@ -27,7 +27,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          for f in bin/*.mjs scripts/*.mjs scripts/lib/*.mjs tests/*.mjs; do
+          for f in bin/*.mjs scripts/*.mjs scripts/lib/*.mjs tools/*.mjs tests/*.mjs; do
             node --check "$f"
           done
 
