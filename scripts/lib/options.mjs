@@ -97,7 +97,7 @@ export const commandOptions = {
   },
   demo: {
     out: { type: "string", default: "demo" },
-    port: { type: "string", default: "4173" },
+    port: { type: "string", default: "0" },
     story: { type: "string", default: "onboarding" },
     browser: { type: "string", default: "auto" },
     preset: { type: "string" },

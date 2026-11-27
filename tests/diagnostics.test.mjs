@@ -143,6 +143,10 @@ test("setup forwards proxy and --with-deps and classifies network/permission fai
   assert.deepEqual(ok.calls[0].args.slice(1), ["install", "chromium", "--with-deps"]);
   assert.equal(ok.calls[0].opts.env.HTTPS_PROXY, "http://127.0.0.1:10808");
   assert.equal(ok.calls[0].opts.env.http_proxy, "http://127.0.0.1:10808");
+  await assert.rejects(
+    setup(["--proxy", "   "], { spawn: ok.spawn, env: {}, stdout: sink, stderr: sink }),
+    { code: "INVALID_CONFIG" },
+  );
 
   const netFail = fakeSpawn((child) => {
     child.stderr.write("\x1b[31mError: Failed to download Chromium, caused by\n");

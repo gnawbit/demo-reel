@@ -32,7 +32,7 @@ function summarizeFailure(lines, statusLabel) {
   } else if (DEPS_RE.test(joined)) {
     hint = "On Linux, run tabretake setup --with-deps with permission to install browser system libraries.";
   } else {
-    hint = "If downloading Chromium timed out or failed, retry with --proxy <url> or PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright, or install Chrome / Edge for automatic fallback.";
+    hint = "If downloading Chromium timed out or failed, retry with --proxy <url> or a mirror (e.g. PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright), or install Chrome / Edge for automatic fallback.";
   }
 
   return commandError(
@@ -74,7 +74,9 @@ export async function setup(argv, {
 } = {}) {
   const { values } = parseCommand("setup", argv);
   if (values.proxy !== undefined && !values.proxy.trim()) {
-    throw new Error("Provide a non-empty --proxy URL");
+    throw commandError("INVALID_CONFIG", "Provide a non-empty --proxy URL.", {
+      hint: "Example: --proxy http://127.0.0.1:10808",
+    });
   }
 
   const cli = path.join(path.dirname(require.resolve("playwright/package.json")), "cli.js");
