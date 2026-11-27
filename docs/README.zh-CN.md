@@ -48,7 +48,7 @@
 ### 🚀 零等待极速体验（自动适配本机 Chrome/Edge）
 
 ```bash
-npm install --global @gnawbit/tabretake@0.5.1
+npm install --global @gnawbit/tabretake@0.5.2
 tabretake demo --preset daylight
 ```
 
@@ -102,7 +102,7 @@ tabretake demo --preset daylight
 从 npm 安装 CLI。
 
 ```bash
-npm install --global @gnawbit/tabretake@0.5.1
+npm install --global @gnawbit/tabretake@0.5.2
 tabretake demo
 ```
 
@@ -139,7 +139,7 @@ node bin/tabretake.mjs doctor
 CLI 环境就绪后，可安装 agent 工作流：
 
 ```bash
-npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.1" --skill tabretake
+npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.2" --skill tabretake
 ```
 
 在目标项目中运行，可加 `--agent codex`、`--agent claude-code` 或 `--agent cursor`
@@ -149,7 +149,7 @@ npx skills@1.9.0 add "https://github.com/gnawbit/tabretake.git#v0.5.1" --skill t
 Claude Code 也可以通过插件安装（命令行版本需 2.1.292+）：
 
 ```bash
-claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.1"
+claude plugin install tabretake --marketplace "gnawbit/tabretake#v0.5.2"
 ```
 
 两种工作流安装方式任选其一；插件仍需先安装上述 TabRetake 运行环境。

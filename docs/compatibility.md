@@ -9,6 +9,9 @@ TabRetake preserves story JSON compatibility across releases. This guide records
 
 ## Behavioral Changes by Release
 
+* **v0.5.2**:
+  * `tabretake setup` surfaces underlying Playwright download/permission failures with `CHROMIUM_SETUP_FAILED` and `Hint:` guidance, and adds `--proxy` and `--json`.
+  * `tabretake demo` defaults to ephemeral port `0` instead of `4173` to avoid port collisions with local preview servers.
 * **v0.5.1**:
   * Missing system/Playwright browsers fail with structured `BROWSER_MISSING` / `BROWSER_DEPS_MISSING` codes and `Hint:` guidance (`tabretake setup` / `tabretake doctor`), and `init --auto` reports when no local browser is detected.
   * `tabretake capture --login --run` reuses saved login state cleanly across the capture and pipeline stages, and `tabretake mark` preserves existing story fields when writing timeline marks.

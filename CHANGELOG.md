@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.2 — 2026-11-27
+
+- Surface underlying Playwright error lines in `tabretake setup` (`CHROMIUM_SETUP_FAILED`), redact URL credentials, add actionable `Hint:` recovery guidance (including `PLAYWRIGHT_DOWNLOAD_HOST` mirrors and local Chrome/Edge fallback), and support `--proxy` and `--json`.
+- Default `tabretake demo` to ephemeral port `0` so it never collides with an existing local dev/preview server on port `4173`.
+- Document the verified `https://cdn.npmmirror.com/binaries/playwright` mirror, clarify `400–900 KB` GIF sizes apply to short 9–12s clips, add README npm/CI badges, and normalize `package.json` `repository.url` to `https://`.
+
 ## 0.5.1 — 2026-11-27
 
 - Move the Chinese README to `docs/README.zh-CN.md` and remove it from `package.json` `files` so npm displays the English `README.md`.
