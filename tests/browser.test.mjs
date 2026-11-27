@@ -158,6 +158,61 @@ test("launchBrowser falls back to system chrome/msedge when bundled chromium is 
     launchBrowser({ browser: "safari" }),
     /Unsupported --browser/,
   );
+
+  await assert.rejects(
+    launchBrowser({
+      browser: "auto",
+      hasBundledChromium: () => false,
+      launch: async ({ channel }) => {
+        throw new Error(`Chromium distribution '${channel}' is not found at /missing`);
+      },
+    }),
+    (err) => err.code === "BROWSER_MISSING" && /tabretake setup/.test(err.hint),
+  );
+
+  await assert.rejects(
+    launchBrowser({
+      browser: "auto",
+      hasBundledChromium: () => false,
+      launch: async ({ channel }) => {
+        if (channel === "chrome") throw new Error("error while loading shared libraries: libnss3.so");
+        throw new Error("Chromium distribution 'msedge' is not found");
+      },
+    }),
+    (err) => err.code === "BROWSER_DEPS_MISSING" && /--with-deps/.test(err.hint),
+  );
+
+  await assert.rejects(
+    launchBrowser({
+      browser: "chromium",
+      launch: async () => {
+        throw new Error("Executable doesn't exist at /missing/chromium");
+      },
+    }),
+    (err) => err.code === "BROWSER_MISSING" && /Playwright Chromium is not installed/.test(err.message) && /tabretake setup/.test(err.hint),
+  );
+
+  await assert.rejects(
+    launchBrowser({
+      browser: "chrome",
+      launch: async () => {
+        throw new Error("Chromium distribution 'chrome' is not found");
+      },
+    }),
+    (err) => err.code === "BROWSER_MISSING" && /Google Chrome/.test(err.message),
+  );
+
+  await assert.rejects(
+    launchBrowser({
+      browser: "auto",
+      hasBundledChromium: () => false,
+      launch: async ({ channel }) => {
+        if (channel === "chrome") throw new Error("EACCES permission denied");
+        throw new Error("Chromium distribution 'msedge' is not found");
+      },
+    }),
+    /EACCES permission denied/,
+  );
 });
 
 test("findSystemBrowser detects installed Chrome or Edge paths across platforms", () => {

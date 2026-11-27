@@ -122,7 +122,7 @@ export async function init(argv) {
       steps = buildAutoSteps(elements);
       reporter.log(`Generated ${steps.length} step(s) from discovered interactive controls.`);
     } catch (err) {
-      reporter.warn(`Could not scan page for --auto (${err.message}); falling back to starter.`);
+      reporter.warn(`Could not scan page for --auto (${err.message}); falling back to starter.${err.hint ? ` ${err.hint}` : ""}`);
     }
   }
 

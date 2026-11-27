@@ -117,3 +117,20 @@ test("init --auto prioritizes primary controls over sidebar hash links and destr
   assert.notEqual(story.steps.at(-2)?.action, "wait");
   assert.deepEqual(story.steps.at(-1), { action: "wait", ms: 1200 });
 });
+
+test("init --auto surfaces browser setup hint when falling back without a browser", async (t) => {
+  const dir = await tempDir(t);
+  const preload = `
+    import { chromium } from ${JSON.stringify(import.meta.resolve("playwright"))};
+    chromium.executablePath = () => "/missing/chromium";
+    chromium.launch = async () => { throw new Error("Executable doesn't exist at /missing/chromium"); };
+  `;
+  const config = path.join(dir, "fallback.json");
+  const { stderr } = await exec(process.execPath, [
+    "--import", `data:text/javascript,${encodeURIComponent(preload)}`,
+    cli, "init", "--url", "https://example.com", "--out", config, "--auto",
+  ], { cwd: dir, windowsHide: true, timeout: 15000 });
+  assert.match(stderr, /tabretake setup/);
+  const story = JSON.parse(await readFile(config, "utf8"));
+  assert.deepEqual(story.steps, [{ action: "wait", ms: 1500 }]);
+});

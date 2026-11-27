@@ -4,11 +4,38 @@ import path from "node:path";
 import { chromium, errors } from "playwright";
 import { FFMPEG } from "./ffmpeg.mjs";
 import { navigate } from "./navigation.mjs";
+import { commandError } from "./report.mjs";
 import { VALID_BROWSERS, findSystemBrowser } from "./system-browser.mjs";
 import { hexToRgb } from "./themes.mjs";
 import { waitForEnter } from "./tty.mjs";
 
 export { VALID_BROWSERS, findSystemBrowser };
+
+function classifyBrowserError(error, mode) {
+  const text = String(error?.message || error || "");
+  if (/Host system is missing dependencies|error while loading shared libraries|lib[a-z0-9_.-]+\.so/i.test(text)) {
+    return commandError("BROWSER_DEPS_MISSING", "Browser failed to start because required system libraries are missing.", {
+      hint: "Run tabretake setup --with-deps to install required browser system libraries.",
+    });
+  }
+  if (/Executable doesn't exist|Chromium distribution .* is not found|cannot find .*(?:chrome|msedge|chromium)/i.test(text)) {
+    if (mode === "chrome" || mode === "msedge") {
+      const label = mode === "chrome" ? "Google Chrome" : "Microsoft Edge";
+      return commandError("BROWSER_MISSING", `${label} is not installed or could not be found.`, {
+        hint: `Install ${label}, or omit --browser ${mode} to use automatic browser detection / tabretake setup.`,
+      });
+    }
+    if (mode === "chromium") {
+      return commandError("BROWSER_MISSING", "Playwright Chromium is not installed.", {
+        hint: "Run tabretake setup (or tabretake setup --with-deps on Linux) to install Chromium.",
+      });
+    }
+    return commandError("BROWSER_MISSING", "No usable browser found (Playwright Chromium, Google Chrome, or Microsoft Edge).", {
+      hint: "Run tabretake setup (or tabretake setup --with-deps on Linux) to install Chromium, or install Chrome/Edge.",
+    });
+  }
+  return error;
+}
 
 export async function launchBrowser({
   headless = true,
@@ -34,23 +61,38 @@ export async function launchBrowser({
     args,
   };
 
+  const runLaunch = async (opts, errorMode) => {
+    try {
+      return await launch(opts);
+    } catch (error) {
+      throw classifyBrowserError(error, errorMode);
+    }
+  };
+
   if (mode === "chrome" || mode === "msedge") {
-    return launch({ ...base, channel: mode });
+    return runLaunch({ ...base, channel: mode }, mode);
   }
 
   if (mode === "chromium" || hasBundledChromium()) {
-    return launch(base);
+    return runLaunch(base, mode);
   }
 
+  let depsError = null;
+  let fallbackError = null;
   for (const channel of ["chrome", "msedge"]) {
     try {
-      return await launch({ ...base, channel });
-    } catch {
-      // Continue trying next installed system browser channel.
+      return await runLaunch({ ...base, channel }, mode);
+    } catch (error) {
+      if (error.code === "BROWSER_DEPS_MISSING") depsError ||= error;
+      else if (error.code !== "BROWSER_MISSING") fallbackError ||= error;
     }
   }
 
-  return launch(base);
+  if (depsError) throw depsError;
+  if (fallbackError) throw fallbackError;
+  throw commandError("BROWSER_MISSING", "No usable browser found (Playwright Chromium, Google Chrome, or Microsoft Edge).", {
+    hint: "Run tabretake setup (or tabretake setup --with-deps on Linux) to install Chromium, or install Chrome/Edge.",
+  });
 }
 
 export async function newContext(browser, options) {

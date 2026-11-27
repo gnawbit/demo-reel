@@ -50,6 +50,12 @@ test("doctor JSON is a single report and rejects unknown arguments", async () =>
     assert.equal(error.stderr, "");
     return true;
   });
+  await assert.rejects(run(["plan", "--url", "http://127.0.0.1:1"]), (error) => {
+    assert.equal(error.code, 1);
+    assert.match(error.stderr, /^Error: Could not open the target page\.\r?\nHint: /);
+    assert.doesNotMatch(error.stderr, /\n\s+at /);
+    return true;
+  });
 });
 
 test("missing optional fonts warn; failed native binaries block readiness", async () => {
