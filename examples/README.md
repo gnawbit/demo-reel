@@ -4,8 +4,8 @@ Three runnable recipes use **Northstar, the fictional app bundled in this repo**
 They illustrate recording workflows, not external customer adoption. No account,
 credentials or external service is required.
 
-Run from a source checkout of `main` after `npm ci` and
-`node bin/tabretake.mjs setup`. The `--story` presets are not in `v0.2.0`.
+Run from a source checkout after `npm ci` (uses local Chrome/Edge automatically,
+or run `node bin/tabretake.mjs setup` for pinned Chromium).
 
 | Task | Story | Preview |
 |---|---|---|

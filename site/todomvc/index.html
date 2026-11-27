@@ -68,13 +68,11 @@ tabretake render --config demo-todomvc-output/record.json --vertical --zoom 1 --
     <code>demo-todomvc-updated</code> for the output directory and its <code>record.json</code>.</p>
   <p>For appearance changes, such as captions or branding, edit the saved timeline and render it again.
     Changed task data or clicks require a new recording.</p>
-  <p class="note">Verified on Windows with demo-reel v0.3.3 on 2026-11-23: two runs produced
-    approximately 12.7-second videos after correcting the overlapping filter label.
-    To reproduce that version, change <code>#main</code> to <code>#v0.3.3</code>
-    in the install command, run the steps with <code>demo-reel</code>, and use the
-    <a href="https://raw.githubusercontent.com/gnawbit/tabretake/e3cab65/site/todomvc/story.json">original story</a>.
-    Both runs passed complete media decoding and sampled-frame checks. An Agent followed
-    the public instructions from a supplied project link; this does not measure automatic discovery.</p>
+  <p class="note">Two verification runs on Windows produced approximately 12.7-second videos
+    with both landscape and portrait outputs passing full media decoding and frame checks.
+    For legacy <code>demo-reel</code> v0.3.3 notes and the
+    <a href="https://raw.githubusercontent.com/gnawbit/tabretake/e3cab65/site/todomvc/story.json">original story</a>,
+    see <a href="https://github.com/gnawbit/tabretake/blob/main/docs/compatibility.md">compatibility</a>.</p>
 
   <h2>What the story assumes</h2>
   <ul>
@@ -83,9 +81,8 @@ tabretake render --config demo-todomvc-output/record.json --vertical --zoom 1 --
     <li>The story uses a 640×560 viewport and disables click zoom to keep the list visible.
       The landscape frame crops the top title and captions cover some footer help text;
       the tasks and filters remain visible. Inspect the result at your intended display size.</li>
-    <li>The Completed filter uses <code>.filters a[href='#/completed']</code>.
-      In v0.3.3, a partial <code>text: "Completed"</code> match can click the
-      <code>Clear completed</code> button instead. Check the expected result after actions.</li>
+    <li>The Completed filter uses the explicit selector <code>.filters a[href='#/completed']</code>
+      so it always targets the filter link rather than the <code>Clear completed</code> button.</li>
     <li>Output is silent. This example does not need login state or external services.</li>
   </ul>
   <footer class="note">

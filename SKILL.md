@@ -21,7 +21,8 @@ Create a repeatable product walkthrough from a web URL, or render an existing
 screen recording with supplied timestamps. Canonical project:
 https://github.com/gnawbit/tabretake.
 Outputs are local MP4, GIF and PNG posters in landscape (16:9) and optional portrait (9:16).
-For legacy release notes (`v0.4.0` and earlier / `demo-reel`), see [compatibility](docs/compatibility.md).
+For legacy release notes (v0.4.0 and earlier / `demo-reel`), see
+[compatibility](https://github.com/gnawbit/tabretake/blob/main/docs/compatibility.md).
 
 ## Locate and check the CLI
 
@@ -109,24 +110,21 @@ partial files. `schemaVersion` identifies the response format, not the CLI relea
 - `TARGET_NOT_FOUND`, `STEP_TIMEOUT`, `STEP_FAILED`: inspect `error.step.path`
   and its zero-based index. Re-run `plan` with the same login state, update the
   target or wait condition and retry. Do not repeat an unchanged failing command.
-  From v0.3.3, `click` also waits for an enabled, unobstructed
-  target using step `timeout` (milliseconds; default 20,000). v0.3.2 and earlier
-  do not reliably wait for clickable targets; inspect the resulting page.
+  `click` waits for an enabled, unobstructed target using step `timeout`
+  (milliseconds; default 20,000).
 - `PAGE_UNREACHABLE`: check the URL, local app server and browser network/proxy
   access. `PAGE_HTTP_ERROR`: inspect `error.status`; fix the route/server or use
-  authorized login state for 401/403. These codes are available in v0.3.1 or newer;
-  older versions may return `COMMAND_FAILED`. Dependency checks do not prove
-  page access, and an HTTP error page is not a completed demo.
+  authorized login state for 401/403. Dependency checks do not prove page access,
+  and an HTTP error page is not a completed demo.
 - Missing runtime or fonts: inspect `doctor --json` and its recovery hints.
 - Captcha, anti-bot block, iframe-only or canvas-only flow: use a user-provided
   recording with marks instead of trying to bypass the restriction.
 
 ## Protected pages and privacy
 
-Manual login needs an interactive terminal without `--json`:
-
-From v0.3.2, login navigation errors also omit the target URL. HTTP 401/403
-pages stay open for sign-in; other HTTP errors stop the command.
+Manual login needs an interactive terminal without `--json`. Login navigation
+errors omit the target URL; HTTP 401/403 pages stay open for sign-in while other
+HTTP errors stop the command.
 
 ```bash
 tabretake plan --url https://your-app.com --login

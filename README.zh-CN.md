@@ -249,7 +249,6 @@ demo/
 定位字段为 `selector`、`role` + `name`（或 `text`）、`name` 或 `text`。
 显式 `selector` 优先。匹配顺序为：精确按钮/链接 $\to$ 部分匹配按钮/链接 $\to$ 普通文字（先精确后部分）。
 指定 `role` 时只在该角色中匹配，名称同样先精确后部分；每个候选取首个可见元素。标签重复或重叠时，建议使用限定范围的 CSS 选择器。
-历史版本匹配差异见[版本兼容性指南](docs/compatibility.md)。
 
 技巧：
 
@@ -348,7 +347,6 @@ Agent 可用 `capabilities --json` 和 `doctor --json` 获取标准输出上的�
 `init`、`capture`、`plan`、`record`、`render`、`run`、`mark` 均支持 `--json`（标准输出返回结果对象，进度写入 stderr）。
 导航异常返回 `PAGE_UNREACHABLE` 或 `PAGE_HTTP_ERROR` 且不回显敏感 URL；动作完成后字幕即刻显示并在 `pause` 期间保持。
 手动 `--login` 需在交互终端运行且不带 `--json`，自动调用使用 `--storage-state`。
-旧版本历史兼容细节见[版本兼容性指南](docs/compatibility.md)。
 
 ```bash
 --browser auto          # auto（固定 Chromium 或自动回退本机 Chrome/Edge）、chromium、chrome、msedge
@@ -505,8 +503,9 @@ Linux 用 Noto Sans CJK。`doctor` 会检查。
 - [x] 9:16 竖屏导出
 - [x] 已有录屏输入（`--video` + `marks`）
 - [x] 多套品牌预设（`midnight`、`daylight`、`paper`、`slate`）
+- [x] 交互式捕获（`capture`）、可视化打点（`mark`）与轻量边框（`browser`、`phone`）
+- [ ] 完整设备外框（iPhone、Android、macOS）
 - [ ] 配音（TTS）
-- [ ] 设备边框（iPhone、Android、macOS）
 - [ ] 云端渲染
 
 ## 参与贡献

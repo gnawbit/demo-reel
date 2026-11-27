@@ -264,7 +264,6 @@ An explicit `selector` is tried first. Label matching tries exact buttons/links,
 then partial buttons/links, then plain text (exact before partial). An explicit
 `role` restricts matching to that role, with exact names first. Each candidate
 keeps the first visible match; use a scoped selector when labels repeat or overlap.
-See [compatibility](docs/compatibility.md) for legacy matching behavior.
 
 Tips:
 
@@ -369,7 +368,6 @@ to your config.
 Navigation failures return `PAGE_UNREACHABLE` or `PAGE_HTTP_ERROR` without echoing sensitive URLs;
 captions start when an action completes and hold during its `pause`.
 Run manual `--login` in an interactive terminal without `--json`, then reuse `--storage-state` in automation.
-See [compatibility](docs/compatibility.md) for legacy version behavior (`v0.4.0` and earlier).
 
 ```bash
 --browser auto          # auto (bundled Chromium or local Chrome/Edge), chromium, chrome, msedge
@@ -541,8 +539,9 @@ are yours or licensed.
 - [x] 9:16 vertical export
 - [x] Screen-recording input (`--video` + `marks`)
 - [x] Brand presets (`midnight`, `daylight`, `paper`, `slate`)
+- [x] Interactive capture (`capture`), visual marker studio (`mark`), and lightweight frames (`browser`, `phone`)
+- [ ] Full device bezels (iPhone, Android, macOS)
 - [ ] Voiceover (TTS)
-- [ ] Device frames (iPhone, Android, macOS)
 - [ ] Cloud rendering
 
 ## Contributing
