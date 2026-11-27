@@ -79,8 +79,10 @@ test("run executes record + render in one command with HiDPI scale and select ac
   }
 
   // Ensure scale: 2 fills the entire 2x frame (not stuck in top-left quadrant with gray padding).
+  // Sample after videoOffset so pre-navigation blank frames on slower runners do not trigger false failures.
   const framePng = path.join(outDir, "check-2x.png");
-  await exec(FFMPEG, ["-y", "-i", path.join(outDir, "recording.webm"), "-frames:v", "1", framePng]);
+  const sampleAt = (timeline.videoOffset || 0) + Math.min(0.3, (timeline.duration || 0) / 2);
+  await exec(FFMPEG, ["-y", "-ss", sampleAt.toFixed(3), "-i", path.join(outDir, "recording.webm"), "-frames:v", "1", framePng]);
   const pixel = await sharp(framePng).extract({ left: 1100, top: 650, width: 1, height: 1 }).removeAlpha().raw().toBuffer();
   assert.ok(pixel[0] > 230 && pixel[1] > 230 && pixel[2] > 230, `2x HiDPI frame must fill bottom-right cleanly, got ${[...pixel]}`);
 });
