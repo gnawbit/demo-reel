@@ -2,13 +2,13 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { parseCommand } from "./lib/options.mjs";
 import sharp from "sharp";
-import { ffmpeg, probe } from "./lib/ffmpeg.mjs";
+import { ffmpeg, probeVideoMeta } from "./lib/ffmpeg.mjs";
 import { findCjkFont, findFont, hasCjk } from "./lib/fonts.mjs";
 import { buildCameraFilter } from "./lib/camera.mjs";
 import { createCaptionLayers } from "./lib/captions.mjs";
 import { assertConfig, readConfig } from "./lib/config.mjs";
 import { createReporter } from "./lib/report.mjs";
-import { resolveTheme } from "./lib/themes.mjs";
+import { hexToRgb, resolveTheme } from "./lib/themes.mjs";
 
 const LAYOUTS = {
   landscape: {
@@ -74,14 +74,6 @@ function verticalLayout(videoW, videoH, frameMode = "auto") {
     content: { x, y, w, h },
     frame: { ...layout.frame, x: x - 16, y: y - 16, w: w + 32, h: h + 32 },
   };
-}
-
-function hexToRgb(hex) {
-  const clean = String(hex || "#070A12").replace("#", "");
-  const full =
-    clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
-  const n = parseInt(full, 16);
-  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
 }
 
 function mix(hex, target, amount) {
@@ -501,31 +493,22 @@ export async function executeRender(values, { reporter = createReporter("render"
   let record;
   let outDir;
   let videoPath;
-  let probed = null;
+  let videoMeta = null;
 
   if (isMarkConfig) {
     videoPath = videoOverride || path.resolve(path.dirname(configPath), raw.video);
     outDir = values.out ? path.resolve(values.out) : path.resolve(raw.out || "demo");
-    probed = await probe(videoPath);
-
-    const stream = (probed.streams || []).find((s) => s.codec_type === "video");
-    const videoW = Number(stream?.width || 0);
-    const videoH = Number(stream?.height || 0);
-    const videoDurationSec = Number(probed.format?.duration || 0);
-
-    if (!videoW || !videoH || !videoDurationSec) {
-      throw new Error(`Could not read video metadata: ${videoPath}`);
-    }
+    videoMeta = await probeVideoMeta(videoPath);
 
     record = {
       config: raw,
       url: raw.url || raw.displayUrl || "screen-recording",
-      viewport: raw.viewport || { width: videoW, height: videoH },
+      viewport: raw.viewport || { width: videoMeta.width, height: videoMeta.height },
       scale: 1,
       video: videoPath,
       videoOffset: 0,
-      duration: Number(raw.duration || videoDurationSec),
-      events: marksToEvents(raw.marks, videoW, videoH),
+      duration: Number(raw.duration || videoMeta.duration),
+      events: marksToEvents(raw.marks, videoMeta.width, videoMeta.height),
     };
   } else {
     record = raw;
@@ -554,15 +537,8 @@ export async function executeRender(values, { reporter = createReporter("render"
       }
     })();
 
-  const info = probed || (await probe(videoPath));
-  const videoStream = (info.streams || []).find((s) => s.codec_type === "video");
-  const videoW = Number(videoStream?.width || 0);
-  const videoH = Number(videoStream?.height || 0);
-  const videoDurationSec = Number(info.format?.duration || 0);
-
-  if (!videoW || !videoH || !videoDurationSec) {
-    throw new Error(`Could not read video metadata: ${videoPath}`);
-  }
+  const { width: videoW, height: videoH, duration: videoDurationSec } =
+    videoMeta || (await probeVideoMeta(videoPath));
 
   const videoOffset = Math.max(0, Number(record.videoOffset || 0));
   const timelineDuration = Number(record.duration || videoDurationSec - videoOffset);
@@ -604,10 +580,10 @@ export async function executeRender(values, { reporter = createReporter("render"
   const font = values["no-captions"] ? null : findFont();
   const cjkFont = values["no-captions"] ? null : findCjkFont();
   if (!values["no-captions"] && !font) {
-    console.warn("No system font found; captions will be skipped.");
+    reporter.warn("No system font found; captions will be skipped.");
   }
   if (!values["no-captions"] && !cjkFont) {
-    console.warn("No CJK font found; Chinese captions may render as boxes.");
+    reporter.warn("No CJK font found; Chinese captions may render as boxes.");
   }
 
   const theme = resolveTheme(record.config?.brand, values.preset);

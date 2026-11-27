@@ -34,6 +34,7 @@ test("installed package sets up and renders a demo outside its checkout", { time
   }
   assert.equal(pkg.files.some((file) => /^(?:\.serena|\.github|tests|demo|docs)\//.test(file.path)), false);
   assert.equal(pkg.files.some((file) => /(?:^|\/)(?:AGENTS(?:\.local)?\.md|auth\.json|\.env(?:\..*)?)$/.test(file.path)), false);
+  assert.equal(pkg.files.some((file) => file.path === "bin/demo-reel.mjs"), false);
   await npm(["install", "--no-audit", "--no-fund", "--package-lock=false", path.join(temp, pkg.filename)], consumer);
   const installedCli = path.join(consumer, "node_modules", "@gnawbit", "tabretake", "bin", "tabretake.mjs");
   const installedVersion = await npm(["exec", "--offline", "--", "tabretake", "--version"], consumer);

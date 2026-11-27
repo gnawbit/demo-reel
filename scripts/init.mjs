@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { parseCommand } from "./lib/options.mjs";
+import { parseCommand, parseHttpUrl } from "./lib/options.mjs";
 import { createReporter } from "./lib/report.mjs";
 import { resolveTheme } from "./lib/themes.mjs";
 import { extractPlan } from "./plan.mjs";
@@ -23,7 +23,7 @@ function scoreElement(el) {
   return score;
 }
 
-export function buildAutoSteps(elements) {
+function buildAutoSteps(elements) {
   const steps = [{ action: "wait", ms: 600 }];
   const interactive = (elements || [])
     .filter((el) => {
@@ -112,16 +112,7 @@ export async function init(argv) {
   const { values } = parseCommand("init", argv);
   const reporter = createReporter("init", values.json);
 
-  if (!values.url) throw new Error("Provide --url https://your-app.com");
-  let url;
-  try {
-    url = new URL(values.url);
-  } catch {
-    throw new Error("Use a complete http:// or https:// URL");
-  }
-  if (!["http:", "https:"].includes(url.protocol)) {
-    throw new Error("Use a complete http:// or https:// URL");
-  }
+  const url = parseHttpUrl(values.url);
 
   let steps = [{ action: "wait", ms: 1500 }];
   if (values.auto) {

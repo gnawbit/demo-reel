@@ -5,7 +5,45 @@ import path from "node:path";
 import test from "node:test";
 import { inspectConfig } from "../scripts/lib/config.mjs";
 import { ffmpeg, probe } from "../scripts/lib/ffmpeg.mjs";
-import { startMarkServer } from "../scripts/mark.mjs";
+import { buildMarksConfig, startMarkServer } from "../scripts/mark.mjs";
+
+test("buildMarksConfig preserves existing branding, zoomDuration, posterAt and vertical settings", () => {
+  const existing = {
+    $schema: "https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json",
+    displayUrl: "app.example.com",
+    video: "clip.mp4",
+    posterAt: 0.25,
+    zoomDuration: 0.4,
+    brand: { preset: "slate", background: "#101827", accent: "#22c55e", frame: "phone" },
+    vertical: { badge: "Demo", titleLines: ["Ship faster"], zoom: 1.8 },
+    marks: [{ t: 0.1, x: 0.5, y: 0.5 }],
+  };
+  const updated = buildMarksConfig({
+    videoPath: path.resolve("clip.mp4"),
+    outPath: path.resolve("story-video.json"),
+    displayUrl: "app.example.com",
+    preset: "slate",
+    marks: [{ t: 0.2, x: 0.3, y: 0.4, caption: "Updated" }],
+    existing,
+  });
+  assert.equal(updated.posterAt, 0.25);
+  assert.equal(updated.zoomDuration, 0.4);
+  assert.equal(updated.brand.frame, "phone");
+  assert.equal(updated.brand.background, "#101827");
+  assert.deepEqual(updated.vertical, existing.vertical);
+
+  const repainted = buildMarksConfig({
+    videoPath: path.resolve("clip.mp4"),
+    outPath: path.resolve("story-video.json"),
+    displayUrl: "app.example.com",
+    preset: "paper",
+    marks: [{ t: 0.2, x: 0.3, y: 0.4 }],
+    existing,
+  });
+  assert.equal(repainted.brand.preset, "paper");
+  assert.equal(repainted.brand.frame, "phone");
+  assert.notEqual(repainted.brand.background, "#101827");
+});
 
 test("mark studio serves HTML, streams Range video, saves marks and renders outputs", { timeout: 60000 }, async (t) => {
   const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-mark-"));

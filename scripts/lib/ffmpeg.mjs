@@ -3,7 +3,7 @@ import ffmpegInstaller from "@ffmpeg-installer/ffmpeg";
 import ffprobeInstaller from "@ffprobe-installer/ffprobe";
 
 export const FFMPEG = ffmpegInstaller.path;
-export const FFPROBE = ffprobeInstaller.path;
+const FFPROBE = ffprobeInstaller.path;
 
 export function run(bin, args, { capture = false } = {}) {
   return new Promise((resolve, reject) => {
@@ -44,17 +44,14 @@ export async function probe(file) {
   return JSON.parse(stdout);
 }
 
-export async function duration(file) {
-  const info = await probe(file);
-  return Number(info.format?.duration || 0);
-}
-
-export async function videoSize(file) {
+export async function probeVideoMeta(file) {
   const info = await probe(file);
   const stream = (info.streams || []).find((s) => s.codec_type === "video");
-  return {
-    width: Number(stream?.width || 0),
-    height: Number(stream?.height || 0),
-    duration: Number(info.format?.duration || 0),
-  };
+  const width = Number(stream?.width || 0);
+  const height = Number(stream?.height || 0);
+  const duration = Number(info.format?.duration || 0);
+  if (!width || !height || !duration) {
+    throw new Error(`Could not read video metadata: ${file}`);
+  }
+  return { width, height, duration };
 }

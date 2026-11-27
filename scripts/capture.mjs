@@ -1,6 +1,6 @@
 import { access, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { parseCommand, parseViewport } from "./lib/options.mjs";
+import { parseCommand, parseHttpUrl, parseScale, parseViewport } from "./lib/options.mjs";
 import { launchBrowser, loginAndSave, newContext } from "./lib/browser.mjs";
 import { assertConfig } from "./lib/config.mjs";
 import { navigate } from "./lib/navigation.mjs";
@@ -54,7 +54,7 @@ function toStep(event, pause) {
   return step;
 }
 
-export function pushCapturedEvent(merged, item) {
+function pushCapturedEvent(merged, item) {
   if (!item || !item.action) return merged;
   const prev = merged.at(-1);
   const currKey = targetKey(item);
@@ -524,16 +524,7 @@ export async function capture(argv) {
   requireInteractiveLogin(values);
   const reporter = createReporter("capture", values.json);
 
-  if (!values.url) throw new Error("Provide --url https://your-app.com");
-  let parsedUrl;
-  try {
-    parsedUrl = new URL(values.url);
-  } catch {
-    throw new Error("Use a complete http:// or https:// URL");
-  }
-  if (!["http:", "https:"].includes(parsedUrl.protocol)) {
-    throw new Error("Use a complete http:// or https:// URL");
-  }
+  const parsedUrl = parseHttpUrl(values.url);
 
   const outPath = path.resolve(values.out);
   if (!values.force) {
@@ -546,12 +537,7 @@ export async function capture(argv) {
   }
 
   const viewport = parseViewport(values.viewport);
-  const scaleInput = values.scale === undefined ? 1 : (values.scale.trim() === "" ? NaN : Number(values.scale));
-  if (scaleInput !== 1 && scaleInput !== 2) {
-    throw commandError("INVALID_CONFIG", "scale / --scale must be 1 or 2", {
-      hint: "Choose 1 (standard) or 2 (HiDPI Retina).",
-    });
-  }
+  const scaleInput = parseScale(values.scale, 1);
   if (values.preset) resolveTheme({}, values.preset);
 
   let storageState = values["storage-state"];
@@ -592,6 +578,8 @@ export async function capture(argv) {
   if (values.run) {
     const runResult = await runPipeline({
       ...values,
+      login: false,
+      "storage-state": storageState,
       config: outPath,
       out: values["media-out"] || "demo",
     }, { reporter });

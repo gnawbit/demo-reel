@@ -28,7 +28,7 @@ Examples:
   tabretake record --config examples/story.json --out demo
 
 Options:
-  --json              Machine-readable results for init, plan, record, render, run, capture and mark.
+  --json              Machine-readable results (init, capture, plan, record, preview, render, run, mark, validate, doctor, capabilities).
   --login             Open a visible browser so you can log in once.
   --storage-state     Reuse a saved Playwright storage state (cookies/localStorage).
   --proxy             Proxy server, e.g. http://127.0.0.1:10808
@@ -36,9 +36,11 @@ Options:
   --scale             Device pixel scale for crisp zoom: 1 (default) or 2 (HiDPI Retina)
   --headed            Watch the recording happen (default false)
   --vertical          Also render a 9:16 vertical video + GIF.
+  --zoom              Landscape focus magnification (1–10; default 1.28).
   --vertical-zoom     Override portrait focus zoom (1–10; otherwise uses --zoom).
   --video             Use an existing screen recording; the config needs "marks".
   --no-gif            Skip GIF export.
+  --no-captions       Suppress captions and portrait text overlays.
   --browser           Browser channel: auto (default), chromium, chrome or msedge.
   --preset            Brand theme preset: midnight, daylight, paper or slate.
   --poster-at         Choose the poster time in output seconds, e.g. 4.5.

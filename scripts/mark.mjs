@@ -6,7 +6,7 @@ import { createServer } from "node:http";
 import path from "node:path";
 import { parseCommand } from "./lib/options.mjs";
 import { assertConfig, inspectConfig } from "./lib/config.mjs";
-import { probe } from "./lib/ffmpeg.mjs";
+import { probeVideoMeta } from "./lib/ffmpeg.mjs";
 import { commandError, createReporter } from "./lib/report.mjs";
 import { resolveTheme } from "./lib/themes.mjs";
 import { executeRender } from "./render.mjs";
@@ -270,14 +270,30 @@ function renderMarkHtml({ token, duration, width, height, preset, videoName, ini
 </html>`;
 }
 
-export function buildMarksConfig({ videoPath, outPath, displayUrl, preset, marks = [] }) {
+export function buildMarksConfig({ videoPath, outPath, displayUrl, preset, marks = [], existing = null }) {
   const rel = path.relative(path.dirname(outPath), videoPath);
   const video = rel && !path.isAbsolute(rel) ? rel.replace(/\\/g, "/") : videoPath;
-  const theme = resolveTheme({}, preset);
+  const existingBrand = existing?.brand || {};
+  const overridePreset = preset && preset !== existingBrand.preset ? preset : undefined;
+  const theme = resolveTheme(existingBrand, overridePreset);
+  const brand = {
+    preset: theme.preset,
+    background: theme.background,
+    accent: theme.accent,
+    ...(existingBrand.frame ? { frame: existingBrand.frame } : {}),
+  };
   const config = {
-    displayUrl: displayUrl || "your-app.com",
+    ...(existing?.$schema ? { $schema: existing.$schema } : {}),
+    ...(existing?.out ? { out: existing.out } : {}),
+    ...(existing?.viewport ? { viewport: existing.viewport } : {}),
+    ...(existing?.vertical ? { vertical: existing.vertical } : {}),
+    ...(existing?.posterAt !== undefined ? { posterAt: existing.posterAt } : {}),
+    ...(existing?.zoomDuration !== undefined ? { zoomDuration: existing.zoomDuration } : {}),
+    ...(existing?.duration !== undefined ? { duration: existing.duration } : {}),
+    ...(existing?.url ? { url: existing.url } : {}),
+    displayUrl: displayUrl || existing?.displayUrl || "your-app.com",
     video,
-    brand: { preset: theme.preset, background: theme.background, accent: theme.accent },
+    brand,
     marks: marks.map((m) => ({
       t: Number(m.t ?? 0),
       ...(m.duration !== undefined ? { duration: Number(m.duration) } : {}),
@@ -301,14 +317,7 @@ export async function startMarkServer({
 } = {}) {
   const resolvedVideo = path.resolve(videoPath);
   const resolvedOut = path.resolve(outPath || "story-video.json");
-  const info = await probe(resolvedVideo);
-  const stream = (info.streams || []).find((s) => s.codec_type === "video");
-  const width = Number(stream?.width || 0);
-  const height = Number(stream?.height || 0);
-  const duration = Number(info.format?.duration || 0);
-  if (!width || !height || !duration) {
-    throw new Error(`Could not read video metadata: ${resolvedVideo}`);
-  }
+  const { width, height, duration } = await probeVideoMeta(resolvedVideo);
 
   const token = crypto.randomBytes(16).toString("hex");
   const artifacts = new Map();
@@ -318,9 +327,11 @@ export async function startMarkServer({
   let initialMarks = [];
   let initialDisplayUrl = "your-app.com";
   let initialPreset = preset;
+  let existingConfig = null;
   try {
     const existing = JSON.parse(await readFile(resolvedOut, "utf8"));
     if (inspectConfig(existing, { kind: "marks" }).ok) {
+      existingConfig = existing;
       initialMarks = existing.marks || [];
       if (existing.displayUrl) initialDisplayUrl = existing.displayUrl;
       if (!initialPreset && existing.brand?.preset) initialPreset = existing.brand.preset;
@@ -337,9 +348,11 @@ export async function startMarkServer({
       displayUrl: body.displayUrl,
       preset: body.preset || preset,
       marks: body.marks || [],
+      existing: existingConfig,
     });
     await mkdir(path.dirname(resolvedOut), { recursive: true });
     await writeFile(resolvedOut, JSON.stringify(cfg, null, 2) + "\n", "utf8");
+    existingConfig = cfg;
     artifacts.set(resolvedOut, { kind: "marks", path: resolvedOut });
     return cfg;
   };

@@ -7,6 +7,19 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { inspectConfig } from "../scripts/lib/config.mjs";
+import { parseHttpUrl, parseScale } from "../scripts/lib/options.mjs";
+
+test("parseHttpUrl and parseScale validate shared CLI option values", () => {
+  assert.equal(parseHttpUrl("https://example.com/app").href, "https://example.com/app");
+  assert.throws(() => parseHttpUrl(""), /Provide --url/);
+  assert.throws(() => parseHttpUrl("not-a-url"), /complete http/);
+  assert.throws(() => parseHttpUrl("file:///tmp/a.html"), /complete http/);
+
+  assert.equal(parseScale(undefined, 1), 1);
+  assert.equal(parseScale("2", 1), 2);
+  assert.throws(() => parseScale("", 1), /scale \/ --scale must be 1 or 2/);
+  assert.throws(() => parseScale("3", 1), /scale \/ --scale must be 1 or 2/);
+});
 
 const exec = promisify(execFile);
 const root = fileURLToPath(new URL("../", import.meta.url));

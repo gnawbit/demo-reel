@@ -5,6 +5,7 @@ import { chromium, errors } from "playwright";
 import { FFMPEG } from "./ffmpeg.mjs";
 import { navigate } from "./navigation.mjs";
 import { VALID_BROWSERS, findSystemBrowser } from "./system-browser.mjs";
+import { hexToRgb } from "./themes.mjs";
 import { waitForEnter } from "./tty.mjs";
 
 export { VALID_BROWSERS, findSystemBrowser };
@@ -106,11 +107,8 @@ export async function openRecordedPage(
 }
 
 function accentRgba(hex, alpha) {
-  const clean = String(hex || "#6c5ce7").replace("#", "");
-  const full = clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
-  const n = Number.parseInt(full, 16);
-  if (!Number.isFinite(n)) return `rgba(108,92,231,${alpha})`;
-  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
+  const { r, g, b } = hexToRgb(hex, "#6c5ce7");
+  return `rgba(${r},${g},${b},${alpha})`;
 }
 
 /**

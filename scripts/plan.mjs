@@ -5,7 +5,7 @@ import { launchBrowser, loginAndSave, newContext } from "./lib/browser.mjs";
 import { createReporter, requireInteractiveLogin } from "./lib/report.mjs";
 import { navigate } from "./lib/navigation.mjs";
 
-export async function collectElements(page, { includeHints = false } = {}) {
+async function collectElements(page, { includeHints = false } = {}) {
   return page.evaluate((withHints) => {
     function cssPath(el) {
       if (!el || el.nodeType !== 1) return "";

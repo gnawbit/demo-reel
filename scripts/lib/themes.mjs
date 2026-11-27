@@ -111,6 +111,17 @@ export const BRAND_PRESETS = {
 
 export const PRESET_NAMES = Object.keys(BRAND_PRESETS);
 
+export function hexToRgb(hex, fallback = "#070a12") {
+  const parse = (value) => {
+    const clean = String(value || "").replace("#", "");
+    const full = clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
+    if (!/^[0-9a-fA-F]{6}$/.test(full)) return null;
+    const n = Number.parseInt(full, 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+  };
+  return parse(hex) || parse(fallback) || { r: 7, g: 10, b: 18 };
+}
+
 export function resolveTheme(brand = {}, overridePreset) {
   const presetName = overridePreset || brand?.preset || "midnight";
   const base = BRAND_PRESETS[presetName];

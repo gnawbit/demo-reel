@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
 import Ajv from "ajv";
 
-export const configSchema = JSON.parse(readFileSync(new URL("../../schemas/story.schema.json", import.meta.url), "utf8"));
+const configSchema = JSON.parse(readFileSync(new URL("../../schemas/story.schema.json", import.meta.url), "utf8"));
 const ajv = new Ajv({ allErrors: true, strictRequired: false });
 ajv.addFormat("uri", (value) => {
   try { new URL(value); return true; } catch { return false; }

@@ -1,6 +1,6 @@
 import { copyFile, mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { parseCommand, parseViewport } from "./lib/options.mjs";
+import { parseCommand, parseScale, parseViewport } from "./lib/options.mjs";
 import {
   clickAndType,
   dragBy,
@@ -39,15 +39,7 @@ export async function executeRecord(values, { command = "record", reporter = cre
     width: 1440,
     height: 810,
   });
-  const scaleInput = values.scale === undefined
-    ? (config.scale ?? 1)
-    : (String(values.scale).trim() === "" ? NaN : Number(values.scale));
-  if (scaleInput !== 1 && scaleInput !== 2) {
-    throw commandError("INVALID_CONFIG", "scale / --scale must be 1 or 2", {
-      hint: "Choose 1 (standard) or 2 (HiDPI Retina).",
-    });
-  }
-  const scale = scaleInput;
+  const scale = parseScale(values.scale, config.scale ?? 1);
   assertConfig({ ...config, url, viewport, scale }, { kind: "story" });
   const steps = config.steps || [];
   if (steps.length === 0) throw new Error("Config has no steps");
@@ -107,6 +99,18 @@ export async function executeRecord(values, { command = "record", reporter = cre
     for (const [index, step] of steps.entries()) {
       if (preview) reporter.log(`Step ${index + 1}/${steps.length}: ${step.action}`);
       const t = Date.now() - startedAt;
+      const pushEvent = (action, point, extra = {}, timeEnd = Date.now() - startedAt) => {
+        events.push({
+          t,
+          tEnd: timeEnd,
+          zoom: step.zoom !== false,
+          action,
+          x: point.x,
+          y: point.y,
+          caption: step.caption || "",
+          ...extra,
+        });
+      };
 
       try {
         switch (step.action) {
@@ -125,16 +129,7 @@ export async function executeRecord(values, { command = "record", reporter = cre
           case "click": {
             const locator = await resolveLocator(page, step);
             const point = await moveAndClick(page, locator, 0, Number(step.timeout ?? 20000));
-            events.push({
-              t,
-              tEnd: Date.now() - startedAt,
-              zoom: step.zoom !== false,
-              action: "click",
-              x: point.x,
-              y: point.y,
-              caption: step.caption || "",
-              label: step.text || step.name || step.selector || "",
-            });
+            pushEvent("click", point, { label: step.text || step.name || step.selector || "" });
             await page.waitForTimeout(Number(step.pause ?? 700));
             break;
           }
@@ -143,16 +138,7 @@ export async function executeRecord(values, { command = "record", reporter = cre
             const locator = await resolveLocator(page, step);
             const value = String(step.value ?? step.text ?? "");
             const point = await clickAndType(page, locator, value, 0);
-            events.push({
-              t,
-              tEnd: Date.now() - startedAt,
-              zoom: step.zoom !== false,
-              action: "type",
-              x: point.x,
-              y: point.y,
-              caption: step.caption || "",
-              label: value,
-            });
+            pushEvent("type", point, { label: value });
             await page.waitForTimeout(Number(step.pause ?? 400));
             break;
           }
@@ -161,16 +147,7 @@ export async function executeRecord(values, { command = "record", reporter = cre
             const locator = await resolveLocator(page, step);
             const value = String(step.value ?? step.text ?? "");
             const point = await selectOption(page, locator, value, 0, Number(step.timeout ?? 20000));
-            events.push({
-              t,
-              tEnd: Date.now() - startedAt,
-              zoom: step.zoom !== false,
-              action: "select",
-              x: point.x,
-              y: point.y,
-              caption: step.caption || "",
-              label: value,
-            });
+            pushEvent("select", point, { label: value });
             await page.waitForTimeout(Number(step.pause ?? 500));
             break;
           }
@@ -178,16 +155,7 @@ export async function executeRecord(values, { command = "record", reporter = cre
           case "hover": {
             const locator = await resolveLocator(page, step);
             const point = await hover(page, locator, 0);
-            events.push({
-              t,
-              tEnd: Date.now() - startedAt,
-              zoom: step.zoom !== false,
-              action: "hover",
-              x: point.x,
-              y: point.y,
-              caption: step.caption || "",
-              label: step.text || step.selector || "",
-            });
+            pushEvent("hover", point, { label: step.text || step.selector || "" });
             await page.waitForTimeout(Number(step.pause ?? 500));
             break;
           }
@@ -200,12 +168,10 @@ export async function executeRecord(values, { command = "record", reporter = cre
               throw commandError("TARGET_NOT_FOUND", "The focus target has no visible area.");
             }
             const focusedAt = Date.now() - startedAt;
-            events.push({
-              t: focusedAt, tEnd: focusedAt, action: "focus",
-              x: box.x + box.width / 2, y: box.y + box.height / 2,
-              zoom: step.zoom !== false, caption: step.caption || "",
+            pushEvent("focus", { x: box.x + box.width / 2, y: box.y + box.height / 2 }, {
+              t: focusedAt,
               label: step.text || step.name || step.selector || "",
-            });
+            }, focusedAt);
             await page.waitForTimeout(Number(step.pause ?? 700));
             break;
           }
@@ -220,16 +186,7 @@ export async function executeRecord(values, { command = "record", reporter = cre
               Number(step.steps || 24),
               0,
             );
-            events.push({
-              t,
-              tEnd: Date.now() - startedAt,
-              zoom: step.zoom !== false,
-              action: "drag",
-              x: point.x,
-              y: point.y,
-              caption: step.caption || "",
-              label: step.selector || "",
-            });
+            pushEvent("drag", point, { label: step.selector || "" });
             await page.waitForTimeout(Number(step.pause ?? 600));
             break;
           }
@@ -239,30 +196,14 @@ export async function executeRecord(values, { command = "record", reporter = cre
             await page.evaluate((dy) => {
               window.scrollBy({ top: dy, behavior: "smooth" });
             }, y);
-            events.push({
-              t,
-              tEnd: Date.now() - startedAt,
-              zoom: step.zoom !== false,
-              action: "scroll",
-              x: viewport.width / 2,
-              y: viewport.height / 2,
-              caption: step.caption || "",
-            });
+            pushEvent("scroll", { x: viewport.width / 2, y: viewport.height / 2 });
             await page.waitForTimeout(Number(step.pause ?? 700));
             break;
           }
 
           case "press": {
             await page.keyboard.press(step.key || "Enter");
-            events.push({
-              t,
-              tEnd: Date.now() - startedAt,
-              zoom: step.zoom !== false,
-              action: "press",
-              x: viewport.width / 2,
-              y: viewport.height / 2,
-              caption: step.caption || "",
-            });
+            pushEvent("press", { x: viewport.width / 2, y: viewport.height / 2 });
             await page.waitForTimeout(Number(step.pause ?? 500));
             break;
           }

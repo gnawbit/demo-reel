@@ -1,4 +1,39 @@
 import { parseArgs } from "node:util";
+import { commandError } from "./report.mjs";
+
+const authOptions = {
+  login: { type: "boolean", default: false },
+  "storage-state": { type: "string" },
+  "save-state": { type: "string" },
+};
+
+const browserOptions = {
+  proxy: { type: "string" },
+  viewport: { type: "string" },
+  browser: { type: "string", default: "auto" },
+};
+
+const renderStyleOptions = {
+  "no-gif": { type: "boolean", default: false },
+  "no-captions": { type: "boolean", default: false },
+  vertical: { type: "boolean", default: false },
+  zoom: { type: "string", default: "1.28" },
+  "vertical-zoom": { type: "string" },
+  "zoom-duration": { type: "string" },
+  "poster-at": { type: "string" },
+  preset: { type: "string" },
+};
+
+const recordOptions = {
+  json: { type: "boolean", default: false },
+  config: { type: "string" },
+  url: { type: "string" },
+  out: { type: "string" },
+  ...authOptions,
+  ...browserOptions,
+  headed: { type: "boolean", default: false },
+  scale: { type: "string" },
+};
 
 export const commandOptions = {
   setup: { "with-deps": { type: "boolean", default: false } },
@@ -16,69 +51,25 @@ export const commandOptions = {
     out: { type: "string", default: "plan.json" },
     login: { type: "boolean", default: false },
     "storage-state": { type: "string" },
-    proxy: { type: "string" },
-    viewport: { type: "string" },
+    ...browserOptions,
     headless: { type: "boolean", default: true },
-    browser: { type: "string", default: "auto" },
   },
-  record: {
-    json: { type: "boolean", default: false },
-    config: { type: "string" },
-    url: { type: "string" },
-    out: { type: "string" },
-    login: { type: "boolean", default: false },
-    "storage-state": { type: "string" },
-    "save-state": { type: "string" },
-    proxy: { type: "string" },
-    viewport: { type: "string" },
-    headed: { type: "boolean", default: false },
-    browser: { type: "string", default: "auto" },
-    scale: { type: "string" },
-  },
+  record: recordOptions,
   run: {
-    json: { type: "boolean", default: false },
-    config: { type: "string" },
-    url: { type: "string" },
-    out: { type: "string" },
-    login: { type: "boolean", default: false },
-    "storage-state": { type: "string" },
-    "save-state": { type: "string" },
-    proxy: { type: "string" },
-    viewport: { type: "string" },
-    headed: { type: "boolean", default: false },
-    browser: { type: "string", default: "auto" },
-    scale: { type: "string" },
-    "no-gif": { type: "boolean", default: false },
-    "no-captions": { type: "boolean", default: false },
-    vertical: { type: "boolean", default: false },
-    zoom: { type: "string", default: "1.28" },
-    "vertical-zoom": { type: "string" },
-    "zoom-duration": { type: "string" },
-    "poster-at": { type: "string" },
-    preset: { type: "string" },
+    ...recordOptions,
+    ...renderStyleOptions,
   },
   capture: {
     json: { type: "boolean", default: false },
     url: { type: "string" },
     out: { type: "string", default: "demo.json" },
-    login: { type: "boolean", default: false },
-    "storage-state": { type: "string" },
-    "save-state": { type: "string" },
-    proxy: { type: "string" },
-    viewport: { type: "string" },
-    browser: { type: "string", default: "auto" },
-    preset: { type: "string" },
+    ...authOptions,
+    ...browserOptions,
     scale: { type: "string" },
     force: { type: "boolean", default: false },
     run: { type: "boolean", default: false },
     "media-out": { type: "string" },
-    "no-gif": { type: "boolean", default: false },
-    "no-captions": { type: "boolean", default: false },
-    vertical: { type: "boolean", default: false },
-    zoom: { type: "string", default: "1.28" },
-    "vertical-zoom": { type: "string" },
-    "zoom-duration": { type: "string" },
-    "poster-at": { type: "string" },
+    ...renderStyleOptions,
   },
   mark: {
     json: { type: "boolean", default: false },
@@ -94,14 +85,7 @@ export const commandOptions = {
     config: { type: "string" },
     video: { type: "string" },
     out: { type: "string" },
-    "no-gif": { type: "boolean", default: false },
-    "no-captions": { type: "boolean", default: false },
-    vertical: { type: "boolean", default: false },
-    zoom: { type: "string", default: "1.28" },
-    "vertical-zoom": { type: "string" },
-    "zoom-duration": { type: "string" },
-    "poster-at": { type: "string" },
-    preset: { type: "string" },
+    ...renderStyleOptions,
   },
   serve: {
     port: { type: "string", default: "4173" },
@@ -135,4 +119,30 @@ export function parseViewport(value, fallback = { width: 1440, height: 810 }) {
   }
   const [width, height] = value.split("x").map(Number);
   return { width, height };
+}
+
+export function parseHttpUrl(raw, missingMessage = "Provide --url https://your-app.com") {
+  if (!raw) throw new Error(missingMessage);
+  let url;
+  try {
+    url = new URL(raw);
+  } catch {
+    throw new Error("Use a complete http:// or https:// URL");
+  }
+  if (!["http:", "https:"].includes(url.protocol)) {
+    throw new Error("Use a complete http:// or https:// URL");
+  }
+  return url;
+}
+
+export function parseScale(cliValue, fallback = 1) {
+  const scale = cliValue === undefined
+    ? fallback
+    : (String(cliValue).trim() === "" ? NaN : Number(cliValue));
+  if (scale !== 1 && scale !== 2) {
+    throw commandError("INVALID_CONFIG", "scale / --scale must be 1 or 2", {
+      hint: "Choose 1 (standard) or 2 (HiDPI Retina).",
+    });
+  }
+  return scale;
 }
