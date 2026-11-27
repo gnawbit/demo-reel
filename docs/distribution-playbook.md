@@ -30,8 +30,8 @@
 
 | 阶段 / 渠道 | 目标受众 | 核心入口与呈现形式 | 当前状态 |
 |---|---|---|---|
-| **仓库检索与技能目录**<br>GitHub Topics / `skills.sh` | GitHub 站内搜索与 Agent Skills CLI 用户 | 13 个高召回 Topics；`skills.sh` 新名页面 `gnawbit/tabretake/tabretake` | 已完成标签补全与目录页激活（Algolia 全文检索按服务端同步节奏生效） |
-| **开源月刊 / 精选清单**<br>阮一峰周刊 / HelloGitHub / Awesome 清单 | 国内中文开源读者、Playwright 与 Claude Code 生态用户 | 真实案例成片展示 + 一键可复现 CLI / Skill | 周刊 `#13728`、HelloGitHub `#4487`、`awesome-playwright#319`、`awesome-llm-skills#359`、`awesome-claude-skills#2504` 已开启 |
+| **仓库检索与技能目录**<br>GitHub Topics / `skills.sh` | GitHub 站内搜索与 Agent Skills CLI 用户 | 13 个高召回 Topics；`skills.sh` 新名页面 `gnawbit/tabretake/tabretake` | 已完成标签补全与新名详情页上线（`2026-11-27` 核查：Algolia `q=tabretake` 尚为 0 条，搜索仍命中旧名 `demo-reel`） |
+| **开源月刊 / 精选清单**<br>阮一峰周刊 / HelloGitHub / Awesome 清单 | 国内中文开源读者、Playwright 与 Claude Code 生态用户 | 真实案例成片展示 + 一键可复现 CLI / Skill | `Sagargupta16/awesome-skills` 已收录并加徽标；周刊 `#13728`、HelloGitHub `#4487`、`awesome-playwright#319`、`awesome-llm-skills#359` 已开启；`awesome-claude-skills#2504` 返回 404 待核实补提 |
 | **中文开发者主阵地**<br>V2EX / 掘金 / 知乎 | Web 全栈、前端与 AI 编程助手高频用户 | 痛点对比 + `capture` / `mark` / `run` 30 秒上手 + 真实案例 GIF | **待发布（文稿已按 v0.5.0 就绪，需账号登录后发布）** |
 | **海外技术主阵地**<br>Show HN / Twitter(X) / Reddit / Dev.to | 独立开发者、OSS 维护者、Cursor/Claude Code 用户 | `Show HN` 技术工程解析 + 4 推文 Thread + 英文深度复盘 | **待发布（文稿已按 v0.5.0 就绪，需账号登录后发布）** |
 | **外部试用闭环**<br>定向邀请 & `first-demo.yml` | 有真实发版演示需求的 Web 开发者 | 试用模板反馈首次障碍、成片可用性与二次重拍效果 | **待授权发送（见 [docs/adoption.md](adoption.md)）** |
