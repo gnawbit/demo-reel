@@ -30,7 +30,9 @@ Use an installed `tabretake` CLI when available. For a source checkout, replace
 `tabretake` with `node /absolute/path/to/tabretake/bin/tabretake.mjs` (quote paths with spaces).
 If missing, install with `npm install --global @gnawbit/tabretake@0.5.1`.
 When Playwright Chromium is absent, TabRetake automatically falls back to local
-Chrome or Edge (`--browser auto`), or you can install pinned Chromium via `tabretake setup`.
+Chrome or Edge (`--browser auto`), or you can install pinned Chromium via
+`tabretake setup [--proxy <url>] [--json]` (if download times out in restricted networks,
+use `PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright`).
 
 ```bash
 tabretake --version

@@ -29,7 +29,7 @@
 | **运行环境与协议** | Node.js `>=20.9.0`，MIT 协议，100% 本地运行（无云端上传、无遥测收集） |
 | **浏览器引擎** | Playwright Chromium，支持未执行 `setup` 时自动回退本机 **Chrome / Edge**（`--browser auto`） |
 | **双输入模式** | (1) 交互式 `capture` / `init --auto` / 可编辑 JSON 步骤 · (2) 已有录屏（OBS/QuickTime）+ 可视化 `mark` 打点 |
-| **输出产物** | `16:9` 1080p MP4、`README GIF`（约 400–900 KB）、`9:16` 竖屏 MP4/GIF、PNG 封面、`record.json`（支持 2x HiDPI `--scale 2`） |
+| **输出产物** | `16:9` 1080p MP4、`README GIF`（9–12 秒短片段约 400–900 KB）、`9:16` 竖屏 MP4/GIF、PNG 封面、`record.json`（支持 2x HiDPI `--scale 2`） |
 | **内置品牌主题** | `midnight`（暗夜紫）、`daylight`（浅色极简）、`paper`（暖纸复古）、`slate`（石板翠绿） |
 | **平台与智能体** | Windows、macOS、Linux · 支持 Claude Code、Codex、Cursor 及所有 [Agent Skills](https://agentskills.io) 客户端 |
 
@@ -109,6 +109,18 @@ tabretake demo
 要求 Node 20.9+。在工作目录运行 `tabretake`，内置示例会将结果写入 `./demo`。
 若未安装 Playwright Chromium，TabRetake 会自动回退调用本机已安装的 Chrome 或 Edge（`--browser auto`）；
 需要固定版本浏览器时运行 `tabretake setup`（Linux 缺系统依赖时加 `--with-deps`）。ffmpeg/ffprobe 随依赖安装。
+
+若直连 Playwright 官方下载源较慢或超时，可使用 `--proxy <url>` 或指定国内镜像源：
+
+```bash
+# macOS / Linux / Git Bash
+PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright tabretake setup
+```
+
+```powershell
+# Windows PowerShell
+$env:PLAYWRIGHT_DOWNLOAD_HOST="https://cdn.npmmirror.com/binaries/playwright"; tabretake setup
+```
 
 包名为 [`@gnawbit/tabretake`](https://www.npmjs.com/package/@gnawbit/tabretake)。
 旧版本（`v0.4.0` 及更早 / `demo-reel`）兼容性说明见 [版本兼容性指南](compatibility.md)。
@@ -313,7 +325,7 @@ demo/
 | `tabretake --version` | 输出已安装 CLI 的版本 |
 | `tabretake capabilities --json` | 查询支持的命令、参数及 JSON 输出 |
 | `tabretake doctor [--json]` | 检查 Node、Chromium、ffmpeg、字体 |
-| `tabretake setup` | 安装与当前 CLI 匹配的 Chromium |
+| `tabretake setup [--with-deps] [--proxy <url>]` | 安装与当前 CLI 匹配的 Chromium |
 | `tabretake init --url <url> [--auto] [--preset <name>]` | 创建可编辑的故事文件（`--auto` 自动生成步骤，`--preset` 设置主题） |
 | `tabretake capture --url <url> [--out demo.json] [--run]` | 打开浏览器亲自点一遍流程，自动生成可编辑 `story.json` |
 | `tabretake validate --config demo.json [--json]` | 预检故事、录屏标记或录制时间线 |

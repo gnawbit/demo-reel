@@ -29,7 +29,7 @@ Turn editable JSON steps or AI Agent instructions into crisp **16:9 README GIFs*
 | **Runtime & License** | Node.js `>=20.9.0`, MIT License, 100% local execution (zero cloud upload, zero telemetry) |
 | **Browser Engine** | Playwright Chromium with automatic fallback to local **Chrome / Edge** (`--browser auto`) |
 | **Input Modes** | (1) Interactive browser `capture`, `init --auto`, or editable JSON steps · (2) Existing MP4/WebM + visual `mark` studio |
-| **Output Artifacts** | `16:9` 1080p MP4, `README GIF` (~400–900 KB), `9:16` portrait MP4/GIF, PNG posters, `record.json` (1x or 2x HiDPI `--scale 2`) |
+| **Output Artifacts** | `16:9` 1080p MP4, `README GIF` (~400–900 KB for short 9–12s clips), `9:16` portrait MP4/GIF, PNG posters, `record.json` (1x or 2x HiDPI `--scale 2`) |
 | **Theme Presets** | `midnight` (dark studio), `daylight` (light minimal), `paper` (warm cream), `slate` (slate-emerald) |
 | **Platforms & Agents** | Windows, macOS, Linux · Claude Code, Codex, Cursor, and any [Agent Skills](https://agentskills.io) client |
 
@@ -113,6 +113,16 @@ the bundled demo writes its output to `./demo`. If Playwright Chromium is not
 installed, TabRetake automatically falls back to local Chrome or Edge
 (`--browser auto`). Run `tabretake setup` (or `tabretake setup --with-deps` on Linux)
 to install Playwright's pinned Chromium. ffmpeg and ffprobe are included as dependencies.
+
+If downloading Chromium is slow or times out in restricted networks, pass `--proxy <url>`
+or use a Playwright download mirror:
+
+```bash
+# China mirror (npmmirror Playwright binaries)
+PLAYWRIGHT_DOWNLOAD_HOST=https://cdn.npmmirror.com/binaries/playwright tabretake setup
+```
+
+(In Windows PowerShell: `$env:PLAYWRIGHT_DOWNLOAD_HOST="https://cdn.npmmirror.com/binaries/playwright"; tabretake setup`)
 
 The npm package is [`@gnawbit/tabretake`](https://www.npmjs.com/package/@gnawbit/tabretake).
 For legacy release notes (`v0.4.0` and earlier / `demo-reel`), see [compatibility](docs/compatibility.md).
@@ -330,7 +340,7 @@ for cropped context.
 | `tabretake --version` | Print the installed CLI version |
 | `tabretake capabilities --json` | List supported commands, flags and JSON support |
 | `tabretake doctor [--json]` | Check Node, Chromium, ffmpeg, fonts |
-| `tabretake setup` | Install the Chromium version used by this CLI |
+| `tabretake setup [--with-deps] [--proxy <url>]` | Install the Chromium version used by this CLI |
 | `tabretake init --url <url> [--auto] [--preset <name>]` | Create an editable story file (`--auto` scans controls; `--preset` sets theme) |
 | `tabretake capture --url <url> [--out demo.json] [--run]` | Record your real browser clicks/inputs into an editable `story.json` |
 | `tabretake validate --config demo.json [--json]` | Validate a story, marks or recorded timeline without recording |
