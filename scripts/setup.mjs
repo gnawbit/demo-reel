@@ -7,9 +7,11 @@ import { commandError, createReporter } from "./lib/report.mjs";
 const require = createRequire(import.meta.url);
 const ANSI_RE = /\x1b\[[0-9;?]*[a-zA-Z]/g;
 const MAX_TAIL_LINES = 40;
-const NETWORK_RE = /ETIMEDOUT|ECONNREFUSED|ECONNRESET|ENOTFOUND|EAI_AGAIN|EPIPE|ERR_CONNECTION|ERR_TIMED_OUT|socket hang up|timed out|timeout|Failed to download|status code (?:403|404|407|429|500|502|503|504)|fetch failed/i;
+const NETWORK_RE = /ETIMEDOUT|ECONNREFUSED|ECONNRESET|ENOTFOUND|EAI_AGAIN|EPIPE|ERR_CONNECTION|ERR_TIMED_OUT|socket hang up|timed out|timeout|server returned code \d+|status code (?:403|404|407|429|500|502|503|504)|fetch failed/i;
 const PERMISSION_RE = /EACCES|EPERM|EROFS|permission denied|read-only|sudo:/i;
 const DEPS_RE = /--with-deps|apt-get|dnf|yum|zypper|missing dependencies|Host system is missing/i;
+const FALLBACK_ERR_RE = /Failed to download|Download failure|^Error:/i;
+const PROP_DUMP_RE = /^(?:errno|code|syscall|address|port):/i;
 
 function sanitizeLine(line) {
   return line.replace(ANSI_RE, "").replace(/\/\/[^/\s@]+:[^/\s@]+@/g, "//***:***@").trim();
@@ -17,9 +19,10 @@ function sanitizeLine(line) {
 
 function summarizeFailure(lines, statusLabel) {
   const cleaned = lines.map(sanitizeLine).filter(Boolean);
-  const matched = [...cleaned].reverse().find((line) =>
-    NETWORK_RE.test(line) || PERMISSION_RE.test(line) || DEPS_RE.test(line) || /^Error:/i.test(line)
-  );
+  const matched =
+    [...cleaned].reverse().find((line) => !PROP_DUMP_RE.test(line) && (NETWORK_RE.test(line) || PERMISSION_RE.test(line) || DEPS_RE.test(line))) ||
+    [...cleaned].reverse().find((line) => NETWORK_RE.test(line) || PERMISSION_RE.test(line) || DEPS_RE.test(line)) ||
+    [...cleaned].reverse().find((line) => FALLBACK_ERR_RE.test(line));
   const detail = matched || cleaned.at(-1);
   const joined = cleaned.join("\n");
 

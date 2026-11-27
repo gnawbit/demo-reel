@@ -145,10 +145,10 @@ test("setup forwards proxy and --with-deps and classifies network/permission fai
   assert.equal(ok.calls[0].opts.env.http_proxy, "http://127.0.0.1:10808");
 
   const netFail = fakeSpawn((child) => {
-    child.stdout.end();
     child.stderr.write("\x1b[31mError: Failed to download Chromium, caused by\n");
     child.stderr.write("Request to https://user:secret@cdn.playwright.dev/ failed: connect ETIMED");
     child.stderr.end("OUT 1.2.3.4\n");
+    child.stdout.end("Error: Download failure, code=1\n");
     child.emit("close", 1, null);
   });
   await assert.rejects(
