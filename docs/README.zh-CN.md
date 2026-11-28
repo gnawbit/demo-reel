@@ -18,7 +18,7 @@
 
 <img src="hero.gif" alt="TabRetake 录制 Vikunja 看板：创建任务、跨列拖拽并聚焦结果" width="100%">
 
-*实测录制于 [Vikunja v2.8.0](https://github.com/go-vikunja/vikunja)（15k★ 开源看板）：输入任务、在真实看板上将卡片拖入 Doing、自动将镜头推进聚焦到结果。单次录制同时生成 16:9 MP4、README 动图与 9:16 竖屏短片。*
+*实测录制于 [Vikunja v2.8.0](https://github.com/go-vikunja/vikunja)（6.2k★ 开源看板）：输入任务、在真实看板上将卡片拖入 Doing、自动将镜头推进聚焦到结果。单次录制同时生成 16:9 MP4、README 动图与 9:16 竖屏短片。*
 
 [项目页](https://gnawbit.github.io/tabretake/) · [观看演示](hero.mp4) · [安装](#安装) · [工作原理](#工作原理) · [真实实测展台](#-真实开源项目实测展台-real-world-showcase) · [路线图](#路线图)
 
@@ -58,7 +58,7 @@ tabretake demo --preset daylight
 
 拒绝虚假的 AI 蓝紫色假模版。TabRetake 在具有复杂 DOM 与真实交互的前端项目中深度验证：
 
-| 📋 [Vikunja](https://gnawbit.github.io/tabretake/vikunja/) (15k★ 看板协作) | ✍️ [Memos](https://gnawbit.github.io/tabretake/memos/) (35k★ 知识笔记) | 📝 [TodoMVC](https://gnawbit.github.io/tabretake/todomvc/) (前端通用标准) |
+| 📋 [Vikunja](https://gnawbit.github.io/tabretake/vikunja/) (6.2k★ 看板协作) | ✍️ [Memos](https://gnawbit.github.io/tabretake/memos/) (64.8k★ 知识笔记) | 📝 [TodoMVC](https://gnawbit.github.io/tabretake/todomvc/) (前端通用标准) |
 |:---:|:---:|:---:|
 | <a href="https://gnawbit.github.io/tabretake/vikunja/"><img src="poster.png" alt="Vikunja 看板拖拽" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/memos/"><img src="examples/memos.png" alt="Memos 富文本与搜索" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/todomvc/"><img src="examples/todomvc.png" alt="TodoMVC 任务过滤" width="100%"></a> |
 | **真实看板跨列拖拽**<br>复杂交互与目标卡片聚焦 | **富文本录入与检索**<br>真实 contenteditable 与标签联动 | **标准任务状态流**<br>经典 ES6 实现与完成项筛选 |
