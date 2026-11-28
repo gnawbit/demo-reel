@@ -18,7 +18,7 @@ Turn editable JSON steps or AI Agent instructions into crisp **16:9 README GIFs*
 
 <img src="docs/hero.gif" alt="TabRetake recording Vikunja: creating a task, dragging it across a Kanban board, and zooming into the result" width="100%">
 
-*Recorded on [Vikunja v2.8.0](https://github.com/go-vikunja/vikunja) (15k★ open-source Kanban): Type a task, drag it into Doing on a live board, and automatically focus on the result. Generates 16:9 MP4, README GIF and 9:16 portrait video in seconds.*
+*Recorded on [Vikunja v2.8.0](https://github.com/go-vikunja/vikunja) (6.2k★ open-source Kanban): Type a task, drag it into Doing on a live board, and automatically focus on the result. Generates 16:9 MP4, README GIF and 9:16 portrait video in seconds.*
 
 [Project page](https://gnawbit.github.io/tabretake/) · [Watch the demo](docs/hero.mp4) · [Install](#install) · [How it works](#how-it-works) · [Real Showcase](#-real-world-showcase-proven-on-production-open-source-apps) · [Roadmap](#roadmap)
 
@@ -59,7 +59,7 @@ tabretake demo --preset daylight
 
 No synthetic AI mockups. TabRetake is verified against real-world, complex DOMs and interactive components:
 
-| 📋 [Vikunja](https://gnawbit.github.io/tabretake/vikunja/) (15k★ Kanban) | ✍️ [Memos](https://gnawbit.github.io/tabretake/memos/) (35k★ Notes) | 📝 [TodoMVC](https://gnawbit.github.io/tabretake/todomvc/) (Web Benchmark) |
+| 📋 [Vikunja](https://gnawbit.github.io/tabretake/vikunja/) (6.2k★ Kanban) | ✍️ [Memos](https://gnawbit.github.io/tabretake/memos/) (64.8k★ Notes) | 📝 [TodoMVC](https://gnawbit.github.io/tabretake/todomvc/) (Web Benchmark) |
 |:---:|:---:|:---:|
 | <a href="https://gnawbit.github.io/tabretake/vikunja/"><img src="docs/poster.png" alt="Vikunja Kanban" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/memos/"><img src="docs/examples/memos.png" alt="Memos Note-Taking" width="100%"></a> | <a href="https://gnawbit.github.io/tabretake/todomvc/"><img src="docs/examples/todomvc.png" alt="TodoMVC Benchmark" width="100%"></a> |
 | **Kanban Drag & Drop**<br>Card movement & destination focus | **Rich Text & Search**<br>Live contenteditable & tag search | **Standard Task Filtering**<br>Clean ES6 multi-state walkthrough |
