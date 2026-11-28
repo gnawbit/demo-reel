@@ -16,11 +16,14 @@ export async function createCaptionLayers({
     .filter(({ text, start }) => text.trim() && Number.isFinite(start) && start >= 0 && start < durationSec)
     .sort((a, b) => a.start - b.start);
   const { y, size, box, width, height } = layout.caption;
-  const layers = [];
+  const specs = [];
   for (let i = 0; i < captions.length; i++) {
     const { text, start } = captions[i];
     const end = Math.min(captions[i + 1]?.start ?? durationSec, start + 2.8, durationSec);
     if (end <= start) continue;
+    specs.push({ index: i, text, start, end });
+  }
+  return Promise.all(specs.map(async ({ index, text, start, end }) => {
     const options = {
       text: `<span foreground="${fg}">${escapeMarkup(text)}</span>`,
       font: `sans-serif ${size}`, fontfile: hasCjk(text) ? cjkFont || font : font,
@@ -33,12 +36,11 @@ export async function createCaptionLayers({
         throw new Error(`Caption at ${start.toFixed(2)}s is too long for ${layout.key}; shorten it or split it across steps`);
       }
     }
-    const file = path.join(assetsDir, `caption-${layout.key}-${i}.png`);
+    const file = path.join(assetsDir, `caption-${layout.key}-${index}.png`);
     const info = await sharp({ create: {
       width: rendered.info.width + box * 2, height: rendered.info.height + box * 2,
       channels: 4, background: bg,
     } }).composite([{ input: rendered.data, top: box, left: box }]).png().toFile(file);
-    layers.push({ file, start, end, x: Math.floor((layout.width - info.width) / 2), y });
-  }
-  return layers;
+    return { file, start, end, x: Math.floor((layout.width - info.width) / 2), y };
+  }));
 }

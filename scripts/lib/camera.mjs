@@ -41,6 +41,24 @@ export function buildCameraFilter({
     moves.push({ start, from, to });
   }
 
+  // Fast path: when source matches content aspect and no zoom/pan occurs, skip 2x zoompan.
+  const isStaticOverview =
+    Math.abs(baseZoom - 1) < 0.01 &&
+    (moves.length === 0 || (zoom === 1 && moves.every((move) => Math.abs(move.to.z - 1) < 1e-6)));
+
+  if (isStaticOverview) {
+    return {
+      moves,
+      filter: [
+        `trim=start=${number(videoOffset)}:end=${number(videoOffset + durationSec)}`,
+        "setpts=PTS-STARTPTS",
+        "fps=30",
+        `scale=${contentW}:${contentH}:flags=lanczos`,
+        "setsar=1",
+      ].join(","),
+    };
+  }
+
   const expression = (key) => moves.reduce((prior, move) => {
     const progress = `(1-cos(PI*clip((on/30-${number(move.start)})/${number(transition)},0,1)))/2`;
     const value = transition === 0 ? number(move.to[key]) :

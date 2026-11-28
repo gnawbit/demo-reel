@@ -263,13 +263,17 @@ export async function resolveLocator(page, step) {
   throw Object.assign(new Error("Could not find a visible element for this step."), { code: "TARGET_NOT_FOUND" });
 }
 
-export async function moveAndClick(page, locator, pause = 700, timeout = 20000) {
+function createDeadline(timeout, kind) {
   const deadline = Date.now() + timeout;
-  const remaining = () => {
+  return () => {
     const ms = deadline - Date.now();
-    if (ms <= 0) throw new errors.TimeoutError("Timed out waiting for an actionable click target.");
+    if (ms <= 0) throw new errors.TimeoutError(`Timed out waiting for an actionable ${kind} target.`);
     return ms;
   };
+}
+
+export async function moveAndClick(page, locator, pause = 700, timeout = 20000) {
+  const remaining = createDeadline(timeout, "click");
 
   // Wait before measuring: loading overlays or disabled controls may also move.
   await locator.click({ trial: true, timeout: remaining() });
@@ -288,29 +292,35 @@ export async function moveAndClick(page, locator, pause = 700, timeout = 20000) 
   return { x, y };
 }
 
-export async function clickAndType(page, locator, text, pause = 500) {
-  await locator.scrollIntoViewIfNeeded();
-  const box = await locator.boundingBox();
+export async function clickAndType(page, locator, text, pause = 500, timeout = 20000) {
+  const remaining = createDeadline(timeout, "input");
+
+  await locator.click({ trial: true, timeout: remaining() });
+  const box = await locator.boundingBox({ timeout: remaining() });
   if (!box) throw new Error("Element has no bounding box");
 
   const x = box.x + box.width / 2;
   const y = box.y + box.height / 2;
 
   await page.mouse.move(x, y, { steps: 16 });
-  await page.mouse.down();
-  await page.mouse.up();
-  await page.waitForTimeout(150);
+  await page.waitForTimeout(120);
+  await locator.click({ timeout: remaining() });
+  await page.waitForTimeout(80);
 
-  await locator.fill("");
+  await locator.fill("", { timeout: remaining() });
   await page.keyboard.type(text, { delay: 45 });
   await page.waitForTimeout(pause);
 
   return { x, y };
 }
 
-export async function dragBy(page, locator, dx, dy = 0, steps = 24, pause = 600) {
-  await locator.scrollIntoViewIfNeeded();
-  const box = await locator.boundingBox();
+export async function dragBy(page, locator, dx, dy = 0, steps = 24, pause = 600, timeout = 20000) {
+  const remaining = createDeadline(timeout, "drag");
+
+  await locator.waitFor({ state: "visible", timeout: remaining() });
+  await locator.scrollIntoViewIfNeeded({ timeout: remaining() });
+  await locator.hover({ trial: true, timeout: remaining() });
+  const box = await locator.boundingBox({ timeout: remaining() });
   if (!box) throw new Error("Element has no bounding box");
 
   const x = box.x + box.width / 2;
@@ -331,12 +341,7 @@ export async function dragBy(page, locator, dx, dy = 0, steps = 24, pause = 600)
 }
 
 export async function selectOption(page, locator, value, pause = 500, timeout = 20000) {
-  const deadline = Date.now() + timeout;
-  const remaining = () => {
-    const ms = deadline - Date.now();
-    if (ms <= 0) throw new errors.TimeoutError("Timed out waiting for an actionable select target.");
-    return ms;
-  };
+  const remaining = createDeadline(timeout, "select");
   await locator.waitFor({ state: "visible", timeout: remaining() });
   await locator.scrollIntoViewIfNeeded({ timeout: remaining() });
   const box = await locator.boundingBox({ timeout: remaining() });
@@ -366,9 +371,13 @@ export async function selectOption(page, locator, value, pause = 500, timeout = 
   return { x, y };
 }
 
-export async function hover(page, locator, pause = 500) {
-  await locator.scrollIntoViewIfNeeded();
-  const box = await locator.boundingBox();
+export async function hover(page, locator, pause = 500, timeout = 20000) {
+  const remaining = createDeadline(timeout, "hover");
+
+  await locator.waitFor({ state: "visible", timeout: remaining() });
+  await locator.scrollIntoViewIfNeeded({ timeout: remaining() });
+  await locator.hover({ trial: true, timeout: remaining() });
+  const box = await locator.boundingBox({ timeout: remaining() });
   if (!box) throw new Error("Element has no bounding box");
   const x = box.x + box.width / 2;
   const y = box.y + box.height / 2;

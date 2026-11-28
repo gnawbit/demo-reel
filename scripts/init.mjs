@@ -23,6 +23,18 @@ function scoreElement(el) {
   return score;
 }
 
+const AUTO_INPUT_VALUES = {
+  email: "demo@example.com",
+  url: "https://example.com",
+  number: "42",
+  tel: "13800138000",
+  date: "2026-11-28",
+};
+
+function sampleValueForInput(el) {
+  return AUTO_INPUT_VALUES[String(el.type || "").toLowerCase()] || "Test drive";
+}
+
 function buildAutoSteps(elements) {
   const steps = [{ action: "wait", ms: 600 }];
   const interactive = (elements || [])
@@ -76,7 +88,7 @@ function buildAutoSteps(elements) {
       steps.push({
         action: "type",
         selector: el.selector,
-        value: "Test drive",
+        value: sampleValueForInput(el),
         pause: 400,
         caption: `Input: ${caption}`,
       });

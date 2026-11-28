@@ -76,9 +76,9 @@
 
 ### 拒绝假数据：真实开源项目实测成片
 所有演示均跑在未修改的真实上游开源版本上（项目页有完整可复现配方 https://gnawbit.github.io/tabretake/ ）：
-- **Vikunja v2.8.0 (15k★ 看板)**：创建任务 -> 切换看板 -> 跨列拖入 Doing -> 自动聚焦结果卡片（成片 16:9 GIF 约 425 KB）：
+- **Vikunja v2.8.0 (6.2k★ 看板)**：创建任务 -> 切换看板 -> 跨列拖入 Doing -> 自动聚焦结果卡片（成片 16:9 GIF 约 425 KB）：
   https://raw.githubusercontent.com/gnawbit/tabretake/main/docs/hero.gif
-- **Memos 26.11.2 (35k★ 知识笔记)**：`contenteditable` 富文本写入、保存、搜索过滤与结果聚焦（成片 GIF 约 837 KB）：
+- **Memos 26.11.2 (64.8k★ 知识笔记)**：`contenteditable` 富文本写入、保存、搜索过滤与结果聚焦（成片 GIF 约 837 KB）：
   https://raw.githubusercontent.com/gnawbit/tabretake/main/docs/examples/memos.gif
 - **TodoMVC（ES6 标准示例）**：新增、勾选与多状态筛选完整演示（成片 GIF 约 908 KB）。
 
@@ -264,8 +264,8 @@ tabretake demo --preset daylight
 ```
 
 ### Real-world checks (not synthetic AI templates)
-- **Vikunja v2.8.0 (15k★ Kanban):** creating a card, switching to Kanban view, dragging across columns into *Doing*, and focusing the moved card -> 425 KB README GIF ([gif](https://raw.githubusercontent.com/gnawbit/tabretake/main/docs/hero.gif)).
-- **Memos 26.11.2 (35k★):** `contenteditable` note authoring + tag search focus -> 837 KB GIF.
+- **Vikunja v2.8.0 (6.2k★ Kanban):** creating a card, switching to Kanban view, dragging across columns into *Doing*, and focusing the moved card -> 425 KB README GIF ([gif](https://raw.githubusercontent.com/gnawbit/tabretake/main/docs/hero.gif)).
+- **Memos 26.11.2 (64.8k★):** `contenteditable` note authoring + tag search focus -> 837 KB GIF.
 - **TodoMVC ES6:** task filter walkthrough + manual GitHub Actions workflow artifact generation.
 
 Everything executes locally on Node.js 20.9+ (Playwright, Sharp, FFmpeg)—no cloud service, no accounts, no telemetry. Also ships with a root `SKILL.md` for Claude Code, Codex, and Cursor workflows.
@@ -361,8 +361,8 @@ Playwright 原生就有录制功能，但直接用来做产品演示会立刻碰
 
 为了验证方案不是只能跑通自定义静态页，我们在三个公开的外部项目上做了端到端真实录制与视频完整解码检验：
 
-1. **Vikunja v2.8.0（15k★ 开源看板）**：登录隔离环境 -> 创建任务 -> 切看板 -> 跨列拖入 *Doing* -> 结果 `focus` 聚焦。16:9 README GIF 体积压到了 **425 KB**。
-2. **Memos 26.11.2（35k★ 知识笔记）**：针对 `contenteditable` 富文本输入框写入内容、保存、搜索过滤并拉近焦点（GIF 约 **837 KB**）。
+1. **Vikunja v2.8.0（6.2k★ 开源看板）**：登录隔离环境 -> 创建任务 -> 切看板 -> 跨列拖入 *Doing* -> 结果 `focus` 聚焦。16:9 README GIF 体积压到了 **425 KB**。
+2. **Memos 26.11.2（64.8k★ 知识笔记）**：针对 `contenteditable` 富文本输入框写入内容、保存、搜索过滤并拉近焦点（GIF 约 **837 KB**）。
 3. **TodoMVC（ES6 基准）**：新增、完成、筛选任务，并在 GitHub Actions 中做成可手动触发、自动产物的基准验证工作流（GIF 约 **908 KB**）。
 
 *(注：以上三个案例均由维护者在本机按固定上游版本配置复现并公开 recipe，不作为上游背书或外部采用统计。)*
@@ -438,8 +438,8 @@ Shrinking a 1440×810 desktop flow onto a 9:16 screen makes tiny UI labels illeg
 
 Rather than relying on synthetic marketing demos, every release recipe on our [project page](https://gnawbit.github.io/tabretake/) is tested end-to-end against pinned unmodified upstream apps:
 
-- **Vikunja v2.8.0 (15k★ Kanban):** Create task -> switch board -> drag card across columns into *Doing* -> focus result card (**425 KB** 16:9 GIF).
-- **Memos 26.11.2 (35k★ Notes):** Author inside a `contenteditable` rich-text box -> save -> filter by search -> focus (**837 KB** GIF).
+- **Vikunja v2.8.0 (6.2k★ Kanban):** Create task -> switch board -> drag card across columns into *Doing* -> focus result card (**425 KB** 16:9 GIF).
+- **Memos 26.11.2 (64.8k★ Notes):** Author inside a `contenteditable` rich-text box -> save -> filter by search -> focus (**837 KB** GIF).
 - **TodoMVC ES6:** Full task lifecycle + manual GitHub Actions workflow artifact generation (**908 KB** GIF).
 
 ---

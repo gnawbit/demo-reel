@@ -58,17 +58,42 @@ function landscapeLayout(videoW, videoH) {
   };
 }
 
-function verticalLayout(videoW, videoH, frameMode = "auto") {
+function verticalChromeBottom(layout, vertical = {}) {
+  if (!layout.title) return 0;
+  const hasTitleLines = Array.isArray(vertical.titleLines) && vertical.titleLines.length > 0;
+  const lineCount = hasTitleLines ? Math.min(2, vertical.titleLines.length) : 1;
+  const titleSize = Number(vertical.titleSize || (hasTitleLines ? 52 : 30));
+  const startY = Number(vertical.titleY ?? layout.title.pillY + (hasTitleLines ? 70 : 50));
+  let bottom = startY + (lineCount - 1) * (titleSize + 18) + titleSize;
+  if (vertical.subtitle) {
+    const subtitleSize = Number(vertical.subtitleSize || 26);
+    const subtitleY = startY + lineCount * (titleSize + 18) + Number(vertical.subtitleGap ?? 8);
+    bottom = subtitleY + subtitleSize;
+  }
+  return Math.ceil(bottom + 12);
+}
+
+function verticalLayout(videoW, videoH, frameMode = "auto", vertical = {}) {
   const layout = LAYOUTS.vertical;
   // Fit the source between branding and captions instead of cropping a phone
   // recording into the landscape card. Keep the existing 16:9 card geometry.
-  const maxHeight = frameMode === "phone" ? 800 : 900;
+  let maxHeight = frameMode === "phone" ? 800 : 900;
+  const safeTop = frameMode === "phone" ? verticalChromeBottom(layout, vertical) : 0;
+  const safeBottom = layout.caption.y - 12;
+  if (frameMode === "phone") {
+    maxHeight = Math.min(maxHeight, Math.max(200, safeBottom - safeTop - 36));
+  }
   const centerY = frameMode === "phone" ? 920 : layout.content.y + layout.content.h / 2;
   const fit = Math.min(layout.content.w / videoW, maxHeight / videoH);
   const w = Math.max(2, Math.floor(videoW * fit / 2) * 2);
   const h = Math.max(2, Math.floor(videoH * fit / 2) * 2);
   const x = (layout.width - w) / 2;
-  const y = centerY - h / 2;
+  let y = centerY - h / 2;
+  if (frameMode === "phone") {
+    const minY = safeTop + 18;
+    const maxY = safeBottom - 18 - h;
+    y = minY <= maxY ? Math.min(Math.max(y, minY), maxY) : minY;
+  }
   return {
     ...layout,
     content: { x, y, w, h },
@@ -227,11 +252,12 @@ async function makeCardFrame(file, layout, theme) {
   await sharp(Buffer.from(svg)).png().toFile(file);
 }
 
-async function makePhoneFrame(file, layout, theme) {
+async function makePhoneFrame(file, layout, theme, vertical = {}) {
   const { x: cx, y: cy, w: cw, h: ch } = layout.content;
   const f = theme.frame;
   const padX = 16;
-  const padTop = Math.min(34, Math.max(16, cy - 16));
+  const minTop = layout.title ? verticalChromeBottom(layout, vertical) : 16;
+  const padTop = Math.min(34, Math.max(0, cy - minTop));
   const maxBottom = layout.caption ? Math.max(16, layout.caption.y - 12 - (cy + ch)) : 34;
   const padBottom = Math.min(34, maxBottom);
   const x = cx - padX;
@@ -239,6 +265,9 @@ async function makePhoneFrame(file, layout, theme) {
   const w = cw + padX * 2;
   const h = ch + padTop + padBottom;
   const speakerW = Math.min(72, Math.max(36, Math.round(cw * 0.14)));
+  const topDetails = padTop >= 12 ? `
+    <rect x="${cx + (cw - speakerW) / 2}" y="${y + padTop / 2 - 2.5}" width="${speakerW}" height="5" rx="2.5" fill="${f.addressBorder}"/>
+    <circle cx="${cx + cw / 2 + speakerW / 2 + 12}" cy="${y + padTop / 2}" r="3" fill="${f.addressBorder}"/>` : "";
 
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${layout.width}" height="${layout.height}">
@@ -255,9 +284,7 @@ async function makePhoneFrame(file, layout, theme) {
     <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="38" fill="${f.bar}" filter="url(#shadow)" opacity="${theme.light ? 0.85 : 0.4}"/>
     <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="38" fill="${f.bar}"/>
     <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="38" fill="none" stroke="${f.border}" stroke-width="2"/>
-    <rect x="${cx - 1}" y="${cy - 1}" width="${cw + 2}" height="${ch + 2}" rx="20" fill="none" stroke="${f.divider}" stroke-width="1"/>
-    <rect x="${cx + (cw - speakerW) / 2}" y="${y + padTop / 2 - 2.5}" width="${speakerW}" height="5" rx="2.5" fill="${f.addressBorder}"/>
-    <circle cx="${cx + cw / 2 + speakerW / 2 + 12}" cy="${y + padTop / 2}" r="3" fill="${f.addressBorder}"/>
+    <rect x="${cx - 1}" y="${cy - 1}" width="${cw + 2}" height="${ch + 2}" rx="20" fill="none" stroke="${f.divider}" stroke-width="1"/>${topDetails}
   </g>
 </svg>`;
 
@@ -351,6 +378,9 @@ async function renderLayout({
   posterAt,
   log,
 }) {
+  const logs = [];
+  const logLine = (msg) => logs.push(msg);
+
   const artifacts = [];
   const assetsDir = path.join(outDir, "assets");
   await mkdir(assetsDir, { recursive: true });
@@ -360,16 +390,13 @@ async function renderLayout({
   const frameMode = record.config?.brand?.frame || "auto";
   const hasFrame = frameMode !== "none";
 
-  await makeBackground(bgPath, theme, layout);
-  if (hasFrame) {
-    if (frameMode === "phone" && (layout.key === "vertical" || videoW <= videoH)) {
-      await makePhoneFrame(framePath, layout, theme);
-    } else if (frameMode === "browser" || (frameMode === "auto" && layout.frame.type === "browser")) {
-      await makeBrowserFrame(framePath, hostname, layout, theme);
-    } else {
-      await makeCardFrame(framePath, layout, theme);
-    }
-  }
+  const framePromise = !hasFrame
+    ? Promise.resolve()
+    : frameMode === "phone" && (layout.key === "vertical" || videoW <= videoH)
+      ? makePhoneFrame(framePath, layout, theme, record.config?.vertical || {})
+      : frameMode === "browser" || (frameMode === "auto" && layout.frame.type === "browser")
+        ? makeBrowserFrame(framePath, hostname, layout, theme)
+        : makeCardFrame(framePath, layout, theme);
 
   const camera = buildCameraFilter({
     events: record.events || [],
@@ -384,9 +411,13 @@ async function renderLayout({
     contentH: layout.content.h,
   });
 
-  const captions = await createCaptionLayers({
-    events: record.events || [], durationSec, font, cjkFont, layout, assetsDir, theme,
-  });
+  const [, , captions] = await Promise.all([
+    makeBackground(bgPath, theme, layout),
+    framePromise,
+    createCaptionLayers({
+      events: record.events || [], durationSec, font, cjkFont, layout, assetsDir, theme,
+    }),
+  ]);
   const chromeFilter = buildVerticalChrome(
     font,
     cjkFont,
@@ -429,7 +460,7 @@ async function renderLayout({
     outputPath,
   ]);
 
-  log(`Video: ${outputPath}`);
+  logLine(`Video: ${outputPath}`);
   artifacts.push({ kind: "video", path: outputPath, layout: layout.key, width: layout.width, height: layout.height });
 
   if (!noGif) {
@@ -442,7 +473,7 @@ async function renderLayout({
       "-loop", "0",
       gifPath,
     ]);
-    log(`GIF:   ${gifPath}`);
+    logLine(`GIF:   ${gifPath}`);
     artifacts.push({ kind: "gif", path: gifPath, layout: layout.key });
   }
 
@@ -454,10 +485,10 @@ async function renderLayout({
     "-q:v", "2",
     posterPath,
   ]);
-  log(`Poster: ${posterPath} (${posterAt.toFixed(2)}s)`);
+  logLine(`Poster: ${posterPath} (${posterAt.toFixed(2)}s)`);
   artifacts.push({ kind: "poster", path: posterPath, layout: layout.key });
 
-  return { outputPath, moves: camera.moves, artifacts };
+  return { outputPath, moves: camera.moves, artifacts, logs };
 }
 
 function marksToEvents(marks, videoW, videoH) {
@@ -590,32 +621,33 @@ export async function executeRender(values, { reporter = createReporter("render"
   const frameMode = record.config?.brand?.frame || "auto";
 
   const layouts = [landscapeLayout(videoW, videoH)];
-  if (values.vertical) layouts.push(verticalLayout(videoW, videoH, frameMode));
+  if (values.vertical) layouts.push(verticalLayout(videoW, videoH, frameMode, record.config?.vertical || {}));
 
-  let last = null;
+  await mkdir(path.join(outDir, "assets"), { recursive: true });
+  const results = await Promise.all(layouts.map((layout) => renderLayout({
+    layout,
+    record,
+    theme,
+    videoPath,
+    outDir,
+    videoW,
+    videoH,
+    durationSec,
+    videoOffset,
+    zoom: layout.key === "vertical" ? verticalZoom : zoom,
+    zoomDuration,
+    font,
+    cjkFont,
+    hostname,
+    noGif: values["no-gif"],
+    posterAt,
+  })));
   const artifacts = [];
-  for (const layout of layouts) {
-    last = await renderLayout({
-      layout,
-      record,
-      theme,
-      videoPath,
-      outDir,
-      videoW,
-      videoH,
-      durationSec,
-      videoOffset,
-      zoom: layout.key === "vertical" ? verticalZoom : zoom,
-      zoomDuration,
-      font,
-      cjkFont,
-      hostname,
-      noGif: values["no-gif"],
-      posterAt,
-      log: reporter.log,
-    });
-    artifacts.push(...last.artifacts);
+  for (const result of results) {
+    result.logs.forEach((line) => reporter.log(line));
+    artifacts.push(...result.artifacts);
   }
+  const last = results.at(-1) || null;
 
   reporter.log(
     `\nDone. ${last?.moves.length || 0} camera move(s), ${durationSec.toFixed(1)}s` +

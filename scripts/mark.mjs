@@ -321,8 +321,21 @@ export async function startMarkServer({
 
   const token = crypto.randomBytes(16).toString("hex");
   const artifacts = new Map();
+  let rendering = false;
   let resolveDone;
   const donePromise = new Promise((resolve) => { resolveDone = resolve; });
+
+  const pipeStream = (stream, res) => {
+    const cleanup = () => {
+      if (!stream.destroyed) stream.destroy();
+    };
+    res.once("close", cleanup);
+    stream.once("error", () => {
+      if (!res.headersSent) res.writeHead(500).end("Stream error");
+      else res.destroy();
+    });
+    stream.pipe(res);
+  };
 
   let initialMarks = [];
   let initialDisplayUrl = "your-app.com";
@@ -400,7 +413,7 @@ export async function startMarkServer({
             "Content-Length": end - start + 1,
             "Content-Type": mime,
           });
-          createReadStream(resolvedVideo, { start, end }).pipe(res);
+          pipeStream(createReadStream(resolvedVideo, { start, end }), res);
           return;
         }
         res.writeHead(200, {
@@ -408,7 +421,7 @@ export async function startMarkServer({
           "Content-Length": total,
           "Content-Type": mime,
         });
-        createReadStream(resolvedVideo).pipe(res);
+        pipeStream(createReadStream(resolvedVideo), res);
         return;
       }
 
@@ -426,19 +439,29 @@ export async function startMarkServer({
           return;
         }
         if (reqUrl === "/api/render") {
-          await saveConfig(body);
-          const renderDir = mediaOut || (path.dirname(resolvedOut) === process.cwd() ? "demo" : path.join(path.dirname(resolvedOut), "demo"));
-          const renderRes = await executeRender({
-            config: resolvedOut,
-            out: renderDir,
-            vertical: Boolean(body.vertical),
-            preset: body.preset || preset,
-            "no-gif": Boolean(body.noGif),
-            zoom: String(body.zoom ?? "1.28"),
-          }, { reporter: reporter || createReporter("render", false) });
-          for (const item of renderRes.summary.artifacts) artifacts.set(item.path, item);
-          res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ ok: true, path: resolvedOut, renderDir: path.resolve(renderDir), artifacts: renderRes.summary.artifacts }));
+          if (rendering) {
+            res.writeHead(409, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Render already in progress; please wait." }));
+            return;
+          }
+          rendering = true;
+          try {
+            await saveConfig(body);
+            const renderDir = mediaOut || (path.dirname(resolvedOut) === process.cwd() ? "demo" : path.join(path.dirname(resolvedOut), "demo"));
+            const renderRes = await executeRender({
+              config: resolvedOut,
+              out: renderDir,
+              vertical: Boolean(body.vertical),
+              preset: body.preset || preset,
+              "no-gif": Boolean(body.noGif),
+              zoom: String(body.zoom ?? "1.28"),
+            }, { reporter: reporter || createReporter("render", false) });
+            for (const item of renderRes.summary.artifacts) artifacts.set(item.path, item);
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ ok: true, path: resolvedOut, renderDir: path.resolve(renderDir), artifacts: renderRes.summary.artifacts }));
+          } finally {
+            rendering = false;
+          }
           return;
         }
         if (reqUrl === "/api/done") {

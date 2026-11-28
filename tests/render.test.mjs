@@ -214,4 +214,42 @@ test("brand.frame supports phone bezel and none without breaking source framing"
     const center = await poster.extract({ left: 540, top: 900, width: 1, height: 1 }).removeAlpha().raw().toBuffer();
     assert.ok(center[0] > 230 && center[1] > 230 && center[2] > 230, `${frame} must retain center content`);
   }
+
+  const tall = path.join(temp, "tall.mp4");
+  await ffmpeg([
+    "-f", "lavfi", "-i", "color=c=white:s=360x720:r=30:d=0.4",
+    "-c:v", "libx264", "-pix_fmt", "yuv420p", tall,
+  ]);
+  const tallConfig = path.join(temp, "tall.json");
+  const tallOut = path.join(temp, "tall-out");
+  await writeFile(tallConfig, JSON.stringify({
+    video: tall,
+    brand: { preset: "midnight", frame: "phone" },
+    vertical: {
+      titleLines: ["Line One", "Line Two"],
+      titleY: 320,
+      subtitle: "Subtitle stays above bezel",
+    },
+    marks: [{ t: 0, zoom: false, duration: 0 }],
+  }));
+  const { stdout } = await exec(process.execPath, [
+    cli, "render", "--config", tallConfig, "--out", tallOut, "--vertical", "--no-gif", "--no-captions", "--json",
+  ], { windowsHide: true, timeout: 60000 });
+  const summary = JSON.parse(stdout);
+  assert.equal(summary.ok, true);
+  assert.deepEqual(
+    summary.artifacts.map((a) => path.basename(a.path)),
+    ["demo-16x9.mp4", "poster.png", "demo-9x16.mp4", "poster-9x16.png"],
+  );
+  const frameMeta = await sharp(path.join(tallOut, "assets", "frame-vertical.png")).metadata();
+  assert.equal(frameMeta.width, 1080);
+  assert.equal(frameMeta.height, 1920);
+  // Subtitle ends around y=506; phone bezel must remain transparent above y=506.
+  const topBand = await sharp(path.join(tallOut, "assets", "frame-vertical.png"))
+    .extract({ left: 500, top: 450, width: 80, height: 50 }).raw().toBuffer();
+  let opaqueInTitleBand = 0;
+  for (let i = 3; i < topBand.length; i += 4) {
+    if (topBand[i] > 20) opaqueInTitleBand += 1;
+  }
+  assert.equal(opaqueInTitleBand, 0, "phone bezel must not overlap vertical title/subtitle chrome");
 });

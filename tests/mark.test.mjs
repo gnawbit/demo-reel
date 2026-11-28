@@ -96,13 +96,14 @@ test("mark studio serves HTML, streams Range video, saves marks and renders outp
     }),
   });
   assert.equal(saveRes.status, 200);
+  assert.ok(session.getArtifacts().some((a) => a.kind === "marks" && a.path === outPath));
   const savedCfg = JSON.parse(await readFile(outPath, "utf8"));
   assert.equal(inspectConfig(savedCfg, { kind: "marks" }).ok, true);
   assert.equal(savedCfg.video, "clip.mp4");
   assert.equal(savedCfg.brand.preset, "paper");
   assert.equal(savedCfg.marks[0].caption, "Focus point");
 
-  const renderRes = await fetch(`${session.url}api/render`, {
+  const renderReq = () => fetch(`${session.url}api/render`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-tabretake-token": session.token },
     body: JSON.stringify({
@@ -113,6 +114,11 @@ test("mark studio serves HTML, streams Range video, saves marks and renders outp
       marks: [{ t: 0.1, x: 0.4, y: 0.5, duration: 0, caption: "Focus point" }],
     }),
   });
+  const firstRenderPromise = renderReq();
+  await new Promise((resolve) => setTimeout(resolve, 40));
+  const busyRes = await renderReq();
+  assert.equal(busyRes.status, 409);
+  const renderRes = await firstRenderPromise;
   assert.equal(renderRes.status, 200);
   const renderPayload = await renderRes.json();
   assert.equal(renderPayload.ok, true);

@@ -92,3 +92,53 @@ test("record waits for clickable targets and rejects blocked clicks", { timeout:
     }
   }
 });
+
+test("record rejects covered type and drag targets with STEP_TIMEOUT", { timeout: 30000 }, async (t) => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-type-drag-timeout-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  let overlayClicks = 0;
+  const server = createServer((req, res) => {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    if (req.url === "/hit") {
+      overlayClicks += 1;
+      res.writeHead(204).end();
+      return;
+    }
+    res.end(`<!doctype html>
+      <input id="field" style="position:absolute;left:40px;top:40px;width:200px;height:40px">
+      <button id="handle" style="position:absolute;left:40px;top:120px;width:80px;height:40px">Drag</button>
+      <div id="overlay" onclick="fetch('/hit',{keepalive:true})"
+        style="position:absolute;inset:0;background:rgba(0,0,0,0.2);z-index:2"></div>`);
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+
+  const port = server.address().port;
+  for (const [name, step] of [
+    ["type", { action: "type", selector: "#field", value: "hello", timeout: 180, pause: 0 }],
+    ["drag", { action: "drag", selector: "#handle", dx: 40, dy: 0, timeout: 180, pause: 0 }],
+  ]) {
+    const file = path.join(dir, `${name}.json`);
+    await writeFile(file, JSON.stringify({
+      url: `http://127.0.0.1:${port}/`,
+      viewport: { width: 640, height: 480 },
+      initialWait: 0,
+      tail: 50,
+      steps: [step],
+    }));
+    await assert.rejects(
+      exec(process.execPath, [cli, "record", "--config", file, "--out", path.join(dir, name), "--json"], {
+        windowsHide: true, timeout: 10000,
+      }),
+      (error) => {
+        const result = JSON.parse(error.stdout);
+        assert.equal(error.code, 1);
+        assert.equal(result.ok, false);
+        assert.equal(result.error.code, "STEP_TIMEOUT");
+        assert.equal(result.error.step.action, name);
+        return true;
+      },
+    );
+  }
+  assert.equal(overlayClicks, 0, "blocked type/drag must not click the overlay");
+});

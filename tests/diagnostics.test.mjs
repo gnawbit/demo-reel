@@ -9,6 +9,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { diagnose } from "../scripts/doctor.mjs";
+import { findCjkFont, findFont } from "../scripts/lib/fonts.mjs";
 import { supportsNodeVersion, version } from "../scripts/lib/metadata.mjs";
 import { setup } from "../scripts/setup.mjs";
 
@@ -180,4 +181,20 @@ test("setup forwards proxy and --with-deps and classifies network/permission fai
       return true;
     },
   );
+});
+
+test("font discovery honors WINDIR on Windows and fc-match fallback on Linux", () => {
+  const winFont = findFont({
+    platform: "win32",
+    env: { WINDIR: "D:\\Windows" },
+    exists: (p) => p === "D:/Windows/Fonts/segoeui.ttf",
+  });
+  assert.equal(winFont, "D:/Windows/Fonts/segoeui.ttf");
+
+  const linuxCjk = findCjkFont({
+    platform: "linux",
+    exists: (p) => p === "/custom/fonts/NotoSansCJK.ttc",
+    fcMatch: (pattern) => (pattern.includes("zh-cn") ? "/custom/fonts/NotoSansCJK.ttc" : null),
+  });
+  assert.equal(linuxCjk, "/custom/fonts/NotoSansCJK.ttc");
 });

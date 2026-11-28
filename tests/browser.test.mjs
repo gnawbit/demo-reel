@@ -228,6 +228,13 @@ test("findSystemBrowser detects installed Chrome or Edge paths across platforms"
     exists: (p) => p.includes("Google Chrome.app"),
   });
   assert.equal(mac?.channel, "chrome");
+
+  const fromPath = findSystemBrowser({
+    platform: "win32",
+    env: { PATH: "D:\\Portable\\ChromeBin;C:\\Tools" },
+    exists: (p) => p === "D:\\Portable\\ChromeBin\\chrome.exe",
+  });
+  assert.deepEqual(fromPath, { channel: "chrome", path: "D:\\Portable\\ChromeBin\\chrome.exe" });
 });
 
 test("openRecordedPage seeds missing Playwright ffmpeg from bundled ffmpeg and retries", async (t) => {

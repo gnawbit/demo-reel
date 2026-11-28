@@ -43,6 +43,6 @@ tabretake render --config demo/record.json --vertical --json
 - [GitHub Repository](https://github.com/gnawbit/tabretake)
 - [Agent Skill Definition (SKILL.md)](https://github.com/gnawbit/tabretake/blob/main/SKILL.md)
 - [JSON Schema](https://raw.githubusercontent.com/gnawbit/tabretake/main/schemas/story.schema.json)
-- [Vikunja Kanban Recipe (15k★ OSS)](https://gnawbit.github.io/tabretake/vikunja/)
-- [Memos Notes Recipe (35k★ OSS)](https://gnawbit.github.io/tabretake/memos/)
+- [Vikunja Kanban Recipe (6.2k★ OSS)](https://gnawbit.github.io/tabretake/vikunja/)
+- [Memos Notes Recipe (64.8k★ OSS)](https://gnawbit.github.io/tabretake/memos/)
 - [TodoMVC Benchmark Recipe](https://gnawbit.github.io/tabretake/todomvc/)

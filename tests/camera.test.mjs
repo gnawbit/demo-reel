@@ -75,3 +75,24 @@ test("camera preserves shapes when the source aspect ratio differs", { timeout: 
     assert.ok(Math.abs(box.w - box.h) <= 2, "a square must stay square while zooming");
   }
 });
+
+test("camera uses static scale fast path when no zoom/pan occurs", async (t) => {
+  const temp = await mkdtemp(path.join(os.tmpdir(), "tabretake-camera-static-"));
+  t.after(() => rm(temp, { recursive: true, force: true }));
+  const input = path.join(temp, "input.png");
+  await sharp(Buffer.from('<svg width="320" height="180"><rect width="320" height="180" fill="#444"/><rect x="150" y="80" width="20" height="20" fill="#00ff00"/></svg>'))
+    .png().toFile(input);
+
+  for (const [zoom, events] of [[1.28, []], [1, [{ t: 500, x: 250, y: 90 }]]]) {
+    const camera = buildCameraFilter({
+      events, zoom, transition: 0.35, durationSec: 1,
+      videoW: 320, videoH: 180, contentW: 320, contentH: 180,
+    });
+    assert.doesNotMatch(camera.filter, /zoompan=/);
+    const out = path.join(temp, `static-${zoom}.rgb`);
+    await ffmpeg(["-loop", "1", "-framerate", "30", "-i", input,
+      "-vf", camera.filter, "-pix_fmt", "rgb24", "-f", "rawvideo", out]);
+    const frames = await readFile(out);
+    assert.equal(frames.length, 30 * 320 * 180 * 3);
+  }
+});

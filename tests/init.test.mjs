@@ -83,6 +83,30 @@ test("init with --auto discovers interactive elements and builds a multi-step st
   assert.ok(story.steps.some((s) => s.action === "click"));
 });
 
+test("init --auto fills type-appropriate sample values for email, url and number inputs", { timeout: 30000 }, async (t) => {
+  const dir = await tempDir(t);
+  const server = createServer((_req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.end(`<!doctype html>
+      <main>
+        <form>
+          <input id="email" type="email" name="email" placeholder="Work email">
+          <input id="qty" type="number" name="qty" placeholder="Seats">
+          <input id="site" type="url" name="site" placeholder="Homepage">
+          <button type="submit">Continue</button>
+        </form>
+      </main>`);
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  const url = `http://127.0.0.1:${server.address().port}`;
+  const config = path.join(dir, "typed.json");
+  await run(["init", "--url", url, "--out", config, "--auto"], dir);
+  const story = JSON.parse(await readFile(config, "utf8"));
+  const emailStep = story.steps.find((s) => s.selector === "#email");
+  assert.equal(emailStep?.value, "demo@example.com");
+});
+
 test("init --auto prioritizes primary controls over sidebar hash links and destructive actions", { timeout: 30000 }, async (t) => {
   const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-init-smart-"));
   t.after(() => rm(dir, { recursive: true, force: true }));

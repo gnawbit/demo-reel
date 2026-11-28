@@ -77,13 +77,13 @@ export async function executeRecord(values, { command = "record", reporter = cre
   let timelineDuration = 0;
 
   try {
-    const videoStartedAt = Date.now();
     const { context, page } = await openRecordedPage(browser, {
       viewport,
       scale,
       videoDir: preview ? undefined : rawDir,
       storageState,
     });
+    const videoStartedAt = Date.now();
 
     await installCursor(page, { accent: theme.accent });
 
@@ -137,7 +137,7 @@ export async function executeRecord(values, { command = "record", reporter = cre
           case "type": {
             const locator = await resolveLocator(page, step);
             const value = String(step.value ?? step.text ?? "");
-            const point = await clickAndType(page, locator, value, 0);
+            const point = await clickAndType(page, locator, value, 0, Number(step.timeout ?? 20000));
             pushEvent("type", point, { label: value });
             await page.waitForTimeout(Number(step.pause ?? 400));
             break;
@@ -154,7 +154,7 @@ export async function executeRecord(values, { command = "record", reporter = cre
 
           case "hover": {
             const locator = await resolveLocator(page, step);
-            const point = await hover(page, locator, 0);
+            const point = await hover(page, locator, 0, Number(step.timeout ?? 20000));
             pushEvent("hover", point, { label: step.text || step.selector || "" });
             await page.waitForTimeout(Number(step.pause ?? 500));
             break;
@@ -185,6 +185,7 @@ export async function executeRecord(values, { command = "record", reporter = cre
               Number(step.dy || 0),
               Number(step.steps || 24),
               0,
+              Number(step.timeout ?? 20000),
             );
             pushEvent("drag", point, { label: step.selector || "" });
             await page.waitForTimeout(Number(step.pause ?? 600));
