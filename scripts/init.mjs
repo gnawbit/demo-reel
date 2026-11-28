@@ -35,22 +35,38 @@ function sampleValueForInput(el) {
   return AUTO_INPUT_VALUES[String(el.type || "").toLowerCase()] || "Test drive";
 }
 
+const SKIP_INPUT_TYPES = new Set([
+  "password", "hidden", "checkbox", "radio", "range", "file", "color", "image", "reset",
+]);
+
+const BUTTON_INPUT_TYPES = new Set(["submit", "button"]);
+
 function buildAutoSteps(elements) {
   const steps = [{ action: "wait", ms: 600 }];
   const interactive = (elements || [])
     .filter((el) => {
-      if (el.type === "password" || el.type === "hidden" || el.type === "checkbox" || el.type === "radio") return false;
-      if (el._hints?.isDestructive || el._hints?.emptyHref) return false;
+      const elType = String(el.type || "").toLowerCase();
+      if (SKIP_INPUT_TYPES.has(elType)) return false;
+      const hints = el._hints || {};
+      if (hints.isDestructive || hints.emptyHref || hints.externalHref || hints.disabled || hints.hiddenContainer || hints.covered) {
+        return false;
+      }
       return Boolean(el.selector && (el.text || el.label || el.placeholder || el.name));
     })
     .map((el, index) => ({ el, index, score: scoreElement(el) }));
 
-  const isTextInput = (el) =>
-    el.tag === "input" || el.tag === "textarea" || el.role === "textbox";
+  const isTextInput = (el) => {
+    const elType = String(el.type || "").toLowerCase();
+    return (el.tag === "input" && !SKIP_INPUT_TYPES.has(elType) && !BUTTON_INPUT_TYPES.has(elType)) ||
+      el.tag === "textarea" || el.role === "textbox";
+  };
   const isSelect = (el) => el.tag === "select" && Array.isArray(el.options) &&
     el.options.some((o) => !o.disabled && o.value !== "");
-  const isButton = (el) =>
-    el.tag === "button" || el.tag === "a" || el.role === "button" || el.role === "link";
+  const isButton = (el) => {
+    const elType = String(el.type || "").toLowerCase();
+    return el.tag === "button" || el.tag === "a" || el.role === "button" || el.role === "link" ||
+      (el.tag === "input" && BUTTON_INPUT_TYPES.has(elType));
+  };
 
   const byScoreThenOrder = (a, b) => (b.score - a.score) || (a.index - b.index);
   const inputs = interactive.filter(({ el }) => isTextInput(el)).sort(byScoreThenOrder);
@@ -58,8 +74,9 @@ function buildAutoSteps(elements) {
   const buttons = interactive.filter(({ el }) => isButton(el)).sort(byScoreThenOrder);
 
   const chosen = [];
+  const maxSteps = inputs.filter(({ el }) => el._hints?.required).length >= 2 ? 4 : 3;
   const addChosen = (entry) => {
-    if (!entry || chosen.length >= 3) return;
+    if (!entry || chosen.length >= maxSteps) return;
     if (!chosen.some((c) => c.el.selector === entry.el.selector)) {
       chosen.push(entry);
     }
@@ -70,6 +87,9 @@ function buildAutoSteps(elements) {
   const nonSearchInput = inputs.find(({ el }) => !el._hints?.isSearch);
   if (nonSearchInput) {
     addChosen(nonSearchInput);
+    for (const extra of inputs) {
+      if (extra.el._hints?.required) addChosen(extra);
+    }
     addChosen(selects[0]);
     addChosen(primaryBtn || buttons[0]);
   } else {
@@ -80,6 +100,10 @@ function buildAutoSteps(elements) {
   }
   for (const item of [...interactive].sort(byScoreThenOrder)) {
     addChosen(item);
+  }
+
+  if (chosen.length === 0) {
+    return [{ action: "wait", ms: 1500 }];
   }
 
   for (const [idx, { el }] of chosen.sort((a, b) => a.index - b.index).entries()) {
@@ -114,9 +138,6 @@ function buildAutoSteps(elements) {
     steps.push({ action: "wait", ms: idx === chosen.length - 1 ? 1200 : 600 });
   }
 
-  if (steps.length === 1) {
-    steps.push({ action: "wait", ms: 1500 });
-  }
   return steps;
 }
 

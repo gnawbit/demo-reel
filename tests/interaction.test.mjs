@@ -142,3 +142,35 @@ test("record rejects covered type and drag targets with STEP_TIMEOUT", { timeout
   }
   assert.equal(overlayClicks, 0, "blocked type/drag must not click the overlay");
 });
+
+test("record clicks buttons that start an infinite CSS animation on hover", { timeout: 30000 }, async (t) => {
+  const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-hover-anim-"));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const server = createServer((_req, res) => {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.end(`<!doctype html>
+      <style>
+        @keyframes wiggle { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } }
+        #bell { position: absolute; left: 80px; top: 80px; width: 140px; height: 44px; }
+        #bell:hover { animation: wiggle 0.2s linear infinite; }
+      </style>
+      <button id="bell" onclick="this.dataset.rung='true'">Ring Bell</button>`);
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+
+  const file = path.join(dir, "bell.json");
+  await writeFile(file, JSON.stringify({
+    url: `http://127.0.0.1:${server.address().port}/`,
+    viewport: { width: 640, height: 480 },
+    initialWait: 0,
+    tail: 50,
+    steps: [{ action: "click", selector: "#bell", timeout: 4000, pause: 0 }],
+  }));
+  const { stdout } = await exec(process.execPath, [cli, "record", "--config", file, "--out", path.join(dir, "out"), "--json"], {
+    windowsHide: true, timeout: 15000,
+  });
+  const result = JSON.parse(stdout);
+  assert.equal(result.ok, true);
+  assert.equal(result.eventCount, 1);
+});

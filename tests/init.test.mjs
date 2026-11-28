@@ -107,6 +107,35 @@ test("init --auto fills type-appropriate sample values for email, url and number
   assert.equal(emailStep?.value, "demo@example.com");
 });
 
+test("init --auto skips range inputs, disabled controls, covered overlays and external links", { timeout: 30000 }, async (t) => {
+  const dir = await tempDir(t);
+  const server = createServer((_req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.end(`<!doctype html>
+      <main>
+        <input id="speed" type="range" min="1" max="5" value="2" aria-label="Speed">
+        <button id="disabled-btn" type="button" disabled>Disabled action</button>
+        <a id="external-link" href="https://example.org/docs">External docs</a>
+        <div style="position:relative;width:140px;height:40px">
+          <button id="covered-btn" type="button" style="width:140px;height:40px">Hidden behind overlay</button>
+          <div style="position:absolute;inset:0;z-index:2"></div>
+        </div>
+        <button id="real-btn" type="button">Run action</button>
+      </main>`);
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise((resolve) => server.close(resolve)));
+  const url = `http://127.0.0.1:${server.address().port}`;
+  const config = path.join(dir, "filtered.json");
+  await run(["init", "--url", url, "--out", config, "--auto"], dir);
+  const story = JSON.parse(await readFile(config, "utf8"));
+  assert.equal(story.steps.some((s) => s.selector === "#speed"), false);
+  assert.equal(story.steps.some((s) => s.selector === "#disabled-btn"), false);
+  assert.equal(story.steps.some((s) => s.selector === "#external-link"), false);
+  assert.equal(story.steps.some((s) => s.selector === "#covered-btn"), false);
+  assert.ok(story.steps.some((s) => s.action === "click" && s.selector === "#real-btn"));
+});
+
 test("init --auto prioritizes primary controls over sidebar hash links and destructive actions", { timeout: 30000 }, async (t) => {
   const dir = await mkdtemp(path.join(os.tmpdir(), "tabretake-init-smart-"));
   t.after(() => rm(dir, { recursive: true, force: true }));

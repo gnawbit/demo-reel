@@ -286,7 +286,30 @@ export async function moveAndClick(page, locator, pause = 700, timeout = 20000) 
   await page.mouse.move(x, y, { steps: 18 });
   await page.waitForTimeout(120);
   // Recheck actionability at the actual click; never click an overlay by position.
-  await locator.click({ delay: 70, timeout: remaining() });
+  try {
+    await locator.click({ delay: 70, timeout: Math.min(remaining(), 1500) });
+  } catch (error) {
+    const unstableOnly = error?.name === "TimeoutError" && /element is not stable/i.test(String(error.message || ""));
+    if (!unstableOnly) {
+      if (error?.name === "TimeoutError" && remaining() > 0) {
+        await locator.click({ delay: 70, timeout: remaining() });
+      } else {
+        throw error;
+      }
+    } else {
+      // Hovering can trigger an infinite CSS animation (e.g. shake/pulse on :hover);
+      // allow the click only if the target is still enabled and unobstructed at its center.
+      const safe = await locator.evaluate((el) => {
+        if (!el.isConnected || el.matches(":disabled") || el.getAttribute("aria-disabled") === "true") return false;
+        const r = el.getBoundingClientRect();
+        if (r.width <= 0 || r.height <= 0) return false;
+        const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        return Boolean(top && (el === top || el.contains(top) || top.contains(el)));
+      }).catch(() => false);
+      if (!safe) throw error;
+      await locator.click({ force: true, delay: 70, timeout: remaining() });
+    }
+  }
   await page.waitForTimeout(pause);
 
   return { x, y };

@@ -117,6 +117,21 @@ async function collectElements(page, { includeHints = false } = {}) {
         };
         if (withHints) {
           const rawHref = el.tagName === "A" ? (el.getAttribute("href") || "").trim() : "";
+          let externalHref = false;
+          if (el.tagName === "A" && rawHref && !rawHref.startsWith("#") && !rawHref.startsWith("javascript:")) {
+            try {
+              externalHref = new URL(rawHref, window.location.href).origin !== window.location.origin;
+            } catch {
+              externalHref = false;
+            }
+          }
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          let covered = false;
+          if (cx >= 0 && cy >= 0 && cx < window.innerWidth && cy < window.innerHeight) {
+            const topEl = document.elementFromPoint(cx, cy);
+            covered = Boolean(topEl && el !== topEl && !el.contains(topEl) && !topEl.contains(el));
+          }
           const hintSource = `${text} ${el.getAttribute("aria-label") || ""} ${el.getAttribute("placeholder") || ""}`;
           const cls = typeof el.className === "string" ? el.className : "";
           item._hints = {
@@ -124,7 +139,11 @@ async function collectElements(page, { includeHints = false } = {}) {
             inMain: Boolean(el.closest("main, form, [role=main], [role=dialog]")),
             inForm: Boolean(el.closest("form")),
             hiddenContainer: Boolean(el.closest("[aria-hidden='true'], [inert]")) || style.pointerEvents === "none",
+            disabled: el.matches(":disabled") || el.getAttribute("aria-disabled") === "true",
+            covered,
+            required: Boolean(el.required || el.getAttribute("aria-required") === "true"),
             emptyHref: el.tagName === "A" && (!rawHref || rawHref === "#" || rawHref.startsWith("javascript:")),
+            externalHref,
             isPrimary: el.getAttribute("type") === "submit" ||
               /\b(primary|cta|submit|create|new|add|start|save|launch)\b/i.test(`${cls} ${text}`),
             isDestructive: /\b(delete|remove|destroy|logout|log out|sign out|cancel|close|reset|clear)\b/i.test(hintSource),
